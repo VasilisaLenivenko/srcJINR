@@ -29,11 +29,19 @@
 #include  "BmnMwpcDigit.h"
 #include  "BmnMwpcGeometry.h"
 #include  "FairTask.h"
+#include "TList.h"
+
+#include "TH1D.h"
+#include "TH2D.h"
+
+class TH1D;
+class TH2D;
 
 using namespace std;
 
 class BmnMwpcHitFinder : public FairTask {
 public:
+	
 
     /** Default constructor **/
     BmnMwpcHitFinder() {};
@@ -85,6 +93,10 @@ private:
     Bool_t fUseDigitsInTimeBin; // use digits found in a time bin of width = kTimeBin (8 ns).
     
     BmnMwpcGeometry* fMwpcGeometry;
+
+    TList fList,gList,tList;
+
+    TH1D  *hNp_best_ch1, *hNp_best_ch2,  *hNbest_Ch1,  *hNbest_Ch2;
 
     Short_t kNChambers;
     Short_t kNPlanes;
@@ -147,22 +159,37 @@ private:
     Double_t *Chi2_ndf_best_Ch1;
     Double_t *Chi2_ndf_best_Ch2;    
 
-    Double_t **A;
+    
     Float_t *sigm2;
     Int_t *h;
     Int_t *h6;
     Int_t *ipl;
-    Float_t *XVU;
-    Float_t *XVU_cl;
-    Double_t **b;
-    Float_t *dX_i;
+    Double_t **A1;
+    Double_t **b1;
+    Double_t **A2;
+    Double_t **b2;
+    
+    Float_t *XVU1;
+    Float_t *XVU2;
+    Float_t *XVU_cl1;
+    Float_t *XVU_cl2;
+    Float_t *dX_i1;
+    Float_t *dX_i2;
     Float_t *z2;
 
     //functions for Vasilisa method:
     void PrepareArraysToProcessEvent();
-    //    void SegmentFinder(Int_t, Int_t**, Int_t**, Float_t**, Int_t*, Int_t*, Int_t&, Int_t**, Float_t**, Int_t, Short_t, Int_t);
-    void SegmentFinder(Int_t, Int_t**, Int_t**, Float_t**, Int_t);
-    void ProcessSegments(Int_t, Double_t, Float_t, Float_t*, Int_t, Int_t, Int_t*, Int_t**, Int_t**, Float_t**, Int_t, Int_t*,  Double_t*, Double_t*, Double_t**, Double_t**, Int_t, Int_t*, Float_t*, Float_t*, Double_t, Float_t*);
+
+    void SegmentFinder(Int_t, Int_t**, Int_t**, Float_t**, Int_t*, Int_t* , Int_t &, Int_t **, Float_t **, Int_t, Short_t , Int_t);
+
+    void ProcessSegments(Int_t,Double_t ,Float_t , Float_t *,Int_t ,Int_t & ,Int_t *,Int_t **,Int_t **,Float_t **,Int_t & ,Int_t *,  Double_t *, Double_t *, Double_t **, Double_t **,Double_t **, Int_t ,Int_t* , Float_t*,  Float_t* , Double_t ,Float_t *);
+
+    void SegmentParamAlignment();
+
+    void SegmentMatching();
+
+    void SegmentFit();
+
     void FillFitMatrix(Double_t**, Float_t*, Float_t*, Int_t*, Int_t, Float_t*);
     void FillFreeCoefVector(Double_t*, Float_t*, Float_t*, Float_t*, Int_t*, Int_t);
     void InverseMatrix(Double_t**, Double_t**);
