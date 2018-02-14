@@ -106,19 +106,18 @@ InitStatus 		BmnTof1HitProducer::Init()
     	FairRootManager::Instance()->Register("BmnTof1Hit", "TOF1", aTofHits, kTRUE);
         
 	fNDetectors = pGeoUtils->ParseTGeoManager(fUseMCData, h2TestStrips, true);
-        pGeoUtils->FindNeighborStrips(h1TestDistance, h2TestNeighborPair, fDoTest);
-
+	 pGeoUtils->FindNeighborStrips(h1TestDistance, h2TestNeighborPair, fDoTest);
         if (!fUseMCData) {
             pDetector = new BmnTOF1Detector *[fNDetectors];
             TString NameFileLRcorrection, NameFileSlewingCorrection, NameFileTimeShiftCorrection;
-            NameFileLRcorrection = Form("TOF400_LRCorr_Period_%i", NPeriod);
-            NameFileSlewingCorrection = Form("TOF400_SlewingCorr_Period_%i", NPeriod);
-            NameFileTimeShiftCorrection = Form("TOF400_TimeShiftCorr_Period_%i", NPeriod);
+            NameFileLRcorrection = Form("TOF400_LRCorr_Period_%i.dat", NPeriod);
+            NameFileSlewingCorrection = Form("TOF400_SlewingCorr_Period_%i.root", NPeriod);
+            NameFileTimeShiftCorrection = Form("TOF400_TimeShiftCorr_Period_%i.dat", NPeriod);
             for (Int_t i = 0; i < fNDetectors; i++) {
                 Int_t DoTestForDetector = 0;
                 if (fDoTest == kTRUE) DoTestForDetector = 1; // Level of Histograms filling (0-don't fill, 1-low, 2-high)
                 pDetector[i] = new BmnTOF1Detector(i, DoTestForDetector);
-                pDetector[i]->SetCorrLR(NameFileLRcorrection);
+		pDetector[i]->SetCorrLR(NameFileLRcorrection);
                 pDetector[i]->SetCorrSlewing(NameFileSlewingCorrection);
                 pDetector[i]->SetCorrTimeShift(NameFileTimeShiftCorrection);
                 pDetector[i]->SetGeo(pGeoUtils);
@@ -259,7 +258,7 @@ void 		BmnTof1HitProducer::Exec(Option_t* opt) {
                 }
 
                 for (Int_t i = 0; i < fNDetectors; i++)
-                    nSingleHits += pDetector[i] -> FindHits(digT0, aTofHits);
+		     nSingleHits += pDetector[i] -> FindHits(digT0, aTofHits);
             }
         }
 
