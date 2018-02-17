@@ -76,7 +76,8 @@ private:
     TClonesArray* fBmnMwpcDigitArray;
     
     /** Output array of MWPC hits **/
-    TClonesArray* fBmnMwpcHitArray; 
+    // TClonesArray* fBmnMwpcHitArray; 
+     TClonesArray* fBmnMwpcTracksArray; 
     
     vector <BmnMwpcDigit*> CheckDigits(vector <BmnMwpcDigit*>);
     void FindNeighbour(BmnMwpcDigit*, vector <BmnMwpcDigit*>, vector<BmnMwpcDigit*>);
@@ -101,7 +102,9 @@ private:
     Short_t kNChambers;
     Short_t kNPlanes;
     Short_t kNWires;
-
+    
+    Float_t kZmid1;
+    Float_t kZmid2;
     Int_t kMinHits;
     Double_t kChi2_Max;
 
@@ -125,12 +128,15 @@ private:
     Int_t Nbest_Ch2;
     Int_t Nseg_Ch1;
     Int_t Nseg_Ch2;
+    Int_t Nbest_Ch12_gl;
     
     Int_t kBig;
 
     Int_t *kPln;
     Float_t *kZ1_loc;
     Float_t *kZ2_loc;
+    Float_t *z_gl1;
+    Float_t *z_gl2;
 
     Int_t *iw;
     Int_t *iw_Ch1;
@@ -142,7 +148,10 @@ private:
     Float_t **xuv_Ch2;
 
     Int_t *ind_best_Ch1;
-    Int_t *ind_best_Ch2;    
+    Int_t *ind_best_Ch2; 
+    Int_t *best_Ch1_gl;
+    Int_t *best_Ch2_gl;
+   
     Int_t **Wires_Ch1;
     Int_t **Wires_Ch2;    
     Int_t **clust_Ch1;
@@ -156,18 +165,23 @@ private:
     Double_t **par_ab_Ch1;
     Double_t *Chi2_ndf_Ch2;
     Double_t **par_ab_Ch2;
+    Double_t **par_ab_Ch1_2;
     Double_t *Chi2_ndf_best_Ch1;
-    Double_t *Chi2_ndf_best_Ch2;    
+    Double_t *Chi2_ndf_best_Ch2; 
+    Double_t *Chi2_match;
+    Double_t *Chi2_ndf_Ch1_2;
 
     
     Float_t *sigm2;
     Int_t *h;
     Int_t *h6;
     Int_t *ipl;
-    Double_t **A1;
-    Double_t **b1;
-    Double_t **A2;
-    Double_t **b2;
+    Double_t **matrA;
+    Double_t **matrb;
+    //  Double_t **A1;
+    //  Double_t **b1;
+    // Double_t **A2;
+    // Double_t **b2;
     
     Float_t *XVU1;
     Float_t *XVU2;
@@ -186,9 +200,19 @@ private:
 
     void SegmentParamAlignment();
 
-    void SegmentMatching();
+    void SegmentMatching(Int_t &, Int_t &, Double_t **, Double_t **, Float_t, Float_t, Int_t *, Int_t *,   Int_t *,  Int_t *, Int_t &, Double_t *);
 
-    void SegmentFit();
+    void SegmentFit(Float_t *, Float_t *, 
+		    Float_t*, 
+		    Int_t &,
+		    Int_t *, Int_t *, Int_t *, Int_t *, 
+		    Double_t **, Double_t *, 
+		    Int_t *, Int_t *, Int_t **, Int_t **,
+		    Double_t **, Double_t **,
+		    Float_t *, Float_t *
+		    );
+
+
 
     void FillFitMatrix(Double_t**, Float_t*, Float_t*, Int_t*, Int_t, Float_t*);
     void FillFreeCoefVector(Double_t*, Float_t*, Float_t*, Float_t*, Int_t*, Int_t);
