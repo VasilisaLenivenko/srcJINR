@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iterator>
 #include <regex>
+#include <exception>
 // FairROOT
 #include <TNamed.h>
 #include "TFile.h"
@@ -105,6 +106,7 @@ private:
     TCanvas *infoCanvas;
     TList *refList;
     TList *refTable;
+    BmnRunInfo *CurRun;
 
     BmnDataReceiver *dataReceiver;
     BmnOnlineDecoder *onlineDecoder;

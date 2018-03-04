@@ -55,11 +55,17 @@ int main(int argc, char ** argv)
   // Set up the output file
   TFile * outfile = new TFile(argv[2],"RECREATE");
   TTree * outtree = new TTree("tracked","Output tree for the track_arms program");
-  double outVX,outVY,outVZ;
+  double outVX,outVY,outVZ,beamMX,beamMY;
+  double pArmX[2], pArmY[2], pArmZ[2];
   int totalArms, success;
   outtree->Branch("vx",&outVX,"vx/D");
   outtree->Branch("vy",&outVY,"vy/D");
   outtree->Branch("vz",&outVZ,"vz/D");
+  outtree->Branch("beamMX",&beamMX,"beamMX/D");
+  outtree->Branch("beamMY",&beamMY,"beamMY/D");
+  outtree->Branch("pArmX",pArmX,"pArmX[2]/D");
+  outtree->Branch("pArmY",pArmY,"pArmY[2]/D");
+  outtree->Branch("pArmZ",pArmZ,"pArmZ[2]/D");
   outtree->Branch("n",&totalArms,"n/I");
   outtree->Branch("fit",&success,"fit/I");
 
@@ -94,7 +100,15 @@ int main(int argc, char ** argv)
       // Initialize values for this event
       totalArms=0;
       success=0; // will be set to true (1) on successful minimization
-
+      beamMX=0.;
+      beamMY=0.;
+      for (int i=0 ; i<2 ; i++)
+	{
+	  pArmX[i]=0.;
+	  pArmY[i]=0.;
+	  pArmZ[i]=0.;
+	}
+      
       // Loop over MWPC hits, sort
       vector<TVector3> mwpcUHits;
       vector<TVector3> mwpcDHits;
@@ -103,10 +117,18 @@ int main(int argc, char ** argv)
 	  BmnMwpcHit * thisHit = (BmnMwpcHit*)mwpcData->At(m);
 
 	  // Sort by z position (eventually do this by module ID)
-	  if ((thisHit->GetZ()<-300.)&&(thisHit->GetZ()>-400.)) 
+
+	  // This is for George's simulated data
+	  if ((thisHit->GetZ()<-90.)&&(thisHit->GetZ()>-110.)) 
 	    mwpcUHits.push_back(TVector3(thisHit->GetX(),thisHit->GetY(),thisHit->GetZ())); 
-	  else if ((thisHit->GetZ()<-200.)&&(thisHit->GetZ()>-300.))
+	  else if ((thisHit->GetZ()<-40.)&&(thisHit->GetZ()>-60.))
 	    mwpcDHits.push_back(TVector3(thisHit->GetX(),thisHit->GetY(),thisHit->GetZ()));
+
+	  //if ((thisHit->GetZ()<-300.)&&(thisHit->GetZ()>-400.)) 
+	  // mwpcUHits.push_back(TVector3(thisHit->GetX(),thisHit->GetY(),thisHit->GetZ())); 
+	  //else if ((thisHit->GetZ()<-200.)&&(thisHit->GetZ()>-300.))
+	  //  mwpcDHits.push_back(TVector3(thisHit->GetX(),thisHit->GetY(),thisHit->GetZ()));
+	  
 	}
 
       // Loop over ToF hits, sort
@@ -193,7 +215,7 @@ int main(int argc, char ** argv)
 		bestRSlope=yslope;
 	      }
 	  }
-
+      
       // We require at least a beam arm
       if (!((bestMUIndex < 0)||(bestMDIndex < 0)))
 	{      
@@ -249,10 +271,19 @@ int main(int argc, char ** argv)
 	      outVX=fitRes[0];
 	      outVY=fitRes[1];
 	      outVZ=fitRes[2];
-	      TVector3 pBeam(fitRes[3],fitRes[4],1.);
-	      vector<TVector3> tracks;
+	      beamMX=fitRes[3];
+	      beamMY=fitRes[4];
+	      // We still need to incorporate timing information to get true momenta! 
 	      for (int i=1 ; i<totalArms ; i++)
-		tracks.push_back(TVector3(fitRes[3+2*i + 0],fitRes[3+2*i + 1],1.));
+		{
+		  double mxArm=fitRes[3+2*i+0];
+		  double myArm=fitRes[3+2*i+1];
+		  int j=i-1;
+		  
+		  pArmX[j]=mxArm;
+		  pArmY[j]=myArm;
+		  pArmZ[j]=1.;
+		}
 	    }
 	}
       outtree->Fill();
