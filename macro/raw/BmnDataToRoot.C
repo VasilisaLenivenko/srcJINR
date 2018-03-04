@@ -27,7 +27,7 @@ void BmnDataToRoot(TString file, Long_t nEvents = 0, Bool_t doConvert = kTRUE)
     setup[6] = 0; // DCH
     setup[7] = 0; // ZDC
     setup[8] = 0; // ECAL
-    setup[9] = 0; // LAND
+    setup[9] = 1; // LAND
     decoder->SetDetectorSetup(setup);
 
     TString PeriodSetupExt = Form("%d%s.txt", period, ((stp == kBMNSETUP) ? "" : "_SRC"));
