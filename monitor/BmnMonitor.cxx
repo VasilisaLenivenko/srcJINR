@@ -189,7 +189,7 @@ BmnStatus BmnMonitor::CreateFile(Int_t runID) {
     //        delete fRecoTree4Show;
     //        fRecoTree4Show = NULL;
     //    }
-    fHistOutTemp = new TFile("tempo.root", "recreate");
+//    fHistOutTemp = new TFile("tempo.root", "recreate");
     if (fHistOutTemp)
         printf("file tempo.root created\n");
     fRecoTree4Show = new TTree("BmnMon4Show", "BmnMon");
@@ -211,7 +211,8 @@ BmnStatus BmnMonitor::CreateFile(Int_t runID) {
         h->SetDir(fHistOut, fRecoTree);
     }
     for (auto h : bhVec4show) {
-        h->SetDir(fHistOutTemp, fRecoTree4Show);
+//        h->SetDir(fHistOutTemp, fRecoTree4Show);
+        h->SetDir(NULL, NULL);
         h->ClearRefRun();
         h->Reset();
     }
@@ -234,7 +235,7 @@ void BmnMonitor::ProcessDigi(Int_t iEv) {
     for (auto h : bhVec4show)
         if (h)
             h->FillFromDigi(fDigiArrays);
-    fRecoTree4Show->Fill();
+    //fRecoTree4Show->Fill();
     if (fEvents % 200 == 0) {
         // print info canvas //
         infoCanvas->Clear();
@@ -262,6 +263,9 @@ void BmnMonitor::ProcessDigi(Int_t iEv) {
         infoCanvas->Update();
         for (auto h : bhVec4show)
             h->DrawBoth();
+        if (fEvents % 2000 == 0)
+            if (refTable->GetEntries() == 0)
+                UpdateRuns();
     }
 }
 
@@ -279,7 +283,7 @@ void BmnMonitor::RegisterAll() {
     bhVec4show.push_back(new BmnHistLAND("LAND"));
 
     fServer->Register("/", infoCanvas);
-    fServer->Register("/", refList);
+    //fServer->Register("/", refList);
     fServer->Register("/", refTable);
     for (auto h : bhVec4show) {
         h->Register(fServer);
@@ -288,23 +292,24 @@ void BmnMonitor::RegisterAll() {
 }
 
 void BmnMonitor::UpdateRuns() {
-//    struct dirent **namelist;
-//    TPRegexp re(".*bmn_run0*(\\d+)_hist.root");
-//    Int_t n;
-//    refList->Clear();
-//    n = scandir(_refDir, &namelist, 0, versionsort);
-//    if (n < 0)
-//        perror("scandir");
-//    else {
-//        for (Int_t i = 0; i < n; ++i) {
-//            TObjArray *subStr = re.MatchS(namelist[i]->d_name);
-//            if (subStr->GetEntriesFast() > 1)
-//                refList->Add((TObjString*) subStr->At(1)->Clone());
-//            free(namelist[i]);
-//            delete subStr;
-//        }
-//        free(namelist);
-//    }
+    struct dirent **namelist;
+    TPRegexp re(".*bmn_run0*(\\d+)_hist.root");
+    Int_t n;
+    refList->Clear();
+    n = scandir(_refDir, &namelist, 0, versionsort);
+    if (n < 0)
+        perror("scandir");
+    else {
+        for (Int_t i = 0; i < n; ++i) {
+            TObjArray *subStr = re.MatchS(namelist[i]->d_name);
+            if (subStr->GetEntriesFast() > 1)
+                refList->Add((TObjString*) subStr->At(1));
+            free(namelist[i]);
+            subStr->Clear();
+        }
+        free(namelist);
+    }
+
     TObjArray* refRuns = BmnMonitor::GetAlikeRunsByUniDB(fPeriodID, fRunID);
     if (refRuns == NULL) {
         fprintf(stderr, "Ref list is empty!\n");
@@ -348,15 +353,18 @@ void BmnMonitor::FinishRun() {
     for (auto h : bhVec)
         if (h) delete h;
     bhVec.clear();
-    if (fRecoTree4Show)
-        printf("fRecoTree4Show Write result = %d\n", fRecoTree4Show->Write());
-    if (fHistOutTemp) {
-        printf("fHistOutMem Write result = %d\n", fHistOutTemp->Write());
-        for (auto h : bhVec4show)
-            h->SetDir(NULL, NULL);
-        fHistOutTemp->Close();
-        fHistOutTemp = NULL;
-    }
+//    if (fRecoTree4Show){
+//        printf("fRecoTree4Show Write result = %d\n", fRecoTree4Show->Write());
+//    }
+//    if (fHistOutTemp) {
+//        printf("fHistOutMem Write result = %d\n", fHistOutTemp->Write());
+//        for (auto h : bhVec4show)
+//            h->SetDir(NULL, NULL);
+//        printf("SetDir\n");
+//        fHistOutTemp->Close();
+//        printf("fHistOutMem closed\n");
+//        fHistOutTemp = NULL;
+//    }
 }
 
 TObjArray* BmnMonitor::GetAlikeRunsByElog(Int_t periodID, Int_t runID) {
