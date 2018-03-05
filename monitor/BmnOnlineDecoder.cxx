@@ -65,17 +65,16 @@ BmnStatus BmnOnlineDecoder::InitDecoder(TString fRawFileName) {
     setup[5] = 1; // TOF-700
     setup[6] = 1; // DCH
     setup[7] = 1; // ZDC
-    setup[8] = 1; // ECAL
+    setup[8] = 0; // ECAL
     setup[9] = 1; // LAND
     rawDataDecoder->SetDetectorSetup(setup);
     rawDataDecoder->SetBmnSetup(fBmnSetup);
     rawDataDecoder->SetTrigINLFile("TRIG_INL.txt");
-    rawDataDecoder->SetTof400Mapping("TOF400_PlaceMap_RUN6.txt", "TOF400_StripMap_RUN6.txt");
+    rawDataDecoder->SetTof400Mapping("TOF400_PlaceMap_RUN7.txt", "TOF400_StripMap_RUN7.txt");
     rawDataDecoder->SetTof700Mapping("TOF700_map_period_6.txt");
     rawDataDecoder->SetZDCMapping("ZDC_map_period_5.txt");
     rawDataDecoder->SetZDCCalibration("zdc_muon_calibration.txt");
-    rawDataDecoder->SetMwpcMapping("MWPC_mapping_period_5.txt");
-    rawDataDecoder->SetECALMapping("ECAL_map_period_5.txt");
+    rawDataDecoder->SetECALMapping("ECAL_map_period_7.txt");
     rawDataDecoder->SetLANDMapping("land_mapping_jinr_triplex.txt");
     rawDataDecoder->SetLANDPedestal("r0030_land_clock.hh");
     rawDataDecoder->SetLANDTCal("r0030_land_tcal.hh");
@@ -86,6 +85,7 @@ BmnStatus BmnOnlineDecoder::InitDecoder(TString fRawFileName) {
     rawDataDecoder->SetTrigMapping(TString("Trig_map_Run") + PeriodSetupExt);
     rawDataDecoder->SetSiliconMapping("SILICON_map_run7.txt");
     rawDataDecoder->SetGemMapping(TString("GEM_map_run") + PeriodSetupExt);
+    rawDataDecoder->SetMwpcMapping(TString("MWPC_map_period") + PeriodSetupExt);
     rawDataDecoder->InitMaps();
     rawDataDecoder->InitConverter(fRawFileName);
     return rawDataDecoder->InitDecoder();
