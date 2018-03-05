@@ -46,7 +46,7 @@ void BmnDataToRoot(TString file, Long_t nEvents = 0, Bool_t doConvert = kTRUE)
     decoder->SetMwpcMapping(TString("MWPC_map_period") + PeriodSetupExt);
     decoder->SetLANDMapping("land_mapping_jinr_triplex.txt");
     decoder->SetLANDPedestal("r0030_land_clock.hh");
-    decoder->SetLANDTCal("r0030_land_tcal.hh");
+    decoder->SetLANDTCal("r0030jinr_land_tcal.hh");
     decoder->SetLANDDiffSync("r352_cosmic1.hh");
     decoder->SetLANDVScint("neuland_sync_2.txt");
     decoder->InitMaps();

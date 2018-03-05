@@ -31,6 +31,10 @@ namespace {
       result.push_back(a_str.substr(start, i - start));
     }
   }
+
+  unsigned const g_t0_gtb_i = 1;
+  unsigned const g_t0_module_i = 5;
+  unsigned const g_t0_channel_i = 15;
 }
 
 BmnLANDRaw2Digit::BmnLANDRaw2Digit(TString a_map_filename, TString
@@ -199,6 +203,12 @@ BmnLANDRaw2Digit::BmnLANDRaw2Digit(TString a_map_filename, TString
 	plane_ofs = 0;
       } else if (0 == token.at(2).compare("V")) {
 	plane_ofs = 5;
+      } else if (0 == token.at(2).compare("START")) {
+        unsigned tdc = strtod(token.at(4).c_str(), NULL);
+        float t_ns = strtod(token.at(5).c_str(), NULL);
+        // Hard-wired T0.
+        m_tcal[g_t0_gtb_i][g_t0_module_i][g_t0_channel_i].push_back(TCal(tdc, t_ns));
+        continue;
       } else {
 	continue;
       }
@@ -428,7 +438,7 @@ void BmnLANDRaw2Digit::fillEvent(TClonesArray const *tacquila_array,
       continue;
     }
     /* Hard-wired T0. */
-    if (1 == gtb_i && 5 == module_i && 15 == channel_i) {
+    if (g_t0_gtb_i == gtb_i && g_t0_module_i == module_i && g_t0_channel_i == channel_i) {
       tacquila->SetTDiff(*c17);
       t0->SetT0(*tacquila);
       // TODO: Where to do slewing/walk correction?
