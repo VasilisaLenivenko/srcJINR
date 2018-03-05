@@ -118,6 +118,7 @@ BmnEnums.h
 DigiArrays.h
 BmnEventQuality.cxx
 BmnTriggersCheck.cxx
+BmnSRCTriggersCheck.cxx
 )
 
 Set(HEADERS)

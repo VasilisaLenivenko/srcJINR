@@ -101,6 +101,7 @@
 #pragma link C++ class BmnIdentifiableTrack+;
 
 #pragma link C++ class BmnTriggersCheck+;
+#pragma link C++ class BmnSRCTriggersCheck+;
 #pragma link C++ class BmnEventQuality+;
 
 #endif
