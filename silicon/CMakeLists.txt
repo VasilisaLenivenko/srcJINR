@@ -12,6 +12,7 @@ ${CMAKE_SOURCE_DIR}/base/source
 ${CMAKE_SOURCE_DIR}/geobase
 ${CMAKE_SOURCE_DIR}/parbase
 ${CMAKE_SOURCE_DIR}/fairtools
+${CMAKE_SOURCE_DIR}/bmnbase
 ${CMAKE_SOURCE_DIR}/bmndata
 ${CMAKE_SOURCE_DIR}/silicon
 ${CMAKE_SOURCE_DIR}/uni_db
@@ -52,6 +53,6 @@ BmnSiliconTrack.cxx
 Set(HEADERS)
 Set(LINKDEF SiliconLinkDef.h)
 Set(LIBRARY_NAME Silicon)
-Set(DEPENDENCIES Core Base BmnData)
+Set(DEPENDENCIES XMLParser Core Base)
 
 GENERATE_LIBRARY()

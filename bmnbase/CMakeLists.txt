@@ -31,15 +31,22 @@ ${ROOT_LIBRARY_DIR}
 link_directories(${LINK_DIRECTORIES})
 
 set(SRCS
-CbmStsTrackFinder.cxx
-CbmStsTrackFitter.cxx
-CbmTofMerger.cxx
-CbmTrackMerger.cxx
-CbmPrimaryVertexFinder.cxx
-CbmFindPrimaryVertex.cxx
-BmnFileSource.cxx
-BmnMath.cxx
-FitWLSQ.cxx
+ CbmVertex.cxx
+ CbmStsTrackFinder.cxx
+ CbmStsTrackFitter.cxx
+ CbmTofMerger.cxx
+ CbmTrackMerger.cxx
+ CbmPrimaryVertexFinder.cxx
+ CbmFindPrimaryVertex.cxx
+ BmnFileSource.cxx
+ BmnMath.cxx
+ BmnMatrixMath.cxx
+ FitWLSQ.cxx
+ BmnGeoNavigator.cxx
+ BmnTrack.cxx
+ BmnHit.cxx
+ BmnLink.cxx
+ BmnMatch.cxx
 )
 
 Set(HEADERS)

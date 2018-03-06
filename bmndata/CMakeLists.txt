@@ -11,8 +11,8 @@ ${CMAKE_SOURCE_DIR}/base/source
 ${CMAKE_SOURCE_DIR}/geobase
 ${CMAKE_SOURCE_DIR}/parbase
 ${CMAKE_SOURCE_DIR}/fairtools
-${CMAKE_SOURCE_DIR}/bmndata
 ${CMAKE_SOURCE_DIR}/bmnbase
+${CMAKE_SOURCE_DIR}/bmndata
 ${CMAKE_SOURCE_DIR}/globaltracking
 ${CMAKE_SOURCE_DIR}/gem
 ${CMAKE_SOURCE_DIR}/silicon
@@ -60,10 +60,8 @@ CbmStsHit.cxx
 CbmStsCluster.cxx
 CbmStsTrack.cxx
 CbmTrackMatch.cxx
-BmnTrack.cxx
 CbmMvdHit.cxx
 CbmMvdHitMatch.cxx
-CbmVertex.cxx
 CbmGlobalTrack.cxx
 CbmPsdPoint.cxx
 CbmPsdHit.cxx
@@ -76,10 +74,7 @@ BmnDchHitOriginal.cxx
 BmnGlobalTrack.cxx
 BmnMwpcHit.cxx
 BmnTofHit.cxx
-BmnLink.cxx
-BmnMatch.cxx
 BmnTrackMatch.cxx
-BmnHit.cxx
 BmnMwpcDigit.cxx
 BmnTof1Digit.cxx
 BmnTof2Digit.cxx
@@ -119,11 +114,12 @@ BmnEnums.h
 DigiArrays.h
 BmnEventQuality.cxx
 BmnTriggersCheck.cxx
+BmnSRCTriggersCheck.cxx
 )
 
 Set(HEADERS)
 Set(LINKDEF BmnDataLinkDef.h)
 Set(LIBRARY_NAME BmnData)
-Set(DEPENDENCIES Core Base)
+Set(DEPENDENCIES Gem Silicon BmnBase Minuit Core Base)
 
 GENERATE_LIBRARY()

@@ -1,4 +1,3 @@
-
 #ifndef BMNTRIGRAWTODIGIT_H
 #define BMNTRIGRAWTODIGIT_H
 
@@ -56,9 +55,13 @@ public:
         return &trigArrays;
     }
     
-    BmnTrigMapping GetT0Map(){
+    BmnTrigMapping GetT0Map(){        
         for (BmnTrigMapping tM : fMap){
-            if (tM.name == "T0_0" || tM.name == "T0_1")
+            if (tM.name == "T0")
+                return tM;
+        }
+        for (BmnTrigMapping tM : fMap){
+            if (tM.name == "BC2")
                 return tM;
         }
         BmnTrigMapping tMno;

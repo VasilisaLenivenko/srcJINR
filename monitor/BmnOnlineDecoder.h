@@ -40,6 +40,12 @@
 #define DECO_SOCK_WAIT_PERIOD    5e2
 #define DECO_SOCK_WAIT_LIMIT     5e4
 #define INOTIF_BUF_LEN (255 * (sizeof(struct inotify_event) + 255))
+#define DAQ_ADDR     "bmn-daq"  //"bmn-hrb-3.jinr.ru"
+#define DAQ_IP         "10.18.11.200"//"10.18.11.193"
+#define DAQ_PORT               32999
+#define MPD_EVENT_HEAD_WORDS       3 // sync + payload leght + iEv
+
+using namespace std;
 
 class BmnOnlineDecoder : public TNamed {
 public:
@@ -48,10 +54,24 @@ public:
     BmnStatus Decode(TString dirname, TString startFile, Bool_t runCurrent);
     BmnStatus DecodeStream();
     BmnStatus OpenStream();
+    void ProcessStream();
+    BmnStatus CloseStream();
     BmnStatus BatchDirectory(TString dirname);
+    void SetBmnSetup(BmnSetup v) {
+        this->fBmnSetup = v;
+    }
+    BmnSetup GetBmnSetup() const {
+        return fBmnSetup;
+    }
+    void SetPeriodID(Int_t v) {
+        this->fPeriodID = v;
+    }
+    Int_t GetPeriodID() const {
+        return fPeriodID;
+    }
 private:
     BmnStatus InitDecoder(TString);
-    BmnStatus InitDecoder(Int_t periodID, Int_t runID, deque<UInt_t> *dq);
+    BmnStatus InitDecoder(Int_t runID);
     void ProcessFileRun(TString digiName, UInt_t timeLimit = WAIT_LIMIT);
     static TString WatchNext(TString dirname, TString filename, Int_t cycleWait);
     static TString WatchNext(Int_t inotifDir, Int_t cycleWait);
@@ -60,17 +80,24 @@ private:
     
     void * _ctx;
     void * _decoSocket;
+    BmnSetup fBmnSetup;
     BmnRawDataDecoder *rawDataDecoder;
     TString _curFile;
     TString _curDir;
     Int_t fEvents;
+    Int_t fPeriodID;
+    Int_t fRunID;
     BmnDataReceiver *dataReceiver;
-    deque<UInt_t> *dataQue;
     Int_t _inotifDir;
     Int_t _inotifDirW;
     Int_t _inotifFile;
     Int_t _inotifFileW;
     
+    deque<UInt_t> data_queue;
+    void * _socket_mcast;
+    void * _socket_data;
+    Byte_t buf[MAX_BUF_LEN];
+//    UInt_t buf[MAX_BUF_LEN];
 
     ClassDef(BmnOnlineDecoder, 1)
 };
