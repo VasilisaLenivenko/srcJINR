@@ -37,7 +37,6 @@ BmnMwpcHitFinderSRC::BmnMwpcHitFinderSRC(Bool_t isExp) :
   nInputDigits = 3;
   nTimeSamples = 3;
   kBig = 100;
-  fPeriodNum = 6;
   }
 
 BmnMwpcHitFinderSRC::~BmnMwpcHitFinderSRC() {
@@ -66,7 +65,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   fBmnMwpcTracksArray = new TClonesArray(fOutputBranchName2);
   ioman->Register(fOutputBranchName2.Data(), "MWPC", fBmnMwpcTracksArray, kTRUE);
 
-  fMwpcGeometry = new BmnMwpcGeometrySRC(6);
+  fMwpcGeometry = new BmnMwpcGeometry();//fMwpcGeometry = new BmnMwpcGeometry(6);
   kNChambers = fMwpcGeometry->GetNChambers();
   kNPlanes = fMwpcGeometry->GetNPlanes(); // 6
   kNWires = fMwpcGeometry->GetNWires();
@@ -126,7 +125,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   dX_i2 = new Float_t[kNPlanes];
   z2 = new Float_t[kNPlanes];
 
-  kPln = new Int_t*[kNChambers];
+  kPln = new Int_t[kNPlanes * kNChambers];
   iw = new Int_t[kNPlanes * kNChambers];
   iw_Ch1 = new Int_t[kNPlanes];
   iw_Ch2 = new Int_t[kNPlanes];
@@ -158,7 +157,6 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     par_ab_Ch1_2[ii] = new Double_t[5];
     matrA[ii] = new Double_t[4];
     matrb[ii] = new Double_t[4];         
-    kPln[ii] = new Int_t[kNPlanes];
   }
 
   Wires_Ch1 = new Int_t*[kNPlanes];
@@ -194,7 +192,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     //  Ch :                     1                                    2
     //                      v+  u-  x-  v-  u+  x+         v+  u-  x-   v-  u+  x+
     //    kPln[12] =      {  4,  5,  0,  1,  2,  3,         7, 11,  6,  10,  8,  9 };  //run6-II   r.1397-last
-    /*    kPln[0] = 4;
+    kPln[0] = 4;
     kPln[1] = 5;
     kPln[2] = 0;
     kPln[3] = 1;
@@ -207,49 +205,11 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     kPln[9] = 10;
     kPln[10] = 8;
     kPln[11] = 9;
-    */
+    
     //                           x-    v-    u+    x+    v+    u-   // canonical order
     //    kZ1_loc[6] = {-0.5,  0.5,  1.5,  2.5, -2.5, -1.5}; //cm   run5  
     //    kZ2_loc[6] = {-0.5,  0.5,  1.5,  2.5, -2.5, -1.5}; //cm   run5, run6
-
-    for(Int_t i=0; i<4; i++){
-      for(Int_t j=0; j<6; j++){
-	if(fPeriodNum == 6){
-	  kPln[0][0] = 4;
-	  kPln[0][1] = 5;
-	  kPln[0][2] = 0;
-	  kPln[0][3] = 1;
-	  kPln[0][4] = 2;
-	  kPln[0][5] = 3;//{4,5,0,1,2,3,  7,11,6,10,9,8,  0,0,0,0,0,0,  0,0,0,0,0,0};
-	
-	  kPln[1][0] = 7;
-	  kPln[1][1] = 11;
-	  kPln[1][2] = 6;
-	  kPln[1][3] = 10;
-	  kPln[1][4] = 9;
-	  kPln[1][5] = 8;//{4,5,0,1,2,3,  7,11,6,10,9,8,  0,0,0,0,0,0,  0,0,0,0,0,0};
-	}
-	if(fPeriodNum == 7){
-	  kPln[0][0] = 4;
-	  kPln[0][1] = 5;
-	  kPln[0][2] = 0;
-	  kPln[0][3] = 1;
-	  kPln[0][4] = 2;
-	  kPln[0][5] = 3;//{4,5,0,1,2,3,  7,11,6,10,9,8,  0,0,0,0,0,0,  0,0,0,0,0,0};
-
-	  kPln[1][0] = 7;
-	  kPln[1][1] = 11;
-	  kPln[1][2] = 6;
-	  kPln[1][3] = 10;
-	  kPln[1][4] = 9;
-	  kPln[1][5] = 8;//{4,5,0,1,2,3,  7,11,6,10,9,8,  0,0,0,0,0,0,  0,0,0,0,0,0};
-	}
-      }
-    }
-
     
-    //    kPln = fMwpcGeometry->GetKpl();
-
     for(int ii=0; ii<6; ii++){
       kZ1_loc[ii] = -0.5 + ii;
       kZ2_loc[ii] = -0.5 + ii;
@@ -410,7 +370,7 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
       //  cout<<"++++++++"<<endl;
       //  cout<<"wn = "<<wn<<", pl = "<<pl<<", ts = "<<ts<<endl;
 	// digits[digit->GetPlane() / kNPlanes][digit->GetPlane() % kNPlanes].push_back(digit);
-      //      pn = kPln[pl];
+      pn = kPln[pl];
 
       Bool_t repeat = 0;
       Int_t pn0 = 6;
@@ -434,6 +394,23 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
       //  cout<<"pl = "<<pl<<", pn = "<<pn<<", wn = "<<wn<<endl;
       
       if ( pn < 6) {
+
+	//kNPlanes*kNChambers
+
+	for (Int_t ich = 0; ich < kNChambers; ich++) {
+	 
+	  wire_Ch[ich][iw[pn]][pn]= wn;
+	  xuv_Ch[ich][iw[pn]][pn]= (wn - 47.25) * dw;
+
+	  if (pn == 0 || pn == 1 || pn == 5 ) xuv_Ch[ich][iw[pn]][pn] = -xuv_Ch[ich][iw[pn]][pn]; 
+	  iw[pn]++;
+
+	  iw_Ch[ich][pn] = iw[pn];
+
+	}
+
+
+
 	wire_Ch1[iw[pn]][pn - pn0] = wn;
 	xuv_Ch1[iw[pn]][pn - pn0] = (wn - 47.25) * dw;
 	//	cout<<" pn "<<pn<<" wire_Ch1 "<<wire_Ch1[iw[pn]][pn - pn0]<<" xuv_Ch1 "<<xuv_Ch1[iw[pn]][pn - pn0]<<endl;
@@ -513,9 +490,9 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 
     }// if(Nseg_Ch1 > 0)
    
-      cout<<endl;
-      cout<<"ProcessSegments: Nbest_Ch1 "<<Nbest_Ch1<<" Nbest_Ch2 "<<Nbest_Ch2<<endl;
-      cout<<endl;
+    //  cout<<endl;
+    //  cout<<"ProcessSegments: Nbest_Ch1 "<<Nbest_Ch1<<" Nbest_Ch2 "<<Nbest_Ch2<<endl;
+    //   cout<<endl;
      
 	for (Int_t ise = 0; ise < Nbest_Ch1; ise++) {
 	  //  cout<<" Ch1 ise "<<ise<<" ind "<<ind_best_Ch1[ise]<<" Chi2 "<<Chi2_ndf_best_Ch1[ise]<<" Ax "<<par_ab_Ch1[0][ise]<<" bx "<<par_ab_Ch1[1][ise]<<" Ay "<<par_ab_Ch1[2][ise]<<" by "<<par_ab_Ch1[3][ise]<<endl;//" kZ1 "<<Ch1Cent.Z()<<endl;
@@ -531,7 +508,7 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 	}
 
 	for (Int_t ise = 0; ise < Nbest_Ch2; ise++) {
-	  cout<<" Ch2 ise "<<ise<<" ind "<<ind_best_Ch2[ise]<<" Chi2 "<<Chi2_ndf_best_Ch2[ise]<<" Ax "<<par_ab_Ch2[0][ise]<<" bx "<<par_ab_Ch2[1][ise]<<" Ay "<<par_ab_Ch2[2][ise]<<" by "<<par_ab_Ch2[3][ise]<<endl;
+	  //	  cout<<" Ch2 ise "<<ise<<" ind "<<ind_best_Ch2[ise]<<" Chi2 "<<Chi2_ndf_best_Ch2[ise]<<" Ax "<<par_ab_Ch2[0][ise]<<" bx "<<par_ab_Ch2[1][ise]<<" Ay "<<par_ab_Ch2[2][ise]<<" by "<<par_ab_Ch2[3][ise]<<endl;
 
 	 
 	  BmnTrack *pSeg1 = new ((*fBmnMwpcSegmentsArray)[fBmnMwpcSegmentsArray->GetEntriesFast()]) BmnTrack();
@@ -545,7 +522,7 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 
 	
 
-      cout<<endl;
+	//  cout<<endl;
 	  
       hNbest_Ch1->Fill(Nbest_Ch1);	     
       hNbest_Ch2->Fill(Nbest_Ch2);
@@ -569,7 +546,7 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 
       SegmentMatching( Nbest_Ch1, Nbest_Ch2, par_ab_Ch1, par_ab_Ch2, kZmid1, kZmid2, ind_best_Ch1, ind_best_Ch2, best_Ch1_gl, best_Ch2_gl, Nbest_Ch12_gl, Chi2_match);
 
-      cout<<" SegmentMatching: Nbest_Ch12_gl "<<Nbest_Ch12_gl<<endl;
+      //  cout<<" SegmentMatching: Nbest_Ch12_gl "<<Nbest_Ch12_gl<<endl;
 
       }// if (Nbest_Ch1 > 0 && Nbest_Ch2 > 0){
 
@@ -1600,14 +1577,14 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 
     }
 
-        cout<<"Ch= "<<chNum<<" Nhits_Ch(Two-Five bests) ";  
-       	for (int iseg=0; iseg< Nseg; iseg++){ 
-       	  cout<<Nhits_Ch[iseg]<<" "; 
-       	} cout<<endl;
-	cout<<"Ch= "<<chNum<<" Nbest_Ch "<<Nbest_Ch<<endl;
-	for (int iseg=0; iseg< Nseg; iseg++){ 	
+    //   cout<<"Ch= "<<chNum<<" Nhits_Ch(Two-Five bests) ";  
+    //   	for (int iseg=0; iseg< Nseg; iseg++){ 
+    //   	  cout<<Nhits_Ch[iseg]<<" "; 
+    //    	} cout<<endl;
+    //	cout<<"Ch= "<<chNum<<" Nbest_Ch "<<Nbest_Ch<<endl;
+    //	for (int iseg=0; iseg< Nseg; iseg++){ 	
 	  // cout<<" Ch= "<<chNum<< " ind "<<ind_best_Ch[iseg]<<" Chi2 "<<Chi2_ndf_best_Ch[ind_best_Ch[iseg]]<<endl;
-	}
+    //	}
 
     
 	//      << Min_hits <<" "<<Nseg<< Nhits_Ch[1]<<" "<<Wires_Ch[0][0]<<" "<<Nbest_Ch<<" "<<ind_best_Ch[0]<<" "
@@ -1668,7 +1645,7 @@ void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch
       Float_t x1mid = par_ab_Ch1_[0][ind_best_Ch1_[bst1]] *( 0 - Zmid1) + par_ab_Ch1_[1][ind_best_Ch1_[bst1]] ;
       Float_t y1mid = par_ab_Ch1_[2][ind_best_Ch1_[bst1]] *( 0 - Zmid1) + par_ab_Ch1_[3][ind_best_Ch1_[bst1]] ;
 
-      cout<<"par Ch1 bst1 "<<bst1<<" Ax "<<par_ab_Ch1_[0][ind_best_Ch1_[bst1]]<<" bx "<<par_ab_Ch1_[1][ind_best_Ch1_[bst1]]<<" Ay "<<par_ab_Ch1_[2][ind_best_Ch1_[bst1]]<<" by "<<par_ab_Ch1_[3][ind_best_Ch1_[bst1]]<<endl;
+      //  cout<<"par Ch1 bst1 "<<bst1<<" Ax "<<par_ab_Ch1_[0][ind_best_Ch1_[bst1]]<<" bx "<<par_ab_Ch1_[1][ind_best_Ch1_[bst1]]<<" Ay "<<par_ab_Ch1_[2][ind_best_Ch1_[bst1]]<<" by "<<par_ab_Ch1_[3][ind_best_Ch1_[bst1]]<<endl;
                  
 
       for (Int_t bst2 = 0; bst2 < Nbest_Ch2_; bst2++) {
@@ -1677,7 +1654,7 @@ void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch
 	Float_t x2mid =  par_ab_Ch2_[0][ind_best_Ch2_[bst2]] *( 0 - Zmid2)  + par_ab_Ch2_[1][ind_best_Ch2_[bst2]] ;
 	Float_t y2mid =  par_ab_Ch2_[2][ind_best_Ch2_[bst2]] *( 0 - Zmid2)  + par_ab_Ch2_[3][ind_best_Ch2_[bst2]] ;
 	
-	cout<<"par Ch2 bst2 "<<bst2<<" Ax "<<par_ab_Ch2_[0][ind_best_Ch2_[bst2]]<<" bx "<<par_ab_Ch2_[1][ind_best_Ch2_[bst2]]<<" Ay "<<par_ab_Ch2_[2][ind_best_Ch2_[bst2]]<<" by "<<par_ab_Ch2_[3][ind_best_Ch2_[bst2]]<<endl;
+	//	cout<<"par Ch2 bst2 "<<bst2<<" Ax "<<par_ab_Ch2_[0][ind_best_Ch2_[bst2]]<<" bx "<<par_ab_Ch2_[1][ind_best_Ch2_[bst2]]<<" Ay "<<par_ab_Ch2_[2][ind_best_Ch2_[bst2]]<<" by "<<par_ab_Ch2_[3][ind_best_Ch2_[bst2]]<<endl;
 
 
 	// cout<<" x2mid "<<x2mid<<" y2mid "<<y2mid<<"  ind_bst1 "<<ind_best_Ch1_[bst1]<<" ind_bst2 "<<ind_best_Ch2_[bst2]<<endl;
@@ -1697,7 +1674,7 @@ void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch
 			   +  dAx12*dAx12 /(sig_dax*sig_dax)
 			   +  dAy12*dAy12 /(sig_day*sig_day) );
 
-	 cout<<" bst1 "<<bst1<<" bst2 "<<bst2<<" min_distX "<<min_distX<<" min_distY "<<min_distY <<" dAx12 "<<dAx12<<" dAy12 "<<dAy12<<" Chi2_m "<<Chi2_m<<endl;
+	//	 cout<<" bst1 "<<bst1<<" bst2 "<<bst2<<" min_distX "<<min_distX<<" min_distY "<<min_distY <<" dAx12 "<<dAx12<<" dAy12 "<<dAy12<<" Chi2_m "<<Chi2_m<<endl;
 	
 	  if (Chi2_m < min_Chi2m && Chi2_m < Chi2_match_[0]){
 	    //  cout<<"Matching: " << bst1 << " : " <<  bst2 <<endl;
@@ -1725,7 +1702,7 @@ void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch
 
       }//bst2++     
 
-      cout<<" Nbest_Ch12_gl "<< Nbest_Ch12_gl_<<" best_Ch1 "<<best_Ch1_gl[bst1]<<" best_Ch2 "<< best_Ch2_gl[bst1]<<" Chi2_match "<<Chi2_match_[bst1]<<endl;
+      //   cout<<" Nbest_Ch12_gl "<< Nbest_Ch12_gl_<<" best_Ch1 "<<best_Ch1_gl[bst1]<<" best_Ch2 "<< best_Ch2_gl[bst1]<<" Chi2_match "<<Chi2_match_[bst1]<<endl;
  
     }//bst1++
 

@@ -1,5 +1,5 @@
 // construct detector geometry
-void geometrySRC2018(FairRunSim *fRun)
+void geometry_src_run7(FairRunSim *fRun)
 {
     // Set Material file Name
     fRun->SetMaterials("media.geo");
@@ -26,15 +26,15 @@ void geometrySRC2018(FairRunSim *fRun)
     tof->SetGeometryFileName("tof700_run6.root");
     fRun->AddModule(tof);
 
-    //CbmPsdv1* psd = new CbmPsdv1("PSD", kTRUE);
-    //psd->SetXshift(45.);
-    //psd->SetZposition(1000.);
-    //psd->SetHole(1); // 0 for no hole
-    //fRun->AddModule(psd);
+    CbmPsdv1* psd = new CbmPsdv1("PSD", kTRUE);
+    psd->SetXshift(45.);
+    psd->SetZposition(1000.);
+    psd->SetHole(1); // 0 for no hole
+    fRun->AddModule(psd);
 
     FairDetector* sts = new CbmSts("STS", kTRUE);
-    sts->SetGeometryFileName("GEMS_RunWinter2016.root");
-    sts->SetGeometryFileName("GEMS_RunSpring2017.root");
+//    sts->SetGeometryFileName("GEMS_RunWinter2016.root");
+  sts->SetGeometryFileName("GEMS_RunSpring2017.root");
     fRun->AddModule(sts);
 
     //    FairDetector* recoil = new BmnRecoil("RECOIL", kTRUE);
@@ -42,7 +42,7 @@ void geometrySRC2018(FairRunSim *fRun)
     //    fRun->AddModule(recoil);
 
     FairDetector* tof1 = new BmnTOF1("TOF1", kTRUE);
-    tof1->SetGeometryFileName("TOF400_RUN7_SRC.root");
+    tof1->SetGeometryFileName("TOF400_RUN5_part2.root");
     fRun->AddModule(tof1);
 
     FairDetector* dch = new BmnDch("DCH", kTRUE);
@@ -50,26 +50,18 @@ void geometrySRC2018(FairRunSim *fRun)
     fRun->AddModule(dch);
 
     FairDetector* mwpc = new BmnMwpc("MWPC", kTRUE);
-    mwpc->SetGeometryFileName("MWPC_SRC2018.root");
+    mwpc->SetGeometryFileName("MWPC_RunWinter2016.root");
     fRun->AddModule(mwpc);
 
-    //FairDetector* bd = new BmnBd("BD", kTRUE);
-    //bd->SetGeometryFileName("bd_v1_0.geo");
+    FairDetector* bd = new BmnBd("BD", kTRUE);
+    bd->SetGeometryFileName("bd_v1_0.geo");
     //fRun->AddModule(bd);
 
-    //FairDetector* emc = new BmnEcal("EMC", kTRUE);
-    //emc->SetGeometryFileName("ecal_v1_0.geo");
-    //fRun->AddModule(emc);
+    FairDetector* emc = new BmnEcal("EMC", kTRUE);
+    emc->SetGeometryFileName("ecal_v1_0.geo");
+    fRun->AddModule(emc);
 
     FairDetector* silicon = new BmnSilicon("SILICON", kTRUE);
     silicon->SetGeometryFileName("Silicon_v1.root");
     fRun->AddModule(silicon);
-
-    //FairDetector* land = new BmnLand("LAND",kTRUE);
-    //land->SetGeometryFileName("LAND_v1.root");
-    //fRun->AddModule(land);
-
-    FairDetector* trig = new BmnMwpc("TRIGGER", kTRUE);
-    trig->SetGeometryFileName("trigger.root");
-    fRun->AddModule(trig);
 }
