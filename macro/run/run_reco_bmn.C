@@ -167,19 +167,19 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===			     LAND hit finder			  === //
     // ====================================================================== //
-    BmnLANDHitProducer* land = new BmnLANDHitProducer("LAND", !isExp, iVerbose, kTRUE);
-    fRunAna->AddTask(land);
+    //    BmnLANDHitProducer* land = new BmnLANDHitProducer("LAND", !isExp, iVerbose, kTRUE);
+    //fRunAna->AddTask(land);
     // ====================================================================== //
     // ===                           MWPC hit finder                      === //
     // ====================================================================== //
-    BmnMwpcHitFinder* mwpcHM = new BmnMwpcHitFinder(isExp);
-    mwpcHM->SetUseDigitsInTimeBin(kFALSE);
+    BmnMwpcHitFinderSRC* mwpcHM = new BmnMwpcHitFinderSRC(isExp);
+    //    mwpcHM->SetUseDigitsInTimeBin(kFALSE);
     fRunAna->AddTask(mwpcHM);
     // ====================================================================== //
     // ===                         Silicon hit finder                     === //
     // ====================================================================== //
-    BmnSiliconHitMaker* siliconHM = new BmnSiliconHitMaker(isExp);
-    fRunAna->AddTask(siliconHM);
+    //    BmnSiliconHitMaker* siliconHM = new BmnSiliconHitMaker(isExp);
+    //fRunAna->AddTask(siliconHM);
     // ====================================================================== //
     // ===                         GEM hit finder                         === //
     // ====================================================================== //
@@ -189,12 +189,12 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     else if (run_period == 5) {
         gem_config = BmnGemStripConfiguration::RunWinter2016;
     }
-    BmnGemStripHitMaker* gemHM = new BmnGemStripHitMaker(isExp);
-    gemHM->SetCurrentConfig(gem_config);
+    //BmnGemStripHitMaker* gemHM = new BmnGemStripHitMaker(isExp);
+    //gemHM->SetCurrentConfig(gem_config);
     // Set name of file with the alignment corrections for GEMs using one of the
     // two variants of the SetAlignmentCorrectionsFileName function defined in
     // BmnGemStripHitMaker.h
-    if (isExp) {
+    /*if (isExp) {
         if (alignCorrFileName == "default")
             // retrieve from UniDb (default)
             gemHM->SetAlignmentCorrectionsFileName(run_period, run_number);
@@ -208,7 +208,7 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
         }
     }
     gemHM->SetHitMatching(kTRUE);
-    fRunAna->AddTask(gemHM);
+    fRunAna->AddTask(gemHM);*/
     // ====================================================================== //
     // ===                           TOF1 hit finder                      === //
     // ====================================================================== //
@@ -224,18 +224,18 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                           Tracking (MWPC)                      === //
     // ====================================================================== //
-    BmnMwpcTrackFinder* mwpcTF = new BmnMwpcTrackFinder(isExp);
-    fRunAna->AddTask(mwpcTF);
+    //    BmnMwpcTrackFinder* mwpcTF = new BmnMwpcTrackFinder(isExp);
+    //fRunAna->AddTask(mwpcTF);
     // ====================================================================== //
     // ===                           Tracking (GEM)                       === //
     // ====================================================================== //
-    BmnGemTracking* gemTF = new BmnGemTracking();
+    /*BmnGemTracking* gemTF = new BmnGemTracking();
     gemTF->SetTarget(isTarget);
     gemTF->SetField(isField);
     TVector3 vAppr = (isExp) ? TVector3(0.0, -3.5, -21.7) : TVector3(0.0, 0.0, -21.7);
     gemTF->SetRoughVertex(vAppr);
     fRunAna->AddTask(gemTF);  
-
+    */
     // ====================================================================== //
     // ===                           Tracking (DCH)                       === //
     // ====================================================================== //
@@ -245,14 +245,14 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                          Global Tracking                       === //
     // ====================================================================== //
-    BmnGlobalTracking* globalTF = new BmnGlobalTracking();
+    /*BmnGlobalTracking* globalTF = new BmnGlobalTracking();
     globalTF->SetField(isField);
     fRunAna->AddTask(globalTF);
-
+    */
     // ====================================================================== //
     // ===                     Primary vertex finding                     === //
     // ====================================================================== //
-    BmnGemVertexFinder* gemVF = new BmnGemVertexFinder();
+    /*BmnGemVertexFinder* gemVF = new BmnGemVertexFinder();
     gemVF->SetField(isField);
     gemVF->SetVertexApproximation(vAppr);
     fRunAna->AddTask(gemVF);
@@ -275,7 +275,7 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     rtdb->setFirstInput(parIo1);
     rtdb->setSecondInput(parIo2);
     rtdb->setOutput(parIo1);
-    rtdb->saveOutput();
+    rtdb->saveOutput();*/
     // -------------------------------------------------------------------------
     // -----   Initialize and run   --------------------------------------------
     fRunAna->GetMainTask()->SetVerbose(iVerbose);
