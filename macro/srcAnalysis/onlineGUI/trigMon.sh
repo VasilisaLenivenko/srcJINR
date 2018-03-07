@@ -1,45 +1,46 @@
 #!/bin/bash
 
 # Defining directories to be used
-MONDIR=$VMCWORKDIR"/macro/srcAnalysis/onlineGUI"
+WORKDIR=$HOME"/software/bmnroot"
+MONDIR=$WORKDIR"/macro/srcAnalysis/onlineGUI"
+
+DATADIR="/mnt/run/current/2213"
 OUTPUT=$MONDIR"/output"
-DIGITIZER=$VMCWORKDIR"/macro/raw"
 
 rm output/*.root > $OUTPUT/out.dat
 read -p 'Current Run Number: ' runNum
 
-scp segarrae@nc3.jinr.ru:/ceph/bmn/run/current/mpd_run_trigCode_${runNum}.data ./output/
+#scp segarrae@nc3.jinr.ru:/ceph/bmn/run/current/mpd_run_trigCode_${runNum}.data ./output/
 
-FILE=$OUTPUT'/mpd_run_trigCode_'${runNum}'.data'
+FILE=$DATADIR'/mpd_run_trigCode_'${runNum}'.data'
 echo "Reading File: "${FILE}
 
 # First analyze the raw binary file that we collected and create the digi file
-cd $VMCWORKDIR"/macro/raw"
-root -l -b -q "BmnDataToRoot.C(\"$FILE\")"
+cd $WORKDIR"/macro/raw"
+root -l -b -q "BmnDataToRoot.C(\"$FILE\", 10000)"
 echo ""
 echo "==========================================================="
 echo ""
 echo "FINISHED DECODING"
 echo ""
-mv bmn_run1234_* $OUTPUT > $OUTPUT/out.dat
 
+mv bmn_run${runNum}_* $OUTPUT > $OUTPUT/out.dat
 
 # Now analyze that 1 digi file for all of the detectors
 cd $MONDIR"/src" > $OUTPUT"/out.dat"
-
-DIGI=$OUTPUT'/bmn_run1234_digi.root'
+DIGI=$OUTPUT'/bmn_run'${runNum}'_digi.root'
 CURR_TQDC_BCs=$OUTPUT'/det_histos_curr_TQDC_BCs.root'
 CURR_TDC_BCs=$OUTPUT'/det_histos_curr_TDC_BCs.root'
 CURR_TQDC_Arms=$OUTPUT'/det_histos_curr_TQDC_Arms.root'
 CURR_TDC_Arms=$OUTPUT'/det_histos_curr_TDC_Arms.root'
-CURR_Others=$OUTPUT'/det_histos_curr_other.root'
+#CURR_Others=$OUTPUT'/det_histos_curr_other.root'
 
-PATH_TO_REF=$MONDIR'/ref/bmn_runSRCtest105_digi.root'
+PATH_TO_REF=$DIGI
 REF_TQDC_BCs=$OUTPUT'/det_histos_ref_TQDC_BCs.root'
 REF_TDC_BCs=$OUTPUT'/det_histos_ref_TDC_BCs.root'
 REF_TQDC_Arms=$OUTPUT'/det_histos_ref_TQDC_Arms.root'
 REF_TDC_Arms=$OUTPUT'/det_histos_ref_TDC_Arms.root'
-REF_Others=$OUTPUT'/det_histos_ref_other.root'
+#REF_Others=$OUTPUT'/det_histos_ref_other.root'
 
 root -l -b -q "getNum.C(\"$DIGI\",\"$PATH_TO_REF\")"
 
@@ -70,3 +71,4 @@ echo "FINISHED ANALYZING"
 
 root -l "monGUI.C"
 cd $MONDIR
+
