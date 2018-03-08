@@ -200,7 +200,7 @@ add_subdirectory (globaltracking)
 add_subdirectory (eventdisplay)
 add_subdirectory (uni_db)
 add_subdirectory (macro)
-add_subdirectory (monitor)
+#add_subdirectory (monitor)
 add_subdirectory (physics/particles)
 #add_subdirectory (macro/srcAnalysis/tracking)
 
