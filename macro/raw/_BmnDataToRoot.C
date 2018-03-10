@@ -1,11 +1,11 @@
-#include "../run/bmnloadlibs.C"
-#include "../../bmndata/BmnEnums.h"
+#include "/nica/user/s/segarrae/software/bmnroot/macro/run/bmnloadlibs.C"
+#include "/nica/user/s/segarrae/software/bmnroot/bmndata/BmnEnums.h"
 
 //file: full path to raw-file
 //nEvents: if 0 then decode all events
 //doConvert: convert RAW --> ROOT before decoding or use file converted before
 
-void BmnDataToRoot(TString file, Long_t nEvents = 0, Bool_t doConvert = kTRUE)
+void BmnDataToRoot(TString file="/nica/mpd16/basalaev/src_raw_data2196-2311/mpd_run_trigCode_FILENAME.data", Long_t nEvents, Bool_t doConvert = kTRUE)
 {
 #if ROOT_VERSION_CODE < ROOT_VERSION(5,99,99)
     gROOT->LoadMacro("$VMCWORKDIR/macro/run/bmnloadlibs.C");
@@ -23,7 +23,7 @@ void BmnDataToRoot(TString file, Long_t nEvents = 0, Bool_t doConvert = kTRUE)
     setup[2] = 0; // SILICON
     setup[3] = 1; // GEM
     setup[4] = 1; // TOF-400
-    setup[5] = 1; // TOF-700
+    setup[5] = 0; // TOF-700
     setup[6] = 0; // DCH
     setup[7] = 0; // ZDC
     setup[8] = 0; // ECAL

@@ -6,7 +6,7 @@
 // nStartEvent - for compatibility, any number
 // nEvents - number of events to transport, default: 1
 // flag_store_FairRadLenPoint
-void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString outFile = "$VMCWORKDIR/macro/run/evetest.root", Int_t nStartEvent = 0, Int_t nEvents = 10,
+void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString outFile = "test.root", Int_t nStartEvent = 0, Int_t nEvents = 0,
         Bool_t flag_store_FairRadLenPoint = kFALSE, Bool_t isFieldMap = kTRUE) {
 
 #define BOX
@@ -30,8 +30,8 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
 
     // Choose the Geant Navigation System
     fRun->SetName("TGeant3");
-    // fRun->SetName("TGeant4");
-    // fRun->SetGeoModel("G3Native");
+    //fRun->SetName("TGeant4");
+    //fRun->SetGeoModel("TGeo");
 
     geometry(fRun); // load bmn geometry
 
@@ -50,7 +50,7 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     //primGen->SetTarget(0.0,24.0);
     //primGen->SmearGausVertexZ(kTRUE);
     //primGen->SmearVertexXY(kTRUE);
-
+	
 #ifdef URQMD
     // ------- Urqmd  Generator
     TString hostname = gSystem->HostName(), dataFile;
@@ -153,8 +153,8 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
 #endif
 #endif
 #endif
-
-    fRun->SetOutputFile(outFile.Data());
+	
+   // fRun->SetOutputFile(outFile.Data());
 
     // -----   Create magnetic field   ----------------------------------------
     BmnFieldMap* magField = NULL;
@@ -172,10 +172,10 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
         magField->SetField(0., -9. * 0.44, 0.);
         fRun->SetField(magField);
     }
-
+	
     fRun->SetStoreTraj(kTRUE);
     fRun->SetRadLenRegister(flag_store_FairRadLenPoint); // radiation length manager
-
+	
     // SI-Digitizer
     BmnSiliconDigitizer* siliconDigit = new BmnSiliconDigitizer();
     siliconDigit->SetOnlyPrimary(kFALSE);
@@ -190,9 +190,9 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     gemDigit->SetStripMatching(kTRUE);
     fRun->AddTask(gemDigit);
 
-    fRun->Init();
-    if (isFieldMap)
-        magField->Print();
+  //  fRun->Init();
+   // if (isFieldMap)
+    //    magField->Print();
 
 
     // Trajectories Visualization (TGeoManager only)
@@ -208,6 +208,7 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
 
     // Fill the Parameter containers for this run
     //-------------------------------------------
+  
     FairRuntimeDb *rtdb = fRun->GetRuntimeDb();
 
     BmnFieldPar* fieldPar = (BmnFieldPar*) rtdb->getContainer("BmnFieldPar");
@@ -231,7 +232,7 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
 
 #ifdef LAQGSM
     TString Pdg_table_name = TString::Format("%s%s%c%s", gSystem->BaseName(dataFile.Data()), ".g", (fRun->GetName())[6], ".pdg_table.dat");
-    (TDatabasePDG::Instance())->WritePDGTable(Pdg_table_name.Data());
+  (TDatabasePDG::Instance())->WritePDGTable(Pdg_table_name.Data());
 #endif
 
     timer.Stop();

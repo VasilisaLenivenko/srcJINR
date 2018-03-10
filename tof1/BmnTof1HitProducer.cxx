@@ -92,7 +92,7 @@ InitStatus 		BmnTof1HitProducer::Init()
                   SetActive(kFALSE);
                   return kERROR;
                 }
-                aExpDigitsT0 = (TClonesArray*) FairRootManager::Instance()->GetObject("T0");
+                aExpDigitsT0 = (TClonesArray*) FairRootManager::Instance()->GetObject("BC2");
                 if (!aExpDigitsT0)
                 {
                   cout<<"BmnTof1HitProducer::Init(): branch T0 not found! Task will be deactivated"<<endl;
@@ -244,11 +244,11 @@ void 		BmnTof1HitProducer::Exec(Option_t* opt) {
 		}	// cycle by the TOF points
 	}
 	else
-        {
+        {  
             Int_t nT0Digits = aExpDigitsT0->GetEntriesFast();
             if (nT0Digits == 1) { // T0 digit should be
                 BmnTrigDigit* digT0 = (BmnTrigDigit*) aExpDigitsT0->At(0);
-                
+           	if (digT0->GetMod() != 0) return;     
                 for (Int_t i = 0; i < fNDetectors; i++)
                     pDetector[i]->Clear();
 
