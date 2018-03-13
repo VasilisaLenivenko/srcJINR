@@ -218,12 +218,7 @@ void BmnTOF1Detector::Clear() {
 Bool_t BmnTOF1Detector::SetDigit(BmnTof1Digit * TofDigit) {
     fStrip = TofDigit->GetStrip();
     if (TofDigit->GetSide() == 0 && fFlagHit[fStrip] == kFALSE && fKilled[fStrip] == kFALSE) {
-<<<<<<< HEAD
-	fTimeLtemp[fStrip] = TofDigit->GetTime() - 2.*fCorrLR[fStrip];
-	//cout << "Setting Shift: strip # " << fStrip << " shift val " << CorrLR[fStrip] << " curr timeL " << TofDigit->GetTime() << " shifted timeL " << fTimeLtemp[fStrip] <<  "\n";
-=======
 	fTimeLtemp[fStrip] = TofDigit->GetTime() - 2.*CorrLR[fStrip];
->>>>>>> Adding all corrections we did for ToF400
         fWidthLtemp[fStrip] = TofDigit->GetAmplitude();
         fDigitL[fStrip]++;
     }
@@ -365,15 +360,6 @@ void BmnTOF1Detector::FillHist() {
                     //hWidthRvDt[fNStr]->Fill(fWidthR[i],(fTimeL[i]-fTimeR[i])*0.5);
                     hDtLR[fNStr]->Fill((fTimeL[i] - fTimeR[i]) * 0.5);
                     if (fFillHist > 1) {
-<<<<<<< HEAD
-                        if (hTime[i] == 0) 
-                        hTime[i]->Fill(fTime[i]);
-                        hWidth[i]->Fill(fWidth[i]);
-                        hDtLR[i]->Fill((fTimeL[i] - fTimeR[i]) * 0.5);
-                    }
-                    if (fT0 != NULL) {
-                        hDt[fNStr]->Fill(fTof[i]-fCorrTimeShift[i]);
-=======
                         //hTimeL[i]->Fill(fTimeL[i]);
                         //hTimeR[i]->Fill(fTimeR[i]);
                         //hWidthLvDt[i]->Fill(fWidthL[i],(fTimeL[i]-fTimeR[i])*0.5);
@@ -383,16 +369,11 @@ void BmnTOF1Detector::FillHist() {
 	
                     if ((fT0 != NULL) ) {
                         //hDt[fNStr]->Fill(fTof[i]-CorrTimeShift[i]);
->>>>>>> Adding all corrections we did for ToF400
                         hToF[fNStr]->Fill(fTof[i]);
 			//hDtvsWidthDet[fNStr]->Fill(fWidth[i], fTof[i]);
                         //hDtvsWidthT0[fNStr]->Fill(fT0->GetAmp(), fTof[i]);
                         if (fFillHist > 1) {
-<<<<<<< HEAD
-			    hDt[i]->Fill(fTof[i]-fCorrTimeShift[i]);
-=======
 			    //hDt[i]->Fill(fTof[i]-CorrTimeShift[i]);
->>>>>>> Adding all corrections we did for ToF400
                             hToF[i]->Fill(fTof[i]);
 			    //hDtvsWidthDet[i]->Fill(fWidth[i], fTof[i]);
                             //hDtvsWidthT0[i]->Fill(fT0->GetAmp(), fTof[i]);
@@ -412,14 +393,6 @@ Double_t BmnTOF1Detector::CalculateDt(Int_t Str = 0) {
     Double_t T0Amp;
     dt = fTime[Str] - fT0->GetTime();
     T0Amp = fT0->GetAmp();
-<<<<<<< HEAD
-    dt = dt - (1.947 - 0.5363 * T0Amp
-            + 0.03428 * T0Amp * T0Amp
-            - 0.0005853 * T0Amp * T0Amp * T0Amp);
-
-    if (gSlew[Str] != NULL) dt = dt - gSlew[Str]->Eval(fWidth[Str]) + fCorrTimeShift[Str]; // CorrTimeShift is ToF for Gamma
-
-=======
     //if( (T0Amp > 20.5) && (T0Amp < 19.5)) return 0.;
     //T0Amp = fT0->GetAmp();
     //dt = dt - (1.947 - 0.5363 * T0Amp
@@ -429,7 +402,6 @@ Double_t BmnTOF1Detector::CalculateDt(Int_t Str = 0) {
     //if (gSlew[Str] != NULL) dt = dt - gSlew[Str]->Eval(fWidth[Str]) + CorrTimeShift[Str]; // CorrTimeShift is ToF for Gamma
     dt = dt + CorrTimeShift[Str];
 //	cout << dt << "\n";
->>>>>>> Adding all corrections we did for ToF400
     return dt;
 }
 
@@ -521,15 +493,9 @@ Bool_t BmnTOF1Detector::SetCorrTimeShift(TString NameFile) {
     if (f_corr.is_open() == kTRUE) {
         while (!f_corr.eof()) {
             f_corr >> Pl >> St >> Temp;
-<<<<<<< HEAD
-            if (Pl == fNPlane){
-                fCorrTimeShift[St] = Temp;
-		//cout << Pl << " " << St << " " << CorrTimeShift[St] << "\n";
-=======
            	if (Pl == fNPlane){
 		//	cout << Pl << " " << St << " " << Temp << "\n";
                 	CorrTimeShift[St] = Temp;
->>>>>>> Adding all corrections we did for ToF400
 		}
 	}
     } else {
