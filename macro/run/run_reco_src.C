@@ -164,7 +164,7 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           Check Triggers                       === //
     // ====================================================================== //
-    //BmnTriggersCheck* triggs = new BmnTriggersCheck(isExp);
+    //BmnSRCTriggersCheck* triggs = new BmnSRCTriggersCheck(isExp);
     //fRunAna->AddTask(triggs);
     // ====================================================================== //
     // ===                           MWPC hit finder                      === //

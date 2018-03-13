@@ -10,8 +10,8 @@ BmnTOF1Detector::BmnTOF1Detector() {
 BmnTOF1Detector::BmnTOF1Detector(Int_t NPlane, Int_t FillHist = 0) {
     Clear();
     memset(fKilled, 0, sizeof (fKilled));
-    memset(fCorrLR, 0, sizeof (fCorrLR));
-    memset(fCorrTimeShift, 0, sizeof (fCorrTimeShift));
+    memset(CorrLR, 0, sizeof (CorrLR));
+    memset(CorrTimeShift, 0, sizeof (CorrTimeShift));
     fNEvents = 0;
     KillStrip(0);
     KillStrip(47);
@@ -425,7 +425,7 @@ TString BmnTOF1Detector::GetName() {
 
 Bool_t BmnTOF1Detector::SetCorrLR(Double_t* Mass) {
     for (Int_t i = 0; i < 48; i++)
-        fCorrLR[i] = Mass[i];
+        CorrLR[i] = Mass[i];
     return kTRUE;
 }
 

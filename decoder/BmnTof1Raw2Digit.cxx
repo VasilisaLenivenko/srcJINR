@@ -412,9 +412,6 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output, map<U
 			si++;
 			continue;
 		}
-                map<UInt_t,Long64_t>::iterator itTS = mapTS->find(si->GetSerial());
-                if (itTS == mapTS->end()) continue;
-		Long64_t TimeShift = itTS->second;
                 
                 //Get the TDC Serial for this crate serial and slot
 		UInt_t TDC_Serial = parPair -> second;
@@ -481,7 +478,7 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output, map<U
 					//Trailing time is just the time in current TDC Digit
 					//(See above: this piece of code is executed only if the current BmnTDCDigit is NOT leading)
 					
-					new((*output)[nOut]) BmnTof1Digit(elem->plane,elem->strip,elem->side,par->t[rchan] + TimeShift, timeFromDigit - (par->t[rchan]));
+					new((*output)[nOut]) BmnTof1Digit(elem->plane,elem->strip,elem->side,par->t[rchan], timeFromDigit - (par->t[rchan]));
 					nOut++;
 				}
 			}
