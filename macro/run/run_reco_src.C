@@ -30,7 +30,7 @@
 void run_reco_src(TString inputFileName = "",
         TString bmndstFileName = "",
         Int_t nStartEvent = 0,
-        Int_t nEvents = 200000, 
+        Int_t nEvents = 300000, 
         TString alignCorrFileName = "default") { // Verbosity level (0=quiet, 1=event-level, 2=track-level, 3=debug)
 	
 	Int_t iVerbose = 0;
@@ -169,9 +169,9 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           MWPC hit finder                      === //
     // ====================================================================== //
-    BmnMwpcHitFinder* mwpcHM = new BmnMwpcHitFinder(isExp);
-    mwpcHM->SetUseDigitsInTimeBin(kFALSE);
-    fRunAna->AddTask(mwpcHM);
+    //BmnMwpcHitFinder* mwpcHM = new BmnMwpcHitFinder(isExp);
+    //mwpcHM->SetUseDigitsInTimeBin(kFALSE);
+    //fRunAna->AddTask(mwpcHM);
     // ====================================================================== //
     // ===                         Silicon hit finder                     === //
     // ====================================================================== //
@@ -180,7 +180,7 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                         GEM hit finder                         === //
     // ====================================================================== //
-   BmnGemStripConfiguration::GEM_CONFIG gem_config;
+   /*BmnGemStripConfiguration::GEM_CONFIG gem_config;
    if (!isExp || run_period == 6)
        gem_config = BmnGemStripConfiguration::RunSpring2017;
    else if (run_period == 5) {
@@ -206,14 +206,10 @@ void run_reco_src(TString inputFileName = "",
    }
    gemHM->SetHitMatching(kTRUE);
    fRunAna->AddTask(gemHM);
-    // ====================================================================== //
+  */  // ====================================================================== //
     // ===                           Trigger hit finder                      === //
     // ====================================================================== //
-<<<<<<< 98f290af9be60a47e9e1d185d4733d15f53f4740
-    //BmnSRCTriggersCheck* srcTriggers = new BmnSRCTriggersCheck(kTRUE);
-=======
     //BmnSRCTriggersCheck* srcTriggers = new BmnSRCTriggersCheck(kTRUE); 
->>>>>>> commit for merge
     //fRunAna->AddTask(srcTriggers);
     
     // ====================================================================== //
@@ -226,8 +222,8 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           LAND hit finder                      === //
     // ====================================================================== //
-    BmnLANDHitProducer* land = new BmnLANDHitProducer("LAND", !isExp, iVerbose, kTRUE);
-    fRunAna->AddTask(land);
+    //BmnLANDHitProducer* land = new BmnLANDHitProducer("LAND", !isExp, iVerbose, kTRUE);
+    //fRunAna->AddTask(land);
     // ====================================================================== //
     // ===                           TOF2 hit finder                      === //
     // ====================================================================== //
@@ -236,8 +232,8 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           Tracking (MWPC)                      === //
     // ====================================================================== //
-    BmnMwpcTrackFinder* mwpcTF = new BmnMwpcTrackFinder(isExp);
-    fRunAna->AddTask(mwpcTF);
+    //BmnMwpcTrackFinder* mwpcTF = new BmnMwpcTrackFinder(isExp);
+    //fRunAna->AddTask(mwpcTF);
     // ====================================================================== //
     // ===                           Tracking (GEM)                       === //
     // ====================================================================== //

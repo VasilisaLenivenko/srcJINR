@@ -167,8 +167,8 @@ BmnRawDataDecoder::BmnRawDataDecoder(TString file, ULong_t nEvents, ULong_t peri
     fPedoCounter = 0;
     fGemMap = NULL;
     fEvForPedestals = N_EV_FOR_PEDESTALS;
-    fBmnSetup = kBMNSETUP;
     fT0Map = NULL;
+    fBmnSetup = kSRCSETUP;
     //    InitMaps();
 }
 
@@ -1020,7 +1020,11 @@ BmnStatus BmnRawDataDecoder::DecodeDataToDigi() {
             if (fSiliconMapper) fSiliconMapper->FillEvent(adc128, silicon);
             if (fDchMapper) fDchMapper->FillEvent(tdc, &fTimeShifts, dch, fT0Time);
             if (fMwpcMapper) fMwpcMapper->FillEvent(hrb, mwpc);
+<<<<<<< HEAD
             if (fTof400Mapper) fTof400Mapper->FillEvent(tdc, &fTimeShifts, tof400);
+=======
+            if (fTof400Mapper) fTof400Mapper->FillEvent(tdc, tof400, &fTimeShifts);
+>>>>>>> Adding all corrections we did for ToF400
             if (fTof700Mapper) fTof700Mapper->fillEvent(tdc, &fTimeShifts, fT0Time, fT0Width, tof700);
             if (fZDCMapper) fZDCMapper->fillEvent(adc, zdc);
             if (fECALMapper) fECALMapper->fillEvent(adc, ecal);
@@ -1066,13 +1070,13 @@ BmnStatus BmnRawDataDecoder::InitDecoder() {
         fTrigMapper = new BmnTrigRaw2Digit(fTrigMapFileName, fTrigINLFileName, fDigiTree);
         if (fT0Map == NULL) {
             BmnTrigMapping tm = fTrigMapper->GetT0Map();
-            printf("T0 serial 0x%X got from trig mapping\n", tm.serial);
             if (tm.serial > 0) {
                 fT0Map = new TriggerMapStructure();
                 fT0Map->channel = tm.channel;
                 fT0Map->serial = tm.serial;
                 fT0Map->slot = tm.slot;
             }
+            printf("T0 serial 0x%X got from trig mapping on channel %d in slot %d \n", tm.serial,tm.channel,tm.slot);
         }
         fTrigMapper->SetSetup(fBmnSetup);
     }
@@ -1202,7 +1206,11 @@ BmnStatus BmnRawDataDecoder::DecodeDataToDigiIterate() {
         if ((fSiliconMapper) && (fPedEnough)) fSiliconMapper->FillEvent(adc128, silicon);
         if (fDchMapper) fDchMapper->FillEvent(tdc, &fTimeShifts, dch, fT0Time);
         if (fMwpcMapper) fMwpcMapper->FillEvent(hrb, mwpc);
+<<<<<<< HEAD
         if (fTof400Mapper) fTof400Mapper->FillEvent(tdc, &fTimeShifts, tof400);
+=======
+        if (fTof400Mapper) fTof400Mapper->FillEvent(tdc, tof400, &fTimeShifts);
+>>>>>>> Adding all corrections we did for ToF400
         if (fTof700Mapper) fTof700Mapper->fillEvent(tdc, &fTimeShifts, fT0Time, fT0Width, tof700);
         if (fZDCMapper) fZDCMapper->fillEvent(adc, zdc);
         if (fECALMapper) fECALMapper->fillEvent(adc, ecal);
@@ -1713,20 +1721,22 @@ BmnStatus BmnRawDataDecoder::GetT0Info(Double_t& t0time, Double_t &t0width) {
     vector<TClonesArray*>* trigArr = fTrigMapper->GetTrigArrays();
     for (auto ar : *trigArr) {
         BmnTrigDigit* dig = (BmnTrigDigit*) ar->At(0);
-        if (fPeriodId > 6) {
-            if (!strcmp(ar->GetName(), "BC2") && ar->GetEntriesFast()) {
-                t0time = dig->GetTime();
-                t0width = dig->GetAmp();
-//		printf(" t0 %f t0w %f n %d\n", t0time, t0width, ar->GetEntriesFast());
-                return kBMNSUCCESS;
-            }
-        } else {
+        //if (fPeriodId > 6) {
+        //    if (!strcmp(ar->GetName(), "BC2") && ar->GetEntriesFast()) {
+        //        if(dig->GetMod()==0){
+	//		t0time = dig->GetTime();
+        //        	t0width = dig->GetAmp();
+//			printf(" t0 %f t0w %f n %d\n", t0time, t0width, ar->GetEntriesFast());
+        //        	return kBMNSUCCESS;
+	//	}
+        //    }
+        //} else {
             if (!strcmp(ar->GetName(), "T0") && ar->GetEntriesFast()) {
                 t0time = dig->GetTime();
                 t0width = dig->GetAmp();
                 return kBMNSUCCESS;
             }
-        }
+        //}
     }
     return kBMNERROR;
 }

@@ -22,11 +22,11 @@ void SRC_LRcorrection(TString file = "")
     }
 
     TString Name1, Name2;
-    TH1D ***hDtLR = new TH1D**[10];
-    TH1D ***hTimeLR = new TH1D***[10];
-    double minimum[10][48] = 0.;
+    TH1D ***hDtLR = new TH1D**[20];
+    TH1D ***hTimeLR = new TH1D***[20];
+    double minimum[20][48] = 0.;
     FileIn->cd("Tof400");
-    for (Int_t Plane = 0; Plane < 10; Plane++)
+    for (Int_t Plane = 0; Plane < 20; Plane++)
     {
         hDtLR[Plane] = new TH1D*[48];
         hTimeLR[Plane] = new TH1D*[48];
@@ -49,7 +49,7 @@ void SRC_LRcorrection(TString file = "")
 	    hTimeLR[Plane][Str] = new TH1D(Name2.Data(), Name2.Data(), 1024, -12., 12.);
 
 	    // The minimum is just the total number of entries in the strip divided by 200 (chosen arbitrarily...)
-            minimum[Plane][Str] = hDtLR[Plane][Str]->GetEntries() / 200.;	                
+            minimum[Plane][Str] = hDtLR[Plane][Str]->GetEntries() / 500.;	                
 	    
 	    for (Int_t i = 0; i < nBins; i++)
             {
@@ -67,12 +67,12 @@ void SRC_LRcorrection(TString file = "")
     f_call.open(NameCallFile.Data());
     f_call << "Plane\tStrip\tEfrain_Shift\tOld_Shift" << endl << "=====================================================" << endl;
 
-    TDirectory * DirPlane[10];
+    TDirectory * DirPlane[20];
     
     // Now for each strip distribution, we need to get the left edge and the right edge of the hTimeLR in order to make the
     // middle of that width at 0
     TF1 *MyGaus = new TF1("MyGaus", "gaus", -24., 24.);
-    for (Int_t Plane = 0; Plane < 10; Plane++)
+    for (Int_t Plane = 0; Plane < 20; Plane++)
     {
         Name1.Clear();
         Name1 = Form("Plane%d", Plane);

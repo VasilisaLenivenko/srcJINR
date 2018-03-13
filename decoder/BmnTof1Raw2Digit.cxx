@@ -365,8 +365,9 @@ void BmnTof1Raw2Digit::saveINLToFile(string INLFile, unsigned int TDCSerial) {
 }
 
 //Main function. "Converts" the TObjArray *data of BmnTDCDigit to the TObjArray *output of BmnTof1Digit
-void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, map<UInt_t, Long64_t> *mapTS, TClonesArray *output) {
+void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output, map<UInt_t,Long64_t> *ts) {
 	//0. Initialize: clear all the tempory times in the BmnTof1TDCParameters
+	Long64_t tsync = 0L;
 	Tof1TDCMapIter tdci = TDCMap.begin();
 	while(tdci!=TDCMap.end()) {
 		for(int i = 0; i<TOF1_CHANNEL_NUMBER; i++) {
@@ -440,7 +441,9 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, map<UInt_t, Long64_t> *mapT
 			cout << std::hex << TDC_Serial << std::dec << rchan << ":" << ((si->GetValue()) % TOF1_BIN_NUMBER) << " - " << par->INL[rchan][(si->GetValue()) % TOF1_BIN_NUMBER] << endl;
 		}
 		*/
-		double timeFromDigit = (si->GetValue() + par->INL[rchan][(si->GetValue()) % TOF1_BIN_NUMBER])* TOF1_MAX_TIME / double(TOF1_BIN_NUMBER);
+		map<UInt_t,Long64_t>::iterator syncIt = ts->find(si->GetSerial());
+       		tsync = syncIt->second;
+		double timeFromDigit = tsync + (si->GetValue() + par->INL[rchan][(si->GetValue()) % TOF1_BIN_NUMBER])* TOF1_MAX_TIME / double(TOF1_BIN_NUMBER);
 		
 		if(si->GetLeading()) {
 			//If this is a leading TDC digit, just fill the temporary time in the BmnTof1TDCParameters.

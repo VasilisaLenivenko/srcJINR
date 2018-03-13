@@ -60,10 +60,10 @@ public:
             if (tM.name == "T0")
                 return tM;
         }
-        for (BmnTrigMapping tM : fMap){
-            if (tM.name == "BC2")
-                return tM;
-        }
+        //for (BmnTrigMapping tM : fMap){
+        //    if (tM.name == "BC2")
+        //        return tM;
+        //}
         BmnTrigMapping tMno;
         tMno.serial = 0;
         return tMno;

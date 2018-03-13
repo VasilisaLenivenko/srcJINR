@@ -62,7 +62,7 @@ class BmnTof1Raw2Digit {
 		
 		void print(){} //Prints some info
 		
-		void FillEvent(TClonesArray *data, map<UInt_t, Long64_t> *mapTS,TClonesArray *tof1digit); //
+		void FillEvent(TClonesArray *data, TClonesArray *tof1digit, map<UInt_t,Long64_t> *ts); //
 		
 		static UShort_t ToGlobalChannel(UChar_t HptdcId, UChar_t channel);
                 
