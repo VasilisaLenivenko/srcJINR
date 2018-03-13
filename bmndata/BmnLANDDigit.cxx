@@ -42,7 +42,7 @@ BmnLANDDigit::BmnLANDDigit(UChar_t plane, UChar_t bar, BmnTacquilaDigit const
   fEnergy0(a_energy0),
   fEnergy1(a_energy1),
   fEnergy(sqrt(a_energy0 * a_energy1)),
-  fPosition(a_position),
+  fPosition((0 == (1 & fPlane) ? -1 : 1) * a_position),
   fX(),
   fY()
 {
@@ -61,7 +61,7 @@ BmnLANDDigit::~BmnLANDDigit()
 
 Float_t BmnLANDDigit::GetBarPosition() const
 {
-  return 10 * (fBar - 9.5);
+  return (IsVertical() ? 1 : -1) * 10 * (9.5 - fBar);
 }
 
 Bool_t BmnLANDDigit::IsT0() const
@@ -164,6 +164,13 @@ Float_t BmnLANDDigit::GetEnergy(Char_t a_i) const
 	    std::cerr << __func__ << ": Invalid energy ID=" << a_i << ".\n";
 	      return -1;
   }
+}
+
+void BmnLANDDigit::SetMS(BmnTacquilaDigit const &a_tacq)
+{
+  fTdc1 = a_tacq.GetTdc();
+  fQdc1 = a_tacq.GetQdc();
+  fTDiff1 = a_tacq.GetTDiff();
 }
 
 void BmnLANDDigit::SetT0(BmnTacquilaDigit const &a_tacq)

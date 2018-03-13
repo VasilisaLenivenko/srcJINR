@@ -48,7 +48,7 @@ void BmnDataToRoot(TString file, Long_t nEvents = 0, Bool_t doConvert = kTRUE)
     decoder->SetLANDPedestal("r0030_land_clock.hh");
     decoder->SetLANDTCal("r0030jinr_land_tcal.hh");
     decoder->SetLANDDiffSync("r352_cosmic1.hh");
-    decoder->SetLANDVScint("neuland_sync_2.txt");
+    decoder->SetLANDVScint("neuland_sync_0.txt");
     decoder->InitMaps();
     if (doConvert) decoder->ConvertRawToRoot(); // Convert raw data in .data format into adc-,tdc-, ..., sync-digits in .root format
     decoder->DecodeDataToDigi(); // Decode data into detector-digits using current mappings.

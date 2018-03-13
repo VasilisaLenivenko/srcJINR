@@ -32,6 +32,7 @@ class BmnLANDDigit: public TNamed
     Float_t GetTDiff(Char_t) const;
     Float_t GetTime(Char_t = -1) const;
     Float_t GetEnergy(Char_t = -1) const;
+    void SetMS(BmnTacquilaDigit const &);
     void SetT0(BmnTacquilaDigit const &);
 
 private:
