@@ -29,23 +29,44 @@ void create_rootgeom_MWPC_SRC2018() {
     //Number of active planes with wires
     const Int_t NofPlanes = mwpcGeo->GetNPlanes();
 
-    //Detector's position
-    const Double_t MWPC0_Xpos = mwpcGeo->GetChamberCenter(0).X();
-    const Double_t MWPC0_Ypos = mwpcGeo->GetChamberCenter(0).Y();
-    const Double_t MWPC0_Zpos = mwpcGeo->GetChamberCenter(0).Z();
+    //Number of chambers used:
+    Short_t Ncham = mwpcGeo->GetNChambers();
     
-    const Double_t MWPC1_Xpos = mwpcGeo->GetChamberCenter(1).X();
-    const Double_t MWPC1_Ypos = mwpcGeo->GetChamberCenter(1).Y();
-    const Double_t MWPC1_Zpos = mwpcGeo->GetChamberCenter(1).Z();          
-
-    const Double_t MWPC2_Xpos = mwpcGeo->GetChamberCenter(2).X();
-    const Double_t MWPC2_Ypos = mwpcGeo->GetChamberCenter(2).Y();
-    const Double_t MWPC2_Zpos = mwpcGeo->GetChamberCenter(2).Z();
+    //Detector's position and angles
+    Double_t MWPC_Xpos[4];
+    Double_t MWPC_Ypos[4];
+    Double_t MWPC_Zpos[4];
+    TVector3 OXprime[4];
+    TVector3 OYprime[4];
+    TVector3 OZprime[4];
     
-    const Double_t MWPC3_Xpos = mwpcGeo->GetChamberCenter(3).X();
-    const Double_t MWPC3_Ypos = mwpcGeo->GetChamberCenter(3).Y();
-    const Double_t MWPC3_Zpos = mwpcGeo->GetChamberCenter(3).Z();          
-
+    for(Int_t nCham =0; nCham<Ncham; nCham++){
+      MWPC_Xpos[nCham] = mwpcGeo->GetChamberCenter(nCham).X();
+      MWPC_Ypos[nCham] = mwpcGeo->GetChamberCenter(nCham).Y();
+      MWPC_Zpos[nCham] = mwpcGeo->GetChamberCenter(nCham).Z();
+      OXprime[nCham] = mwpcGeo->GetAxisPrime(nCham,0);
+      OYprime[nCham] = mwpcGeo->GetAxisPrime(nCham,1);
+      OZprime[nCham] = mwpcGeo->GetAxisPrime(nCham,2);
+    }
+    /*    
+    cout<<"0 chamber center positions: x = "<<MWPC_Xpos[0]<<", y = "<<MWPC_Ypos[0]<<", z = "<<MWPC_Zpos[0]<<endl;
+    cout<<"1 chamber center positions: x = "<<MWPC_Xpos[1]<<", y = "<<MWPC_Ypos[1]<<", z = "<<MWPC_Zpos[1]<<endl;
+    cout<<"2 chamber center positions: x = "<<MWPC_Xpos[2]<<", y = "<<MWPC_Ypos[2]<<", z = "<<MWPC_Zpos[2]<<endl;
+    cout<<"3 chamber center positions: x = "<<MWPC_Xpos[3]<<", y = "<<MWPC_Ypos[3]<<", z = "<<MWPC_Zpos[3]<<endl;
+    cout<<" no rotation: 90 0 90 90 0 0"<<endl;
+    cout<<"0 chamber ox prime: theta = "<<OXprime[0].Theta()/TMath::Pi()*180<<", phi = "<<OXprime[0].Phi()/TMath::Pi()*180<<endl;
+    cout<<"0 chamber oy prime: theta = "<<OYprime[0].Theta()/TMath::Pi()*180<<", phi = "<<OYprime[0].Phi()/TMath::Pi()*180<<endl;
+    cout<<"0 chamber oz prime: theta = "<<OZprime[0].Theta()/TMath::Pi()*180<<", phi = "<<OZprime[0].Phi()/TMath::Pi()*180<<endl;
+    cout<<"1 chamber ox prime: theta = "<<OXprime[1].Theta()/TMath::Pi()*180<<", phi = "<<OXprime[1].Phi()/TMath::Pi()*180<<endl;
+    cout<<"1 chamber oy prime: theta = "<<OYprime[1].Theta()/TMath::Pi()*180<<", phi = "<<OYprime[1].Phi()/TMath::Pi()*180<<endl;
+    cout<<"1 chamber oz prime: theta = "<<OZprime[1].Theta()/TMath::Pi()*180<<", phi = "<<OZprime[1].Phi()/TMath::Pi()*180<<endl;
+    cout<<"2 chamber ox prime: theta = "<<OXprime[2].Theta()/TMath::Pi()*180<<", phi = "<<OXprime[2].Phi()/TMath::Pi()*180<<endl;
+    cout<<"2 chamber oy prime: theta = "<<OYprime[2].Theta()/TMath::Pi()*180<<", phi = "<<OYprime[2].Phi()/TMath::Pi()*180<<endl;
+    cout<<"2 chamber oz prime: theta = "<<OZprime[2].Theta()/TMath::Pi()*180<<", phi = "<<OZprime[2].Phi()/TMath::Pi()*180<<endl; 
+    cout<<"3 chamber ox prime: theta = "<<OXprime[3].Theta()/TMath::Pi()*180<<", phi = "<<OXprime[3].Phi()/TMath::Pi()*180<<endl;
+    cout<<"3 chamber ox prime: theta = "<<OYprime[3].Theta()/TMath::Pi()*180<<", phi = "<<OYprime[3].Phi()/TMath::Pi()*180<<endl;
+    cout<<"3 chamber ox prime: theta = "<<OZprime[3].Theta()/TMath::Pi()*180<<", phi = "<<OZprime[3].Phi()/TMath::Pi()*180<<endl;
+    */
     //           2   
     //        A______B
     //       / \     |\
@@ -136,12 +157,40 @@ void create_rootgeom_MWPC_SRC2018() {
     MWPC->SetMedium(pMedAir);
     MWPC->SetTransparency(50);
     
-    //Transformations (translations, rotations and scales)
-    TGeoTranslation *DetPos0_trans = new TGeoTranslation("DetPos0_trans", MWPC0_Xpos, MWPC0_Ypos, MWPC0_Zpos);
-    TGeoTranslation *DetPos1_trans = new TGeoTranslation("DetPos1_trans", MWPC1_Xpos, MWPC1_Ypos, MWPC1_Zpos);
-    TGeoTranslation *DetPos2_trans = new TGeoTranslation("DetPos2_trans", MWPC2_Xpos, MWPC2_Ypos, MWPC2_Zpos);
-    TGeoTranslation *DetPos3_trans = new TGeoTranslation("DetPos3_trans", MWPC3_Xpos, MWPC3_Ypos, MWPC3_Zpos);
+    // Transformations (translations, rotations and scales)
+    TGeoTranslation DetPos0_trans("DetPos0_trans", MWPC_Xpos[0], MWPC_Ypos[0], MWPC_Zpos[0]);
+    TGeoTranslation DetPos1_trans("DetPos1_trans", MWPC_Xpos[1], MWPC_Ypos[1], MWPC_Zpos[1]);
+    TGeoTranslation DetPos2_trans("DetPos2_trans", MWPC_Xpos[2], MWPC_Ypos[2], MWPC_Zpos[2]);
+    TGeoTranslation DetPos3_trans("DetPos3_trans", MWPC_Xpos[3], MWPC_Ypos[3], MWPC_Zpos[3]);
 
+    // check that phi angles are in (0, 360):
+    Double_t phiX[4], phiY[4], phiZ[4];
+    for(Int_t i=0; i<4; i++){
+      phiX[i] = 45.;//OXprime[i].Phi()/TMath::Pi()*180.;
+      phiY[i] = 120.;//OYprime[i].Phi()/TMath::Pi()*180.;
+      phiZ[i] = OZprime[i].Phi()/TMath::Pi()*180.;
+      if(phiX[i] < 0.)  { phiX[i] = 360. - phiX[i];}
+      if(phiX[i] > 360.){ phiX[i] = phiX[i] - 360.;}
+      if(phiY[i] < 0.)  { phiY[i] = 360. - phiY[i];}
+      if(phiY[i] > 360.){ phiY[i] = phiY[i] - 360.;}
+      if(phiZ[i] < 0.)  { phiZ[i] = 360. - phiZ[i];}
+      if(phiZ[i] > 360.){ phiZ[i] = phiZ[i] - 360.;}
+    }
+    
+    // Rotations of each chamber:
+    TGeoRotation Det0_rot("Det0_rot", OXprime[0].Theta()/TMath::Pi()*180., phiX[0],
+			  OYprime[0].Theta()/TMath::Pi()*180., phiY[0],
+			  OZprime[0].Theta()/TMath::Pi()*180., phiZ[0]);
+    TGeoRotation Det1_rot("Det1_rot", OXprime[1].Theta()/TMath::Pi()*180., phiX[1],
+			  OYprime[1].Theta()/TMath::Pi()*180., phiY[1],
+			  OZprime[1].Theta()/TMath::Pi()*180., phiZ[1]);
+    TGeoRotation Det2_rot("Det2_rot", OXprime[2].Theta()/TMath::Pi()*180., phiX[2],
+			  OYprime[2].Theta()/TMath::Pi()*180., phiY[2],
+			  OZprime[2].Theta()/TMath::Pi()*180., phiZ[2]);
+    TGeoRotation Det3_rot("Det3_rot", OXprime[3].Theta()/TMath::Pi()*180., phiX[3],
+			  OYprime[3].Theta()/TMath::Pi()*180., phiY[3],
+			  OZprime[3].Theta()/TMath::Pi()*180., phiZ[3]);
+    
     //Solids (shapes)  
     //hexagon which contains active wire planes 
     TGeoPgon *MWPCContainerS = new TGeoPgon("MWPCContainerS", 0, 360, NofPlanes, 2);
@@ -158,7 +207,7 @@ void create_rootgeom_MWPC_SRC2018() {
     MWPCContainerV->SetTransparency(75);
 
     TGeoVolume *MWPCActivePlaneV = new TGeoVolume("MWPCActivePlaneV", MWPCActivePlaneS);
-    MWPCActivePlaneV->SetMedium(pMedArCO27030);
+    MWPCActivePlaneV->SetMedium(pMWPCgas);//(pMedArCO27030);
     MWPCActivePlaneV->SetLineColor(kBlue);
     MWPCActivePlaneV->SetTransparency(40);
     
@@ -168,10 +217,10 @@ void create_rootgeom_MWPC_SRC2018() {
         MWPCContainerV->AddNode(MWPCActivePlaneV, iPlane - 1, new TGeoCombiTrans(t0, r0));
     }
     
-    MWPC->AddNode(MWPCContainerV, 0, DetPos0_trans);
-    MWPC->AddNode(MWPCContainerV, 0, DetPos1_trans);
-    MWPC->AddNode(MWPCContainerV, 0, DetPos2_trans);
-    MWPC->AddNode(MWPCContainerV, 0, DetPos3_trans);
+    MWPC->AddNode(MWPCContainerV, 0, new TGeoCombiTrans(DetPos0_trans, 0));//Det0_rot));
+    MWPC->AddNode(MWPCContainerV, 1, new TGeoCombiTrans(DetPos1_trans, 0));//Det1_rot));
+    MWPC->AddNode(MWPCContainerV, 2, new TGeoCombiTrans(DetPos2_trans, 0));//Det2_rot));
+    MWPC->AddNode(MWPCContainerV, 3, new TGeoCombiTrans(DetPos3_trans, 0));//Det3_rot));
     
     //Adding volumes to the TOP Volume
     top->AddNode(MWPC, 0);

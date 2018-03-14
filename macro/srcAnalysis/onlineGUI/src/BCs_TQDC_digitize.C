@@ -289,7 +289,7 @@ void BCs_TQDC_digitize(TString file, TString outFileName, int startEvent, int st
 	coinScalars->GetXaxis()->SetBinLabel(9,"Y1");
 	coinScalars->GetXaxis()->SetBinLabel(10,"X2");
 	coinScalars->GetXaxis()->SetBinLabel(11,"Y2");
-	coinScalars->Scale(1./(endT-startT));
+	//coinScalars->Scale(1./(endT-startT));
 	coinScalars->Write();
 	
 	int seconds = difftime(endT,startT);
@@ -312,7 +312,7 @@ void BCs_TQDC_digitize(TString file, TString outFileName, int startEvent, int st
 	trigScalars->GetXaxis()->SetBinLabel(10,"Y1 Right");
 	trigScalars->GetXaxis()->SetBinLabel(11,"Y2 Left");
 	trigScalars->GetXaxis()->SetBinLabel(12,"Y2 Right");
-	trigScalars->Scale(1./(endT-startT));
+	//trigScalars->Scale(1./(endT-startT));
 	trigScalars->Write();
 
 	hits_BC1->Write();

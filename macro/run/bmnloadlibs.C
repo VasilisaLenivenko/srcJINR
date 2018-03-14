@@ -16,7 +16,6 @@ void bmnloadlibs()
   gSystem->Load("libPassive");
   gSystem->Load("libGen");
   gSystem->Load("libTrkBase");
-  gSystem->Load("libBmnBase");
   gSystem->Load("libBmnData");
 
   gSystem->Load("libTOF");
@@ -42,6 +41,7 @@ void bmnloadlibs()
   gSystem->Load("libBmnAlignment");
   gSystem->Load("libzmq");
   gSystem->Load("libBmnParticles");
+  gSystem->Load("libDecoder");
 }
 
 TString find_path_to_URQMD_files ()

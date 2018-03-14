@@ -112,10 +112,10 @@ void BmnMonitor::MonitorStreamZ(TString dirname, TString refDir, TString decoAdd
                 usleep(DECO_SOCK_WAIT_PERIOD * 1000);
                 decoTimeout += DECO_SOCK_WAIT_PERIOD;
                 if ((decoTimeout > DECO_SOCK_WAIT_LIMIT) && (fState == kBMNWORK)) {
-                    FinishRun();
+                    //FinishRun();
                     fState = kBMNWAIT;
                     //                    keepWorking = false;
-                    fServer->SetTimer(100, kFALSE);
+                    fServer->SetTimer(50, kFALSE);
                     DBG("state changed to kBMNWAIT")
                 }
             } else {
@@ -133,6 +133,7 @@ void BmnMonitor::MonitorStreamZ(TString dirname, TString refDir, TString decoAdd
                 Int_t runID = head->GetRunId();
                 switch (fState) {
                     case kBMNWAIT:
+                        FinishRun();
                         fRunID = runID;
                         CreateFile(fRunID);
                         DBG("state changed to kBMNWORK")
@@ -151,6 +152,8 @@ void BmnMonitor::MonitorStreamZ(TString dirname, TString refDir, TString decoAdd
                     default:
                         break;
                 }
+            } else {
+                printf("No header??\n");
             }
             fDigiArrays->Clear();
             delete fDigiArrays;
@@ -170,7 +173,7 @@ void BmnMonitor::InitServer() {
         fServer = new THttpServer(cgiStr.Data());
     } else
         fServer = new THttpServer(TString(cgiStr + "?auth_file=auth.htdigest&auth_domain=root").Data());
-    fServer->SetTimer(0, kFALSE);
+    fServer->SetTimer(50, kFALSE);
     fServer->SetItemField("/", "_monitoring", "10000");
     fServer->SetItemField("/", "_layout", "grid3x3");
 }
@@ -255,7 +258,8 @@ void BmnMonitor::ProcessDigi(Int_t iEv) {
         TLatex Tl;
         Tl.SetTextAlign(23);
         Tl.SetTextSize(0.16);
-        Tl.DrawLatex(0.5, 0.9, Form("Run: %04d", head->GetRunId()));
+        TString shownID = head->GetRunId() == UNKNOWN_RUNID ? " o_O" : TString::UItoa(head->GetRunId(), 10);
+        Tl.DrawLatex(0.5, 0.9, Form("Run: %s", shownID.Data()));
         Tl.DrawLatex(0.5, 0.6, Form("Event: %d", head->GetEventId()));
         Tl.DrawLatex(0.5, 0.3, Form("Run Type: %s", runType.Data()));
         Tl.Draw();

@@ -28,8 +28,8 @@ BmnMwpcHitFinder::BmnMwpcHitFinder(Bool_t isExp) :
   fUseDigitsInTimeBin(kTRUE),
   expData(isExp) {
   fInputBranchName = "MWPC";
-  // fOutputBranchName = "BmnMwpcHit";
-  fOutputBranchName = "BmnMwpcTrack";
+  fOutputBranchName = "BmnMwpcHit";
+  //  fOutputBranchName1 = "BmnMwpcTrack";
   thDist = 1.;
   nInputDigits = 3;
   nTimeSamples = 3;
