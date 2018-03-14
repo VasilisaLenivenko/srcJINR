@@ -231,45 +231,6 @@ void BmnLANDHitProducer::Exec(Option_t* opt)
 					delete cluster_src;
 					--alloc_num;
 				}
-=======
-	float dPlane=10.; //spacing bwt planes tmp
-	
-	//if (nT0Digits == 1) //{  T0 digit should exist and only be len 1
-		BmnTrigDigit* digT0 = (BmnTrigDigit*) aExpDigitsT0->At(0);
-
-		for (Int_t iDig = 0; iDig < aExpDigits->GetEntriesFast(); ++iDig) {
-			BmnLANDDigit* digLand = (BmnLANDDigit*) aExpDigits->At(iDig);
-			
-			int p = digLand->GetPlane();
-			int b = digLand->GetBar();		
-			
-			//cout << "output: " << digLand->GetX() << " " << digLand-> GetY() << " " << p << " " << b <<" " << m_vscint[digLand->GetPlane()][digLand->GetBar()].vscint <<" " << digLand->GetTime() << " " << digLand->GetEnergy() << "\n"; 
-			pos.SetXYZ(digLand->GetX(),digLand->GetY(),(p*dPlane+5.));
-			
-			// Assume t res is 500ps for now
-			//float xerr = m_vscint[p][b].vscint*sqrt(2.0)*0.5;
-			//float yerr = 10./sqrt(12.);
-			float xerr = digLand->IsVertical() ? 10/sqrt(12.) : m_vscint[p][b].vscint*sqrt(2.0)*0.5;
-			float yerr = digLand->IsVertical() ? m_vscint[p][b].vscint*sqrt(2.0)*0.5 : 10./sqrt(12.);
-			float zerr = 10./sqrt(12.);		
-				// now need to transform error to lab frame
-			float lab_xerr = pow(pow(xerr,2)*pow(TMath::Cos(5.2*TMath::DegToRad()),2) + pow(yerr,2)*pow(TMath::Sin(5.2*TMath::DegToRad()),2),0.5);
-			float lab_yerr = pow(pow(xerr,2)*pow(TMath::Sin(5.2*TMath::DegToRad()),2) + pow(yerr,2)*pow(TMath::Cos(5.2*TMath::DegToRad()),2),0.5);
-
-			dpos.SetXYZ(lab_xerr , lab_yerr,zerr);			
-
-			//			poslab.SetXYZ(pos.X()-130.9,pos.Y(),pos.Z()+1425.0);
-			poslab.SetXYZ(pos.X() - fLANDGeometry->GetGlobalX(), pos.Y(), pos.Z() + fLANDGeometry->GetGlobalZ());
-			//	poslab.RotateZ(5.2*TMath::DegToRad());
-			poslab.RotateZ(fLANDGeometry->GetGlobalAngle()*TMath::DegToRad());
-			
-    			BmnLANDHit *pHit = new ((*aLandHits)[aLandHits->GetEntriesFast()]) BmnLANDHit(digLand->GetPlane(), digLand->GetBar(), poslab, dpos,digLand->GetTime(), digLand->GetEnergy());
-		
-			// TODO: apply slewing correction for T0 time
-			pHit->SetTimeStamp(digLand->GetTime()-digT0->GetTime());
-			//pHit->SetTimeStamp(digLand->GetTime());
-			pHit->SetEnergy(digLand->GetEnergy());
->>>>>>> cbd1d3f8167c49c394453c179b551376a2a92ff1
 			}
 			cluster_num = cluster_dst_i;
 		}
