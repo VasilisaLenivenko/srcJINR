@@ -119,7 +119,6 @@ fDebug(kFALSE) {
         for (Int_t iChamber = 0; iChamber < fNChambers; iChamber++) {
             cout << "MWPC" << iChamber + 1 << endl;
             cout << "Zleft = " << zLeft[iChamber] << " Zright = " << zRight[iChamber] << endl;
-	    cout << "fAngleX = "<< fAngleX[iChamber] << ", fAngleY = "<< fAngleY[iChamber] << endl;
             for (Int_t iPlane = 0; iPlane < fNPlanes; iPlane++)
                 cout << "zPlanePos " << iPlane + 1 << " " << zPlanePos[iChamber][iPlane] << endl;
             cout << endl;

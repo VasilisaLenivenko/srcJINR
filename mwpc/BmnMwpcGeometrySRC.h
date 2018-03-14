@@ -107,9 +107,6 @@ private:
     Double_t zPlanePos[4][6];
     Double_t zRight[4];
     Double_t zLeft[4];
-
-   
-  
     Double_t fX[4];
     Double_t fY[4];
     
