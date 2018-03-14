@@ -5,7 +5,6 @@
 #include <TClonesArray.h>
 #include <FairTask.h>
 #include <TVector3.h>
-#include <map>
 #include <math.h>
 #include "BmnLANDHit.h"
 #include "BmnTrigDigit.h"
@@ -23,11 +22,10 @@ class TH2D;
 class BmnLANDHitProducer : public FairTask 
 {
 protected:
-	TClonesArray		*aExpDigits;   // Exp input
-	TClonesArray		*aExpDigitsT0;
-	TClonesArray		*aLandHits;     //! output
-	
-	Bool_t			fOnlyPrimary;
+	TClonesArray		*fLandDigits; // Digits.
+	TClonesArray		*fLandHits;   // Hits.
+	TClonesArray		*fLandCands;  // Neutron candidates.
+
 	Bool_t			fUseMCData;
 public:
 	BmnLANDHitProducer(const char *name = "LAND HitProducer", Bool_t useMCdata = true, Int_t verbose = 1, Bool_t DoTest = false);

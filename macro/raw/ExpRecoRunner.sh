@@ -5,7 +5,7 @@
 # DO_COMPILE: to compile BmnRoot before run or not (1 - compile, 0 - don't compile)
 #
 
-PERIOD=4
+PERIOD=7
 RUN=$1
 N_EVENTS=$2
 DO_COMPILE=$3
@@ -24,7 +24,7 @@ make -j2
 fi
 
 DATA_FILE="mpd_run_0$RUN.data"
-DIGI_FILE="bmn_run00$RUN\_digi.root"
+DIGI_FILE="bmn_run00${RUN}_digi.root"
 DST_FILE="bmndst.root"
 
 cd $PATH_TO_RAW
