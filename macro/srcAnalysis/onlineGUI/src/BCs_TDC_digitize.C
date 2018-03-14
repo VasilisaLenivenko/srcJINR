@@ -49,10 +49,10 @@ void BCs_TDC_digitize(TString file, TString outFileName, int startEvent, int sto
 	rootTree->GetBranch("EventHeader")->SetAutoDelete(kFALSE);
 	rootTree->GetBranch("T0")->SetAutoDelete(kFALSE);
 	rootTree->GetBranch("BC1")->SetAutoDelete(kFALSE);
-	rootTree->GetBranch("BC2")->SetAutoDelete(kFALSE);
+	//rootTree->GetBranch("BC2")->SetAutoDelete(kFALSE);
 	//rootTree->GetBranch("BC3")->SetAutoDelete(kFALSE);
 	//rootTree->GetBranch("BC4")->SetAutoDelete(kFALSE);
-	rootTree->GetBranch("VETO")->SetAutoDelete(kFALSE);
+	//rootTree->GetBranch("VETO")->SetAutoDelete(kFALSE);
 
 	//rootTree->GetBranch("X1_Left")->SetAutoDelete(kFALSE);
 	//rootTree->GetBranch("X1_Right")->SetAutoDelete(kFALSE);
@@ -66,10 +66,10 @@ void BCs_TDC_digitize(TString file, TString outFileName, int startEvent, int sto
 	rootTree->SetBranchAddress("EventHeader", &EventHead);
 	rootTree->SetBranchAddress("T0", &T0);
 	rootTree->SetBranchAddress("BC1", &BC1);
-	rootTree->SetBranchAddress("BC2", &BC2);
+	//rootTree->SetBranchAddress("BC2", &BC2);
 	//rootTree->SetBranchAddress("BC3", &BC3);
 	//rootTree->SetBranchAddress("BC4", &BC4);
-	rootTree->SetBranchAddress("VETO", &VC);
+	//rootTree->SetBranchAddress("VETO", &VC);
 
 	//rootTree->SetBranchAddress("X1_Left", &X1_left);
 	//rootTree->SetBranchAddress("X1_Right", &X1_right);
@@ -246,7 +246,7 @@ void BCs_TDC_digitize(TString file, TString outFileName, int startEvent, int sto
 	moduleEff->SetTitle("Efficiency of Modules Relative to Trigger");
 	moduleEff->GetXaxis()->SetBinLabel(1,"TQDC Efficiency");
 	moduleEff->GetXaxis()->SetBinLabel(2,"TDC Efficiency");
-	moduleEff->Scale(100./(stopEvent-startEvent));
+	//moduleEff->Scale(100./(stopEvent-startEvent));
 	moduleEff->SetMaximum(100.);
 	moduleEff->Write();
 	
@@ -268,7 +268,7 @@ void BCs_TDC_digitize(TString file, TString outFileName, int startEvent, int sto
 	coinScalars->GetXaxis()->SetBinLabel(9,"Y1");
 	coinScalars->GetXaxis()->SetBinLabel(10,"X2");
 	coinScalars->GetXaxis()->SetBinLabel(11,"Y2");
-	coinScalars->Scale(1./(endT-startT));
+	//coinScalars->Scale(1./(endT-startT));
 	coinScalars->Write();
 
 
@@ -284,7 +284,7 @@ void BCs_TDC_digitize(TString file, TString outFileName, int startEvent, int sto
 	trigScalars->GetXaxis()->SetBinLabel(10,"Y1 Right");
 	trigScalars->GetXaxis()->SetBinLabel(11,"Y2 Left");
 	trigScalars->GetXaxis()->SetBinLabel(12,"Y2 Right");
-	trigScalars->Scale(1./(endT-startT));
+	//trigScalars->Scale(1./(endT-startT));
 	trigScalars->Write();
 
 	hits_BC1->Write();

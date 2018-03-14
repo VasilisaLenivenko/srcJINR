@@ -190,7 +190,7 @@ void BmnTOF1Detector::Clear() {
 
 Bool_t BmnTOF1Detector::SetDigit(BmnTof1Digit * TofDigit) {
     fStrip = TofDigit->GetStrip();
-	//cout << "\tWorking on strip: " << fStrip << "\n";
+    //cout << "\tWorking on strip: " << fStrip << "\n";
     //cout << setprecision(10);
     if (TofDigit->GetSide() == 0){// && fFlagHit[fStrip] == kFALSE && fKilled[fStrip] == kFALSE) {
 	fTimeLtemp[fStrip] = TofDigit->GetTime() - 2.*CorrLR[fStrip];
@@ -329,7 +329,11 @@ void BmnTOF1Detector::FillHist() {
     hHitPerEv->Fill(fHit_Per_Ev);
     for (Int_t i = 0; i < fNStr; i++) {
         for (Int_t j = 0; j < fNStr; j++) {
+<<<<<<< HEAD
             if (fWidthL[i] != 0 || fWidthR[j] != 0) {
+=======
+            if (fWidthLtemp[i] != 0 && fWidthRtemp[j] != 0) {
+>>>>>>> 3c1cd8eddc2604325377ad13b041369d93df9647
                 hHitLR->Fill(i, j);
                 if (i == j) {
                     hHitByCh->Fill(i);

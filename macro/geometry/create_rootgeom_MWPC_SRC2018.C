@@ -236,5 +236,5 @@ void create_rootgeom_MWPC_SRC2018() {
     TFile* geoFile = new TFile(geoFileName, "RECREATE");
     top->Write();
     geoFile->Close();
-    top->Draw("ogl");
+    //top->Draw("ogl");
 }

@@ -23,6 +23,7 @@ echo "==========================================================="
 echo ""
 echo "FINISHED DECODING"
 echo ""
+
 mv bmn_run${runNum}_* $OUTPUT > $OUTPUT/out.dat
 
 # Now analyze that 1 digi file for all of the detectors
@@ -32,7 +33,7 @@ CURR_TQDC_BCs=$OUTPUT'/det_histos_curr_TQDC_BCs.root'
 CURR_TDC_BCs=$OUTPUT'/det_histos_curr_TDC_BCs.root'
 CURR_TQDC_Arms=$OUTPUT'/det_histos_curr_TQDC_Arms.root'
 CURR_TDC_Arms=$OUTPUT'/det_histos_curr_TDC_Arms.root'
-CURR_Others=$OUTPUT'/det_histos_curr_other.root'
+#CURR_Others=$OUTPUT'/det_histos_curr_other.root'
 
 #PATH_TO_REF=$MONDIR'/ref/bmn_runSRCtest105_digi.root'
 #REF_TQDC_BCs=$OUTPUT'/det_histos_ref_TQDC_BCs.root'
