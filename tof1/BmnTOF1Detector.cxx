@@ -329,11 +329,7 @@ void BmnTOF1Detector::FillHist() {
     hHitPerEv->Fill(fHit_Per_Ev);
     for (Int_t i = 0; i < fNStr; i++) {
         for (Int_t j = 0; j < fNStr; j++) {
-<<<<<<< HEAD
-            if (fWidthL[i] != 0 || fWidthR[j] != 0) {
-=======
             if (fWidthLtemp[i] != 0 && fWidthRtemp[j] != 0) {
->>>>>>> 3c1cd8eddc2604325377ad13b041369d93df9647
                 hHitLR->Fill(i, j);
                 if (i == j) {
                     hHitByCh->Fill(i);

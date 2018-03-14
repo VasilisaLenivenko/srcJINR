@@ -84,11 +84,6 @@
 #pragma link C++ class BmnFitNode+;
 #pragma link C++ class BmnIdentifiableTrack+;
 
-<<<<<<< HEAD
-#pragma link C++ class BmnTriggersCheck+;
-#pragma link C++ class BmnSRCTriggersCheck+;
-=======
->>>>>>> 3c1cd8eddc2604325377ad13b041369d93df9647
 #pragma link C++ class BmnEventQuality+;
 
 #pragma link C++ class CbmVertex+;

@@ -98,10 +98,6 @@ BmnFitNode.h
 BmnEnums.h
 DigiArrays.h
 BmnEventQuality.cxx
-<<<<<<< HEAD
-BmnTriggersCheck.cxx
-BmnSRCTriggersCheck.cxx
-=======
 BmnGemStripHit.cxx
 BmnGemTrack.cxx
  cbm/CbmVertex.cxx
@@ -120,7 +116,6 @@ BmnGemTrack.cxx
  BmnHit.cxx
  BmnLink.cxx
  BmnMatch.cxx
->>>>>>> 3c1cd8eddc2604325377ad13b041369d93df9647
 )
 
 Set(HEADERS)

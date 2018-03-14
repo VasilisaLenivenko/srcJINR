@@ -6,11 +6,7 @@
 // nStartEvent - for compatibility, any number
 // nEvents - number of events to transport, default: 1
 // flag_store_FairRadLenPoint
-<<<<<<< HEAD
 void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString outFile = "$VMCWORKDIR/macro/run/evetest.root", Int_t nStartEvent = 0, Int_t nEvents = 1,
-=======
-void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString outFile = "test.root", Int_t nStartEvent = 0, Int_t nEvents = 0,
->>>>>>> 3c1cd8eddc2604325377ad13b041369d93df9647
         Bool_t flag_store_FairRadLenPoint = kFALSE, Bool_t isFieldMap = kTRUE) {
 
 #define BOX
