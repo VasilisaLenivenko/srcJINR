@@ -9,7 +9,8 @@ BmnTOF1Detector::BmnTOF1Detector() {
 
 BmnTOF1Detector::BmnTOF1Detector(Int_t NPlane, Int_t FillHist = 0) {
     Clear();
-    memset(fKilled, 0, sizeof (fKilled));
+   //cout << "****************************INITIALIZING STUFF\n";
+	 memset(fKilled, 0, sizeof (fKilled));
     memset(CorrLR, 0, sizeof (CorrLR));
     memset(CorrTimeShift, 0, sizeof (CorrTimeShift));
     fNEvents = 0;
@@ -222,7 +223,7 @@ Bool_t BmnTOF1Detector::SetDigit(BmnTof1Digit * TofDigit) {
         fWidthLtemp[fStrip] = TofDigit->GetAmplitude();
         fDigitL[fStrip]++;
     }
-    if (TofDigit->GetSide() == 1 && fFlagHit[fStrip] == kFALSE && fKilled[fStrip] == kFALSE) {
+    if (TofDigit->GetSide() == 1){// && fFlagHit[fStrip] == kFALSE && fKilled[fStrip] == kFALSE) {
         fTimeRtemp[fStrip] = TofDigit->GetTime() ;
         fWidthRtemp[fStrip] = TofDigit->GetAmplitude();
         fDigitR[fStrip]++;

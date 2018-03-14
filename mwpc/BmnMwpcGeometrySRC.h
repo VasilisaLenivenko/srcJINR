@@ -71,6 +71,15 @@ public:
     }
     
     TVector3 GetChamberCenter(Int_t chamber);
+    TVector3 GetAxisPrime(Int_t chamber, Int_t axis);
+
+    Double_t GetAngleX(Int_t chamber){
+      return fAngleX[chamber];
+    }
+
+    Double_t GetAngleY(Int_t chamber){
+      return fAngleY[chamber];
+    }
     
     Double_t GetZRight(Int_t chamber) {
         return zRight[chamber];
@@ -78,6 +87,14 @@ public:
     
     Double_t GetZLeft(Int_t chamber) {
         return zLeft[chamber];
+    }
+
+    Double_t GetXcenter(Int_t chamber){
+      return fX[chamber];
+    }
+
+    Double_t GetYcenter(Int_t chamber){
+      return fY[chamber];
     }
  
 private:
@@ -97,12 +114,18 @@ private:
     Double_t zPlanePos[4][6];
     Double_t zRight[4];
     Double_t zLeft[4];
+    Double_t fX[4];
+    Double_t fY[4];
     
     Double_t fChamberWidth;
     //    Double_t fDistanceBetweenMWPC;
     Double_t fGlobalZdiff;
     
     Bool_t fDebug;
+
+    TVector3 fOXprime[4];
+    TVector3 fOYprime[4];
+    TVector3 fOZprime[4];
     
     ClassDef(BmnMwpcGeometrySRC, 1);
 };

@@ -74,6 +74,16 @@ Bool_t BmnLANDDigit::IsValid() const
   return -1 != fPlane;
 }
 
+Bool_t BmnLANDDigit::IsT0() const
+{
+  return T0_PLANE == fPlane;
+}
+
+Bool_t BmnLANDDigit::IsValid() const
+{
+  return -1 != fPlane;
+}
+
 Bool_t  BmnLANDDigit::IsVertical() const
 {
   return 5 == fPlane || 0 == (1 & fPlane);

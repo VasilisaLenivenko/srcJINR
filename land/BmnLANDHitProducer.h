@@ -6,6 +6,7 @@
 #include <FairTask.h>
 #include <TVector3.h>
 #include <math.h>
+#include "BmnLANDGeometry.h"
 #include "BmnLANDHit.h"
 #include "BmnTrigDigit.h"
 #include "BmnLANDDigit.h"
@@ -43,6 +44,7 @@ private:
 	  Float_t vscint;
 	};
 	VScint m_vscint[LAND_PLANE_N][LAND_BAR_N];
+	BmnLANDGeometry * fLANDGeometry;
 
 ClassDef(BmnLANDHitProducer, 2);
 };

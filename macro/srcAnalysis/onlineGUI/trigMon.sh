@@ -42,33 +42,35 @@ REF_TQDC_Arms=$OUTPUT'/det_histos_ref_TQDC_Arms.root'
 REF_TDC_Arms=$OUTPUT'/det_histos_ref_TDC_Arms.root'
 #REF_Others=$OUTPUT'/det_histos_ref_other.root'
 
-root -l -b -q "getNum.C(\"$DIGI\",\"$PATH_TO_REF\")"
+#root -l -b -q "getNum.C(\"$DIGI\",\"$PATH_TO_REF\")"
 
-echo ""
-echo "Now analyzing created digi file. Please choose how many events to skim (from START to END)"
-echo "Keep in mind the number of events in the reference and current files"
-echo ""
-read -p 'Starting event: ' startEvent
-read -p 'Ending event [-1 = all; typical 10,000]: ' stopEvent
+#echo ""
+#echo "Now analyzing created digi file. Please choose how many events to skim (from START to END)"
+#echo "Keep in mind the number of events in the reference and current files"
+#echo ""
+#read -p 'Starting event: ' startEvent
+#read -p 'Ending event [-1 = all; typical 10,000]: ' stopEvent
 
 # 	Doing the analysis for our trigger detectors, on the current run
-root -l -b -q   "BCs_TQDC_digitize.C(\"$DIGI\",\"$CURR_TQDC_BCs\",$startEvent,$stopEvent)"
-root -l -b -q    "BCs_TDC_digitize.C(\"$DIGI\",\"$CURR_TDC_BCs\",$startEvent,$stopEvent)"
-root -l -b -q "Arms_TQDC_digitize.C(\"$DIGI\",\"$CURR_TQDC_Arms\",$startEvent,$stopEvent)"
-root -l -b -q  "Arms_TDC_digitize.C(\"$DIGI\",\"$CURR_TDC_Arms\",$startEvent,$stopEvent)"
+root -l -b -q   "BCs_TQDC_digitize.C(\"$DIGI\",\"$CURR_TQDC_BCs\",0,10000)"
+#root -l -b -q    "BCs_TDC_digitize.C(\"$DIGI\",\"$CURR_TDC_BCs\",$startEvent,$stopEvent)"
+#root -l -b -q "Arms_TQDC_digitize.C(\"$DIGI\",\"$CURR_TQDC_Arms\",$startEvent,$stopEvent)"
+#root -l -b -q  "Arms_TDC_digitize.C(\"$DIGI\",\"$CURR_TDC_Arms\",$startEvent,$stopEvent)"
 #root -l -b -q "Others_digitize.C(\"$DIGI\",\"$CURR_Others\",$startEvent,$stopEvent)"
 
 # 	WE NEED TO REDO THE REFERENCE RUN
-root -l -b -q "BCs_TQDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TQDC_BCs\",$startEvent,$stopEvent)"
-root -l -b -q "BCs_TDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TDC_BCs\",$startEvent,$stopEvent)"
-root -l -b -q "Arms_TQDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TQDC_Arms\",$startEvent,$stopEvent)"
-root -l -b -q "Arms_TDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TDC_Arms\",$startEvent,$stopEvent)"
+#root -l -b -q "BCs_TQDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TQDC_BCs\",$startEvent,$stopEvent)"
+#root -l -b -q "BCs_TDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TDC_BCs\",$startEvent,$stopEvent)"
+#root -l -b -q "Arms_TQDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TQDC_Arms\",$startEvent,$stopEvent)"
+#root -l -b -q "Arms_TDC_digitize.C(\"$PATH_TO_REF\",\"$REF_TDC_Arms\",$startEvent,$stopEvent)"
 #root -l -b -q "Others_digitize.C(\"$PATH_TO_REF\",\"$REF_Others\",$startEvent,$stopEvent)"
 
-echo ""
-echo "==========================================================="
-echo "FINISHED ANALYZING"
+#echo ""
+#echo "==========================================================="
+#echo "FINISHED ANALYZING"
 
 root -l "monGUI.C"
 cd $MONDIR
 
+#root -l "monGUI.C"
+#cd $MONDIR
