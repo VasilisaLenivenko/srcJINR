@@ -334,7 +334,7 @@ void BmnTOF1Detector::AddHit(Int_t Str, TClonesArray *TofHit) {
 
     fVectorTemp.SetXYZ(0.5, 0.36, 1.); // error for point dx = 0.5 cm; dy = 1.25/SQRT(12) = 0.36 cm; dy = 1(?)cm
     Int_t UID = BmnTOF1Point::GetVolumeUID(0, fNPlane + 1, Str + 1); // strip [0,47] -> [1, 48]
-    BmnTofHit *pHit = new ((*TofHit)[TofHit->GetEntriesFast()]) BmnTofHit(UID, fCrossPoint[Str], fVectorTemp, -1);
+    BmnTofHit *pHit = new ((*TofHit)[TofHit->GetEntriesFast()]) BmnTofHit(UID, fCrossPoint[Str], fVectorTemp, fNPlane);
 
     pHit->SetTimeStamp(fTof[Str]);
     pHit->AddLink(FairLink(0x1, -1));

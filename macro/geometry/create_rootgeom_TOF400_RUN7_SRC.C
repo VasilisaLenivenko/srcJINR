@@ -144,19 +144,20 @@ void create_rootgeom_TOF400_RUN7_SRC() {
 
     const double tofXgap = 0.; // [cm] RUN5, part1
     //const double tofXgap = 2. * 24.4; // [cm] RUN5, part2
-    const double tofZ_1box = -217.27; // [cm] :
-    const double tofZ_2box = -234.705; // [cm] :
-    const double tofZ_3box = -234.705; // [cm] :
-    const double tofZ_4box = -217.27; // [cm] :
+    const double tofZ_1box = 429.753-650;//436.815-650;//-217.654;//-147.0;//		-217.27; // [cm] :
+    const double tofZ_2box = 453.593-650;//457.057-650;//-204.791;//-140.0;//		-234.705; // [cm] :
+    const double tofZ_3box = 453.593-650;//435.815-650;//;//-204.791;//-140.0;//		-234.705; // [cm] :
+    const double tofZ_4box = 429.753-650;//457.057-650;//-217.654;//-147.0;//		-217.27; // [cm] :
 
     double tofX = tofXgap / 2. + DetXsize / 2.;
-    double tofZshift = tofZgap + DetZsize;
-    double box1_x = 222.701; // [cm]
-    double box2_x = 277.299; // [cm]
-    double box3_x = -277.299; // [cm]
-    double box4_x = -222.701; // [cm]
+    double tofZshift = (tofZgap + DetZsize);
+    double box1_x = 285.646;//289.146;//288.875; //280.48;
+    double box2_x = 224.354;//226.354;//223.555; // [cm]
+    double box3_x = -224.354;//-226.254;//-223.555; // [cm]
+    double box4_x = -285.646;//-289.146;//-288.875; // [cm]
 
-    Double_t angleDegBox1_2 = 30., angleDegBox3_4 = -30.;
+    Double_t angleDegBox1_2 = 30.;//30., 
+    Double_t angleDegBox3_4 = -30.;//-30.;
 
     TGeoRotation *geoRot = new TGeoRotation;
     geoRot->RotateY(angleDegBox1_2);
@@ -178,38 +179,43 @@ void create_rootgeom_TOF400_RUN7_SRC() {
     TGeoCombiTrans *cR5 = new TGeoCombiTrans("", box1_x, -2. * DetYsize + 2 * tofYoverlap, tofZ_1box + tofZshift, geoRot);
     topTof->AddNode(vDetector, 5, cR5);
 
-    //2 box
-    TGeoCombiTrans *cR6 = new TGeoCombiTrans("", box2_x, 2. * DetYsize - 2 * tofYoverlap, tofZ_2box + tofZshift, geoRot);
+
+
+    tofZshift = (tofZgap + DetZsize);
+    //2 box -- this is on the LH side. The readout board is facing you if you are looking from the target. That means that the 
+    // middle detector is FURTHER away. Now he usually defines that there are 3 planes that are shifted AWAY from him. Typically, 
+    // BMN setup has the TOF400 behind SP-41
+    TGeoCombiTrans *cR6 = new TGeoCombiTrans("", box2_x, 2. * DetYsize - 2 * tofYoverlap, tofZ_2box , geoRot);
     topTof->AddNode(vDetector, 6, cR6); // right side, x > 0
 
-    TGeoCombiTrans *cR7 = new TGeoCombiTrans("", box2_x, 1. * DetYsize - tofYoverlap, tofZ_2box, geoRot);
+    TGeoCombiTrans *cR7 = new TGeoCombiTrans("", box2_x, 1. * DetYsize - tofYoverlap, tofZ_2box + tofZshift, geoRot);
     topTof->AddNode(vDetector, 7, cR7);
 
-    TGeoCombiTrans *cR8 = new TGeoCombiTrans("", box2_x, 0, tofZ_2box + tofZshift, geoRot);
+    TGeoCombiTrans *cR8 = new TGeoCombiTrans("", box2_x, 0, tofZ_2box, geoRot);
     topTof->AddNode(vDetector, 8, cR8);
 
-    TGeoCombiTrans *cR9 = new TGeoCombiTrans("", box2_x, -1. * DetYsize + tofYoverlap, tofZ_2box, geoRot);
+    TGeoCombiTrans *cR9 = new TGeoCombiTrans("", box2_x, -1. * DetYsize + tofYoverlap, tofZ_2box + tofZshift, geoRot);
     topTof->AddNode(vDetector, 9, cR9);
 
-    TGeoCombiTrans *cR10 = new TGeoCombiTrans("", box2_x, -2 * DetYsize + 2 * tofYoverlap, tofZ_2box + tofZshift, geoRot);
+    TGeoCombiTrans *cR10 = new TGeoCombiTrans("", box2_x, -2 * DetYsize + 2 * tofYoverlap, tofZ_2box , geoRot);
     topTof->AddNode(vDetector, 10, cR10);
 
     TGeoRotation *geoRot2 = new TGeoRotation;
     geoRot2->RotateY(angleDegBox3_4);
     //3 box
-    TGeoCombiTrans *cR11 = new TGeoCombiTrans("", box3_x, 2. * DetYsize - 2 * tofYoverlap, tofZ_2box + tofZshift, geoRot2);
+    TGeoCombiTrans *cR11 = new TGeoCombiTrans("", box3_x, 2. * DetYsize - 2 * tofYoverlap, tofZ_2box , geoRot2);
     topTof->AddNode(vDetector, 11, cR11); // right side, x > 0
 
-    TGeoCombiTrans *cR12 = new TGeoCombiTrans("", box3_x, 1. * DetYsize - tofYoverlap, tofZ_2box, geoRot2);
+    TGeoCombiTrans *cR12 = new TGeoCombiTrans("", box3_x, 1. * DetYsize - tofYoverlap, tofZ_2box + tofZshift, geoRot2);
     topTof->AddNode(vDetector, 12, cR12);
 
-    TGeoCombiTrans *cR13 = new TGeoCombiTrans("", box3_x, 0, tofZ_2box + tofZshift, geoRot2);
+    TGeoCombiTrans *cR13 = new TGeoCombiTrans("", box3_x, 0, tofZ_2box , geoRot2);
     topTof->AddNode(vDetector, 13, cR13);
 
-    TGeoCombiTrans *cR14 = new TGeoCombiTrans("", box3_x, -1. * DetYsize + tofYoverlap, tofZ_2box, geoRot2);
+    TGeoCombiTrans *cR14 = new TGeoCombiTrans("", box3_x, -1. * DetYsize + tofYoverlap, tofZ_2box + tofZshift, geoRot2);
     topTof->AddNode(vDetector, 14, cR14);
 
-    TGeoCombiTrans *cR15 = new TGeoCombiTrans("", box3_x, -2 * DetYsize + 2 * tofYoverlap, tofZ_2box + tofZshift, geoRot2);
+    TGeoCombiTrans *cR15 = new TGeoCombiTrans("", box3_x, -2 * DetYsize + 2 * tofYoverlap, tofZ_2box , geoRot2);
     topTof->AddNode(vDetector, 15, cR15);
 
     // 4 box
@@ -244,7 +250,7 @@ void create_rootgeom_TOF400_RUN7_SRC() {
     top->Write();
     geoFile->Close();
 
-    top->Draw("ogl");
-    gGeoMan->Browse(new TBrowser);
+   // top->Draw("ogl");
+   // gGeoMan->Browse(new TBrowser);
 }
 

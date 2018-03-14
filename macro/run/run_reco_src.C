@@ -76,13 +76,13 @@ void run_reco_src(TString inputFileName = "",
         fFileSource = new BmnFileSource(inputFileName);
 
         // get geometry for run
-        TString geoFileName = "current_geo_file.root";
+        TString geoFileName = "geofile_full.root";
         //TString geoFileName = "geofile_full.root";
-        Int_t res_code = UniDbRun::ReadGeometryFile(run_period, run_number, (char*) geoFileName.Data());
-        if (res_code != 0) {
-            cout << "Geometry file can't be read from the database" << endl;
-            exit(-1);
-        }
+        //Int_t res_code = UniDbRun::ReadGeometryFile(run_period, run_number, (char*) geoFileName.Data());
+        //if (res_code != 0) {
+        //    cout << "Geometry file can't be read from the database" << endl;
+        //    exit(-1);
+        //}
 
         // get gGeoManager from ROOT file (if required)
         TFile* geoFile = new TFile(geoFileName, "READ");
@@ -164,8 +164,8 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           Check Triggers                       === //
     // ====================================================================== //
-    //BmnSRCTriggersCheck* triggs = new BmnSRCTriggersCheck(isExp);
-    //fRunAna->AddTask(triggs);
+    BmnTrigHitProducer* triggs = new BmnTrigHitProducer("TRIGGERS", !isExp, iVerbose, kTRUE);
+    fRunAna->AddTask(triggs);
     // ====================================================================== //
     // ===                           MWPC hit finder                      === //
     // ====================================================================== //

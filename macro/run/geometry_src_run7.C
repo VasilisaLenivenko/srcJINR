@@ -1,5 +1,5 @@
 // construct detector geometry
-void geometry(FairRunSim *fRun)
+void geometry_src_run7(FairRunSim *fRun)
 {
     // Set Material file Name
     fRun->SetMaterials("media.geo");
@@ -22,9 +22,9 @@ void geometry(FairRunSim *fRun)
     fRun->AddModule(magnet);
 
     // -----   Create detectors        -------------------------
-    //FairDetector* tof = new BmnTOF("TOF", kTRUE);
-    //tof->SetGeometryFileName("tof700_run7.root");
-    //fRun->AddModule(tof);
+    FairDetector* tof = new BmnTOF("TOF", kTRUE);
+    tof->SetGeometryFileName("tof700_run7.root");
+    fRun->AddModule(tof);
 
     //CbmPsdv1* psd = new CbmPsdv1("PSD", kTRUE);
     //psd->SetXshift(45.);
@@ -33,8 +33,8 @@ void geometry(FairRunSim *fRun)
     //fRun->AddModule(psd);
 
     //FairDetector* sts = new CbmSts("STS", kTRUE);
-//    sts->SetGeometryFileName("GEMS_RunWinter2016.root");
-  //sts->SetGeometryFileName("GEMS_RunSpring2017.root");
+    //    sts->SetGeometryFileName("GEMS_RunWinter2016.root");
+    //sts->SetGeometryFileName("GEMS_RunSpring2017.root");
     //fRun->AddModule(sts);
 
     //    FairDetector* recoil = new BmnRecoil("RECOIL", kTRUE);
@@ -64,4 +64,8 @@ void geometry(FairRunSim *fRun)
     //FairDetector* silicon = new BmnSilicon("SILICON", kTRUE);
     //silicon->SetGeometryFileName("Silicon_v1.root");
     //fRun->AddModule(silicon);
+
+    //FairDetector* land = new BmnLand("LAND",kTRUE);
+    //land->SetGeometryFileName("LAND_v1.root");
+    //fRun->AddModule(land);
 }

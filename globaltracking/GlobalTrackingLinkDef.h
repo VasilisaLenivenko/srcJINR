@@ -7,5 +7,4 @@
 #pragma link C++ class BmnDetectorSetup+;
 #pragma link C++ class BmnGlobalTracking+;
 #pragma link C++ class BmnTriggersCheck+;
-
 #endif

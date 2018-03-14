@@ -98,7 +98,6 @@ BmnFitNode.h
 BmnEnums.h
 DigiArrays.h
 BmnEventQuality.cxx
-BmnSRCTriggersCheck.cxx
 
 BmnGemStripHit.cxx
 BmnGemTrack.cxx

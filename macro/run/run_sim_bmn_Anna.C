@@ -1,12 +1,12 @@
 #include "bmnloadlibs.C"
-#include "geometry.C"
+#include "geometry_src_run7.C"
 
 // inFile - input file with generator data, default: dc4mb.r12 for LAQGSM event generator (deuteron - carbon target, mbias, 4 GeV)
 // outFile - output file with MC data, default: evetest.root
 // nStartEvent - for compatibility, any number
 // nEvents - number of events to transport, default: 1
 // flag_store_FairRadLenPoint
-void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString outFile = "test.root", Int_t nStartEvent = 0, Int_t nEvents = 0,
+void run_sim_bmn_Anna(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString outFile = "$VMCWORKDIR/macro/run/evetest.root", Int_t nStartEvent = 0, Int_t nEvents = 1,
         Bool_t flag_store_FairRadLenPoint = kFALSE, Bool_t isFieldMap = kTRUE) {
 
 #define BOX
@@ -21,20 +21,20 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     bmnloadlibs(); // load libraries
 
 #if ROOT_VERSION_CODE < ROOT_VERSION(5,99,99)
-    gROOT->LoadMacro("$VMCWORKDIR/macro/run/geometry.C");
-    //gROOT->LoadMacro("$VMCWORKDIR/macro/run/geometry_run/geometry_run[NUMBER].C");
+    //gROOT->LoadMacro("$VMCWORKDIR/macro/run/geometry.C");
+    gROOT->LoadMacro("$VMCWORKDIR/macro/run/geometry_src_run7.C");
 #endif
 
     // -----   Create simulation run   ----------------------------------------
     FairRunSim *fRun = new FairRunSim();
 
     // Choose the Geant Navigation System
-    //fRun->SetName("TGeant3");
-    //fRun->SetName("TGeant4");
-    //fRun->SetGeoModel("TGeo");
+    fRun->SetName("TGeant3");
+    // fRun->SetName("TGeant4");
+    // fRun->SetGeoModel("G3Native");
 
-    geometry(fRun); // load bmn geometry
-/*
+    geometry_src_run7(fRun); // load bmn geometry
+
     // Use the experiment specific MC Event header instead of the default one
     // This one stores additional information about the reaction plane
     //MpdMCEventHeader* mcHeader = new MpdMCEventHeader();
@@ -50,7 +50,7 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     //primGen->SetTarget(0.0,24.0);
     //primGen->SmearGausVertexZ(kTRUE);
     //primGen->SmearVertexXY(kTRUE);
-	
+
 #ifdef URQMD
     // ------- Urqmd  Generator
     TString hostname = gSystem->HostName(), dataFile;
@@ -153,8 +153,8 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
 #endif
 #endif
 #endif
-	
-   // fRun->SetOutputFile(outFile.Data());
+
+    fRun->SetOutputFile(outFile.Data());
 
     // -----   Create magnetic field   ----------------------------------------
     BmnFieldMap* magField = NULL;
@@ -172,10 +172,10 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
         magField->SetField(0., -9. * 0.44, 0.);
         fRun->SetField(magField);
     }
-	
+
     fRun->SetStoreTraj(kTRUE);
     fRun->SetRadLenRegister(flag_store_FairRadLenPoint); // radiation length manager
-	
+
     // SI-Digitizer
     BmnSiliconDigitizer* siliconDigit = new BmnSiliconDigitizer();
     siliconDigit->SetOnlyPrimary(kFALSE);
@@ -190,9 +190,9 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     gemDigit->SetStripMatching(kTRUE);
     fRun->AddTask(gemDigit);
 
-  //  fRun->Init();
-   // if (isFieldMap)
-    //    magField->Print();
+    fRun->Init();
+    if (isFieldMap)
+        magField->Print();
 
 
     // Trajectories Visualization (TGeoManager only)
@@ -208,7 +208,6 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
 
     // Fill the Parameter containers for this run
     //-------------------------------------------
-  
     FairRuntimeDb *rtdb = fRun->GetRuntimeDb();
 
     BmnFieldPar* fieldPar = (BmnFieldPar*) rtdb->getContainer("BmnFieldPar");
@@ -227,13 +226,12 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     // Transport nEvents
     // -----------------
     fRun->Run(nEvents);
-	*/
-	
+
     fRun->CreateGeometryFile("geofile_full.root");
-	/*
+
 #ifdef LAQGSM
     TString Pdg_table_name = TString::Format("%s%s%c%s", gSystem->BaseName(dataFile.Data()), ".g", (fRun->GetName())[6], ".pdg_table.dat");
-  (TDatabasePDG::Instance())->WritePDGTable(Pdg_table_name.Data());
+    (TDatabasePDG::Instance())->WritePDGTable(Pdg_table_name.Data());
 #endif
 
     timer.Stop();
@@ -242,5 +240,4 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     cout<<"Macro finished successfully."<<endl;     // marker of successfully execution for CDASH
 
     gApplication->Terminate();
-	*/
 }
