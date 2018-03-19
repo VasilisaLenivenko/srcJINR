@@ -11,7 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "BmnMwpcGeometrySRC.h"
 
-BmnMwpcGeometrySRC::BmnMwpcGeometrySRC() :
+BmnMwpcGeometrySRC::BmnMwpcGeometrySRC(Int_t periodNum) :
 fDebug(kFALSE) {
     fNChambers = 4;
     fNPlanes = 6;
