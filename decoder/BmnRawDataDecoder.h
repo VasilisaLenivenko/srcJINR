@@ -113,9 +113,12 @@ public:
     BmnStatus DecodeDataToDigi();
     BmnStatus DecodeDataToDigiIterate();
     BmnStatus FinishRun();
+<<<<<<< HEAD
 
     //    BmnStatus CalcGemPedestals();
 
+=======
+>>>>>>> 86e0c20569fe380da5d3b99c72367693478ca8c4
     BmnStatus InitConverter(TString FileName);
     BmnStatus InitConverter();
     BmnStatus InitConverter(deque<UInt_t> *dq);

@@ -89,6 +89,10 @@ public:
         return zLeft[chamber];
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 86e0c20569fe380da5d3b99c72367693478ca8c4
 private:
 
     Short_t fNChambers;
@@ -109,10 +113,17 @@ private:
     Double_t zPlanePos[4][6];
     Double_t zRight[4];
     Double_t zLeft[4];
+<<<<<<< HEAD
     //    Int_t fkPl[4][6];
     Double_t fX[4];
     Double_t fY[4];
     
+=======
+    Double_t fX[4];
+    Double_t fY[4];
+    
+
+>>>>>>> 86e0c20569fe380da5d3b99c72367693478ca8c4
     Double_t fChamberWidth;
     //    Double_t fDistanceBetweenMWPC;
     Double_t fGlobalZdiff;

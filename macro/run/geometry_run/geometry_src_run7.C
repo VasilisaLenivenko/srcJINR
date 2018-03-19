@@ -23,7 +23,7 @@ void geometry_src_run7(FairRunSim *fRun)
 
     // -----   Create detectors        -------------------------
     FairDetector* tof = new BmnTOF("TOF", kTRUE);
-    tof->SetGeometryFileName("tof700_run6.root");
+    tof->SetGeometryFileName("tof700_geometry_run7.root");
     fRun->AddModule(tof);
 
     CbmPsdv1* psd = new CbmPsdv1("PSD", kTRUE);
@@ -33,8 +33,8 @@ void geometry_src_run7(FairRunSim *fRun)
     fRun->AddModule(psd);
 
     FairDetector* sts = new CbmSts("STS", kTRUE);
-//    sts->SetGeometryFileName("GEMS_RunWinter2016.root");
-  sts->SetGeometryFileName("GEMS_RunSpring2017.root");
+    sts->SetGeometryFileName("GEMS_RunWinter2016.root");
+//  sts->SetGeometryFileName("GEMS_RunSpring2017.root");
     fRun->AddModule(sts);
 
     //    FairDetector* recoil = new BmnRecoil("RECOIL", kTRUE);
@@ -42,7 +42,7 @@ void geometry_src_run7(FairRunSim *fRun)
     //    fRun->AddModule(recoil);
 
     FairDetector* tof1 = new BmnTOF1("TOF1", kTRUE);
-    tof1->SetGeometryFileName("TOF400_RUN5_part2.root");
+    tof1->SetGeometryFileName("TOF400_RUN7_SRC.root");
     fRun->AddModule(tof1);
 
     FairDetector* dch = new BmnDch("DCH", kTRUE);
@@ -50,16 +50,16 @@ void geometry_src_run7(FairRunSim *fRun)
     fRun->AddModule(dch);
 
     FairDetector* mwpc = new BmnMwpc("MWPC", kTRUE);
-    mwpc->SetGeometryFileName("MWPC_RunWinter2016.root");
+    mwpc->SetGeometryFileName("MWPC_SRC2018.root");
     fRun->AddModule(mwpc);
 
-    FairDetector* bd = new BmnBd("BD", kTRUE);
-    bd->SetGeometryFileName("bd_v1_0.geo");
+    //FairDetector* bd = new BmnBd("BD", kTRUE);
+    //bd->SetGeometryFileName("bd_v1_0.geo");
     //fRun->AddModule(bd);
 
-    FairDetector* emc = new BmnEcal("EMC", kTRUE);
-    emc->SetGeometryFileName("ecal_v1_0.geo");
-    fRun->AddModule(emc);
+    //FairDetector* emc = new BmnEcal("EMC", kTRUE);
+    //emc->SetGeometryFileName("ecal_v1_0.geo");
+    //fRun->AddModule(emc);
 
     FairDetector* silicon = new BmnSilicon("SILICON", kTRUE);
     silicon->SetGeometryFileName("Silicon_v1.root");
