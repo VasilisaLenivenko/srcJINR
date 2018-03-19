@@ -30,7 +30,7 @@
 void run_reco_src(TString inputFileName = "",
         TString bmndstFileName = "",
         Int_t nStartEvent = 0,
-        Int_t nEvents = 200000, 
+        Int_t nEvents = 300000, 
         TString alignCorrFileName = "default") { // Verbosity level (0=quiet, 1=event-level, 2=track-level, 3=debug)
 	
 	Int_t iVerbose = 0;
@@ -76,13 +76,13 @@ void run_reco_src(TString inputFileName = "",
         fFileSource = new BmnFileSource(inputFileName);
 
         // get geometry for run
-        TString geoFileName = "current_geo_file.root";
+        TString geoFileName = "geofile_full.root";
         //TString geoFileName = "geofile_full.root";
-        Int_t res_code = UniDbRun::ReadGeometryFile(run_period, run_number, (char*) geoFileName.Data());
-        if (res_code != 0) {
-            cout << "Geometry file can't be read from the database" << endl;
-            exit(-1);
-        }
+        //Int_t res_code = UniDbRun::ReadGeometryFile(run_period, run_number, (char*) geoFileName.Data());
+        //if (res_code != 0) {
+        //    cout << "Geometry file can't be read from the database" << endl;
+        //    exit(-1);
+        //}
 
         // get gGeoManager from ROOT file (if required)
         TFile* geoFile = new TFile(geoFileName, "READ");
@@ -164,8 +164,8 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           Check Triggers                       === //
     // ====================================================================== //
-    //BmnTriggersCheck* triggs = new BmnTriggersCheck(isExp);
-    //fRunAna->AddTask(triggs);
+    BmnTrigHitProducer* triggs = new BmnTrigHitProducer("TRIGGERS", !isExp, iVerbose, kTRUE);
+    fRunAna->AddTask(triggs);
     // ====================================================================== //
     // ===                           MWPC hit finder                      === //
     // ====================================================================== //
@@ -180,7 +180,7 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                         GEM hit finder                         === //
     // ====================================================================== //
-   BmnGemStripConfiguration::GEM_CONFIG gem_config;
+   /*BmnGemStripConfiguration::GEM_CONFIG gem_config;
    if (!isExp || run_period == 6)
        gem_config = BmnGemStripConfiguration::RunSpring2017;
    else if (run_period == 5) {
@@ -207,16 +207,6 @@ void run_reco_src(TString inputFileName = "",
    gemHM->SetHitMatching(kTRUE);
    fRunAna->AddTask(gemHM);
     // ====================================================================== //
-    // ===                           Trigger hit finder                      === //
-    // ====================================================================== //
-<<<<<<< 98f290af9be60a47e9e1d185d4733d15f53f4740
-    //BmnSRCTriggersCheck* srcTriggers = new BmnSRCTriggersCheck(kTRUE);
-=======
-    //BmnSRCTriggersCheck* srcTriggers = new BmnSRCTriggersCheck(kTRUE); 
->>>>>>> commit for merge
-    //fRunAna->AddTask(srcTriggers);
-    
-    // ====================================================================== //
     // ===                           TOF1 hit finder                      === //
     // ====================================================================== //
     BmnTof1HitProducer* tof1HP = new BmnTof1HitProducer("TOF1", !isExp, iVerbose, kTRUE);
@@ -226,8 +216,8 @@ void run_reco_src(TString inputFileName = "",
     // ====================================================================== //
     // ===                           LAND hit finder                      === //
     // ====================================================================== //
-    BmnLANDHitProducer* land = new BmnLANDHitProducer("LAND", !isExp, iVerbose, kTRUE);
-    fRunAna->AddTask(land);
+    //BmnLANDHitProducer* land = new BmnLANDHitProducer("LAND", !isExp, iVerbose, kTRUE);
+    //fRunAna->AddTask(land);
     // ====================================================================== //
     // ===                           TOF2 hit finder                      === //
     // ====================================================================== //

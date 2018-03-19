@@ -3,9 +3,9 @@
 # Defining directories to be used
 WORKDIR=$HOME"/software/bmnroot"
 MONDIR=$WORKDIR"/macro/srcAnalysis/onlineGUI"
+
+DATADIR="/mnt/run/current/2213"
 OUTPUT=$MONDIR"/output"
-DIGITIZER=$WORKDIR"/macro/raw"
-DATADIR="/ceph/bmn/run/current/2213"
 
 rm output/*.root > $OUTPUT/out.dat
 read -p 'Current Run Number: ' runNum
@@ -17,7 +17,7 @@ echo "Reading File: "${FILE}
 
 # First analyze the raw binary file that we collected and create the digi file
 cd $WORKDIR"/macro/raw"
-root -l -b -q "BmnDataToRoot.C(\"$FILE\",10000,kTRUE)"
+root -l -b -q "BmnDataToRoot.C(\"$FILE\", 10000)"
 echo ""
 echo "==========================================================="
 echo ""
@@ -35,11 +35,11 @@ CURR_TQDC_Arms=$OUTPUT'/det_histos_curr_TQDC_Arms.root'
 CURR_TDC_Arms=$OUTPUT'/det_histos_curr_TDC_Arms.root'
 #CURR_Others=$OUTPUT'/det_histos_curr_other.root'
 
-#PATH_TO_REF=$MONDIR'/ref/bmn_runSRCtest105_digi.root'
-#REF_TQDC_BCs=$OUTPUT'/det_histos_ref_TQDC_BCs.root'
-#REF_TDC_BCs=$OUTPUT'/det_histos_ref_TDC_BCs.root'
-#REF_TQDC_Arms=$OUTPUT'/det_histos_ref_TQDC_Arms.root'
-#REF_TDC_Arms=$OUTPUT'/det_histos_ref_TDC_Arms.root'
+PATH_TO_REF=$DIGI
+REF_TQDC_BCs=$OUTPUT'/det_histos_ref_TQDC_BCs.root'
+REF_TDC_BCs=$OUTPUT'/det_histos_ref_TDC_BCs.root'
+REF_TQDC_Arms=$OUTPUT'/det_histos_ref_TQDC_Arms.root'
+REF_TDC_Arms=$OUTPUT'/det_histos_ref_TDC_Arms.root'
 #REF_Others=$OUTPUT'/det_histos_ref_other.root'
 
 #root -l -b -q "getNum.C(\"$DIGI\",\"$PATH_TO_REF\")"
@@ -68,6 +68,9 @@ root -l -b -q   "BCs_TQDC_digitize.C(\"$DIGI\",\"$CURR_TQDC_BCs\",0,10000)"
 #echo ""
 #echo "==========================================================="
 #echo "FINISHED ANALYZING"
+
+root -l "monGUI.C"
+cd $MONDIR
 
 #root -l "monGUI.C"
 #cd $MONDIR

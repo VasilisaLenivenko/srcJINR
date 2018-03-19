@@ -27,12 +27,12 @@ void BmnDataToRoot(TString file, Long_t nEvents = 10000, Bool_t doConvert = kTRU
     setup[6] = 0; // DCH
     setup[7] = 0; // ZDC
     setup[8] = 0; // ECAL
-    setup[9] = 1; // LAND
+    setup[9] = 0; // LAND
     decoder->SetDetectorSetup(setup);
 
     TString PeriodSetupExt = Form("%d%s.txt", period, ((stp == kBMNSETUP) ? "" : "_SRC"));
     decoder->SetTrigMapping(TString("Trig_map_Run") + PeriodSetupExt);
-    decoder->SetTrigINLFile("TRIG_INL.txt");
+    decoder->SetTrigINLFile("TRIG_INL_076D-16A8.txt");//INL only for TDC data 
     decoder->SetSiliconMapping("SILICON_map_run7.txt");
     decoder->SetGemMapping(TString("GEM_map_run") + PeriodSetupExt);
     // in case comment out the line decoder->SetTof400Mapping("...")  
@@ -41,14 +41,14 @@ void BmnDataToRoot(TString file, Long_t nEvents = 10000, Bool_t doConvert = kTRU
     decoder->SetTof700Mapping("TOF700_map_period_7.txt");
     decoder->SetZDCMapping("ZDC_map_period_5.txt");
     decoder->SetZDCCalibration("zdc_muon_calibration.txt");
-    decoder->SetECALMapping("ECAL_map_period_5.txt");
+    decoder->SetECALMapping("ECAL_map_period_7.txt");
     decoder->SetECALCalibration("");
     decoder->SetMwpcMapping(TString("MWPC_map_period") + PeriodSetupExt);
     decoder->SetLANDMapping("land_mapping_jinr_triplex.txt");
     decoder->SetLANDPedestal("r0030_land_clock.hh");
-    decoder->SetLANDTCal("r0030_land_tcal.hh");
+    decoder->SetLANDTCal("r0030jinr_land_tcal.hh");
     decoder->SetLANDDiffSync("r352_cosmic1.hh");
-    decoder->SetLANDVScint("neuland_sync_2.txt");
+    decoder->SetLANDVScint("neuland_sync_0.txt");
     decoder->InitMaps();
     if (doConvert) decoder->ConvertRawToRoot(); // Convert raw data in .data format into adc-,tdc-, ..., sync-digits in .root format
     decoder->DecodeDataToDigi(); // Decode data into detector-digits using current mappings.

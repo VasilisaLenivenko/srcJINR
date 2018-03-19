@@ -34,10 +34,10 @@ private:
 
     TString fBmnEventHeaderBranchName;
     TString fT0Branch;
-    TString fVetoBranch;
     TString fBC1Branch;
     TString fBC2Branch;
     TString fBC3Branch;
+    TString fBC4Branch;
     TString fX1RBranch;
     TString fX2RBranch;
     TString fX1LBranch;
@@ -52,10 +52,10 @@ private:
 
     TClonesArray* fBmnEventHeader;
     TClonesArray* fT0Array;
-    TClonesArray* fVetoArray;
     TClonesArray* fBC1Array;
     TClonesArray* fBC2Array;
     TClonesArray* fBC3Array;
+    TClonesArray* fBC4Array;
     TClonesArray* fY1RArray;
     TClonesArray* fY1LArray;
     TClonesArray* fY2RArray;

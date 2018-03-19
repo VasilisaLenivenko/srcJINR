@@ -92,8 +92,8 @@ BmnStatus BmnTrigRaw2Digit::FillEvent(TClonesArray *tdc, TClonesArray *adc) {
             BmnTDCDigit* tdcDig = (BmnTDCDigit*) tdc->At(iTdc);
             if (tdcDig->GetSerial() != tM.serial || tdcDig->GetSlot() != tM.slot) continue;
             if (tdcDig->GetChannel() != tM.channel) continue;
-            time = tdcDig->GetValue() * 24.0 / 1024;
-            for (Int_t iAdc = 0; iAdc < adc->GetEntriesFast(); iAdc++) {
+	    time = (tdcDig->GetValue() )*24./1024;
+	    for (Int_t iAdc = 0; iAdc < adc->GetEntriesFast(); iAdc++) {
                 BmnTQDCADCDigit *adcDig = (BmnTQDCADCDigit*) adc->At(iAdc);
                 if (adcDig->GetSerial() != tM.serial) continue;
                 if (adcDig->GetChannel() != tM.channel) continue;
@@ -111,7 +111,8 @@ BmnStatus BmnTrigRaw2Digit::FillEvent(TClonesArray *tdc) {
         Short_t iMod = tM.module;
         TClonesArray *trigAr = tM.branchRef;
 //        printf("tdc->GetEntriesFast() %d\n", tdc->GetEntriesFast());
-        for (Int_t iTdc = 0; iTdc < tdc->GetEntriesFast(); ++iTdc) {
+        
+	for (Int_t iTdc = 0; iTdc < tdc->GetEntriesFast(); ++iTdc) {
             BmnTDCDigit* tdcDig1 = (BmnTDCDigit*) tdc->At(iTdc);
             if (tdcDig1->GetSerial() != tM.serial || tdcDig1->GetSlot() != tM.slot) continue;
             if (!tdcDig1->GetLeading()) continue; // use only leading digits
@@ -134,6 +135,7 @@ BmnStatus BmnTrigRaw2Digit::FillEvent(TClonesArray *tdc) {
                 }
             }
             if (nearestDig != NULL) {
+
                 Double_t tL = (tdcDig1->GetValue() + fINLTable[rChannel1][tdcDig1->GetValue() % 1024]) * 24.0 / 1024;
                 Double_t tT = (nearestDig->GetValue() + fINLTable[rChannel1][nearestDig->GetValue() % 1024]) * 24.0 / 1024;
 //                printf("OK:   tT = %f    tL = %f\n", tT, tL);

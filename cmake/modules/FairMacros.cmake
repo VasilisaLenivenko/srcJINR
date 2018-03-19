@@ -302,6 +302,7 @@ ELSE(FAIRROOT_FOUND)
     ${CMAKE_SOURCE_DIR}/input/db
     ${CMAKE_SOURCE_DIR}/dbase/dbInput
     ${CMAKE_SOURCE_DIR}/dbase/dbIO
+    ${CMAKE_SOURCE_DIR}/bmndata
   )
   Set(SYSTEM_INCLUDE_DIRECTORIES
     ${ROOT_INCLUDE_DIR}

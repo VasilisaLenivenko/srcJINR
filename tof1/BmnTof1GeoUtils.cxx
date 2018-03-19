@@ -77,7 +77,7 @@ assert(gGeoManager);
   	
   	TGeoNode *detectorNode, *stripNode;
   	while( (detectorNode = (TGeoNode*) it1->Next()) ) // detectors		
-    	{
+    	{	
     		TString PATH1 = pathTOF + "/" + detectorNode->GetName(); detectorID = detectorNode->GetNumber(); nDetectors++;
 //    		cout<<"\n DETECTOR: "<<detectorNode->GetName()<<", copy# "<<detectorID<<" path= "<<PATH1.Data();
     	
@@ -88,8 +88,7 @@ assert(gGeoManager);
     			if(!stripName.Contains("StripActiveGas")) continue;
     			
     			TString PATH2 = PATH1 + "/" + stripName;  stripID = stripNode->GetNumber(); nStrips++;
-//    			cout<<"\n \tSTRIP: "<<stripNode->GetName()<<", copy# "<<stripID<<" path= "<<PATH2.Data();
-    	
+   	
     			gGeoManager->cd(PATH2);
     			
     			TGeoMatrix *matrix = gGeoManager->GetCurrentMatrix();	// calculate global TGeoHMatrix for current node

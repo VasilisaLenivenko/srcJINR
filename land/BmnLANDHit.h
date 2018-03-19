@@ -12,7 +12,7 @@ BmnLandHit->GetDetectorID()  			returns plane of LAND (5 = veto, 0-4 = LAND)
 BmnLandHit->GetRefIndex()			returns bar index in plane (0-20)
 BmnLandHit->GetX() / GetY() / GetZ()		returns global position of LAND in lab frame
 BmnLandHit->GetTimeStamp()			returns time rel to T0 with slewing corr
-BmnLandHit->GetEnergy()				returns calibrated energy deposit for hit
+BmnLandHit->GetEnergy()				returns calibrated Energy deposit for hit
 BmnLandHit->GetDx() / GetDy() / GetDz()		returns error in position calculation
 
 */
@@ -25,7 +25,6 @@ BmnLandHit->GetDx() / GetDy() / GetDz()		returns error in position calculation
 #include <iostream>
 #include "BmnHit.h"
 #include <TObject.h>
-using namespace std;
 
 // class TClonesArray;
 
@@ -36,24 +35,18 @@ public:
     BmnLANDHit();
 
     /** Constructor to use **/
-    BmnLANDHit(Int_t plane, Int_t bar, TVector3 posHit, TVector3 dpos, Float_t time, Float_t energy );
+    BmnLANDHit(Int_t, Int_t, TVector3, TVector3, Float_t, Float_t);
 
     /** Destructor **/
     virtual ~BmnLANDHit();
-    
-    Float_t GetEnergy() const{
-	return fenergy;
-    }
 
-    void SetEnergy(Float_t energy) {
-	fenergy = energy;
-    }
+    Float_t GetEnergy() const;
+    Float_t GetTime() const;
 
 private:
-
-    Float_t fenergy;
+    Float_t fTime;
+    Float_t fEnergy;
     ClassDef(BmnLANDHit, 1);
 };
 
 #endif /* BMNLANDHIT_H */
-

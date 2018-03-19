@@ -63,7 +63,7 @@ Tof400DigitAnalysis_period6(TString file = "", Int_t nEvForRead = 0, Int_t Periu
         Plane[i] = new BmnTOF1Detector(i, 2);
         //Plane[i]->SetCorrLR(CorrLR[i]);
         //Plane[i]->SetCorrLR("Tof400LRcorr.dat");
-        //Plane[i]->SetCorrSlewing("Tof400SlewingCorr_period6.root");
+        Plane[i]->SetCorrSlewing("TOF400_SlewingCorr_Period_6.root");
         Plane[i]->SetGeoFile("../../run/geofile_full.root");
     //    Plane[i]->SetGeoFile("geometry_run6.root");
     }
@@ -116,9 +116,9 @@ Tof400DigitAnalysis_period6(TString file = "", Int_t nEvForRead = 0, Int_t Periu
     fListTof->Add(h_XYRPC);
 
     TChain *eveTree = new TChain("cbmsim");
-    //TString inName = Form("/home/storage/digi/%s", file.Data());
+    TString inName = Form("/nica/mpd12/segarrae/data/%s", file.Data());
     //inName = file;
-    TString inName = file;
+    //TString inName = file;
     cout << "Open file " << inName << endl << endl;
     eveTree->Add(inName);
 
