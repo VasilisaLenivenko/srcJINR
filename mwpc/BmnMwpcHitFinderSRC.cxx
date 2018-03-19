@@ -527,7 +527,8 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
    
 	  
     if(Nseg_Ch2 > 0) {
-    ProcessSegments(2,  sigma,   dw_half,  kZ_loc,  kMinHits,   Nseg_Ch, Nhits_Ch,   
+    ProcessSegments(2,  sigma,   dw_half,  
+    kZ_loc,  kMinHits,   Nseg_Ch, Nhits_Ch,   
     Wires_Ch,  clust_Ch,   XVU_Ch,  Nbest_Ch,   
     ind_best_Ch, Chi2_ndf_Ch,  Chi2_ndf_best_Ch, 
     par_ab_Ch, kNPlanes, ipl,  XVU, XVU_cl,  kChi2_Max);
@@ -1115,33 +1116,18 @@ void BmnMwpcHitFinderSRC::SegmentFinder(
 /*
 
 
-void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum, 
-				       Double_t sigma_, 
-				       Float_t dw_half_,
-				       Float_t *z_loc, 
-				       Int_t Min_hits, 
-				       Int_t & Nseg, 
-				       Int_t *Nhits_Ch_,
-				       Int_t **Wires_Ch, 
-				       Int_t **clust_Ch_,
-				       Float_t **XVU_Ch_, 
-				       Int_t & Nbest_Ch,
-				       Int_t *ind_best_Ch,			 
-				       Double_t *Chi2_ndf_Ch,
-				       Double_t *Chi2_ndf_best_Ch,
-				       Double_t **par_ab_Ch,
-					  //  Double_t **A_,
-					  //    Double_t **b_,
-				       Int_t nPlanes,
-				       Int_t* ipl_,
-				       Float_t* XVU_,
-				       Float_t* XVU_cl_,
-				       Double_t kChi2_Max_
-				       ) {
+void BmnMwpcHitFinderSRC::ProcessSegments(
+                             Int_t chNum, Double_t sigma_, Float_t dw_half_,
+			     Float_t **z_loc, Int_t Min_hits, Int_t *Nseg, 
+			     Int_t **Nhits, Int_t ***wires_Ch, Int_t ***clust_Ch_,
+			     Float_t ***XVU_Ch_, Int_t *Nbest, Int_t **ind_best,			 
+			     Double_t **Chi2_ndf, Double_t **Chi2_ndf_best,
+			     Double_t ***par_ab,  Int_t nPlanes, Int_t* ipl_,
+			     Float_t** XVU_, Float_t** XVU_cl_,  Double_t kChi2_Max_ ) {
 
   // cout<<"start "<< chNum <<" "<< sigma_ <<" "<< dw_half_<<" "<<z_loc[0]<<" "
-  //    << Min_hits <<" "<<Nseg[chNum]<< Nhits_Ch_[chNum][1]<<" "<<Wires_Ch[0][0]<<" "<<Nbest_Ch<<" "<<ind_best_Ch[0]<<" "
-  //    <<Chi2_ndf_Ch[0]<<" "<<Chi2_ndf_best_Ch[0]<<" "<<par_ab_Ch[0][0]<<" "<<A_[0][0]<<" "<<b_[0][0]<<" "<<nPlanes<<ipl_[0]<<" "<<XVU_[0]<<" "<<XVU_cl_[0]<<" "<<kChi2_Max_<<" "
+  //    << Min_hits <<" "<<Nseg[chNum]<< Nhits[chNum][1]<<" "<<wires_Ch[0][0]<<" "<<Nbest[chNum]<<" "<<ind_best[chNum][0]<<" "
+  //    <<Chi2_ndf[chNum][0]<<" "<<Chi2_ndf_best[chNum][0]<<" "<<par_ab[chNum][0][0]<<" "<<A_[0][0]<<" "<<b_[0][0]<<" "<<nPlanes<<ipl_[0]<<" "<<XVU_[chNum][0]<<" "<<XVU_cl_[chNum][0]<<" "<<kChi2_Max_<<" "
   //    <<endl;
 
   
@@ -1160,9 +1146,9 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 
     for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
 
-      //  cout<<" chNum "<<chNum<<"-- iseg "<<iseg<<" Nhits_Ch_ "<<Nhits_Ch_[chNum][iseg]<<" Chi2_ndf_Ch "<<Chi2_ndf_Ch[iseg]<<endl;
+      //  cout<<" chNum "<<chNum<<"-- iseg "<<iseg<<" Nhits "<<Nhits[chNum][iseg]<<" Chi2_ndf "<<Chi2_ndf[chNum][iseg]<<endl;
 
-      if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;
+      if (Nhits[chNum][iseg] != Nhitm) continue;
       ifNhitm = 1;
   
       Int_t h[6] = {0, 0, 0, 0, 0, 0};
@@ -1172,9 +1158,9 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
       //      Int_t ipl_[nPlanes] = {6, 6, 6, 6, 6, 6};
       Int_t ifirst = -1;
       Int_t ilast =  6;
-      if ( Nhits_Ch_[chNum][iseg] > 4) {
+      if ( Nhits[chNum][iseg] > 4) {
 	for (Int_t i = 0; i < nPlanes; i++){
-	  if (Wires_Ch[i][iseg] > -1) { h[i] = 1;
+	  if (wires_Ch[i][iseg] > -1) { h[i] = 1;
 	    if ( clust_Ch_[chNum][i][iseg] ==  3) {min_i[i]= -2; 	max_i[i]= 2; ilast--; ipl_[ilast] = i;}
 	    if ( clust_Ch_[chNum][i][iseg] ==  0) {min_i[i]=  0; 	max_i[i]= 0; ifirst++; ipl_[ifirst] = i;}
 	    if (i>1 && i<5 ){
@@ -1188,12 +1174,12 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 	}
       
 	for (Int_t i = 0; i < nPlanes; i++){
-	  if (Wires_Ch[i][iseg] < 0 ) continue;
+	  if (wires_Ch[i][iseg] < 0 ) continue;
 	  if ( abs(clust_Ch_[chNum][i][iseg]) == 1) { ifirst++; ipl_[ifirst] = i;}
 	}
-      }// Nhits_Ch_[chNum][iseg] > 4 
+      }// Nhits[chNum][iseg] > 4 
       else { for (Int_t i = 0; i < nPlanes; i++){ 
-	  if (Wires_Ch[i][iseg] > -1)  h[i] = 1;
+	  if (wires_Ch[i][iseg] > -1)  h[i] = 1;
 	  ipl_[i]=i;
 	}
       }
@@ -1206,7 +1192,7 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
     //  cout<<endl;
      
       //  cout<<" iseg "<<iseg<<" clust_Ch_[chNum] "<<clust_Ch_[chNum][0][iseg] <<" "<<clust_Ch_[chNum][1][iseg] <<" "<<clust_Ch_[chNum][2][iseg] <<" "<<clust_Ch_[chNum][3][iseg] <<" "<<clust_Ch_[chNum][4][iseg]<<" "<<clust_Ch_[chNum][5][iseg]
-      //	<<" Wires_Ch "<<Wires_Ch[0][iseg]<<" "<<Wires_Ch[1][iseg]<<" "<<Wires_Ch[2][iseg]<<" "<<Wires_Ch[3][iseg]<<" "<<Wires_Ch[4][iseg]<<" "<<Wires_Ch[5][iseg]
+      //	<<" wires_Ch "<<wires_Ch[0][iseg]<<" "<<wires_Ch[1][iseg]<<" "<<wires_Ch[2][iseg]<<" "<<wires_Ch[3][iseg]<<" "<<wires_Ch[4][iseg]<<" "<<wires_Ch[5][iseg]
       //	  <<" XVU_Ch_ "<<XVU_Ch_[chNum][0][iseg]<<" "<<XVU_Ch_[chNum][1][iseg]<<" "<<XVU_Ch_[chNum][2][iseg]<<" "<<XVU_Ch_[chNum][3][iseg]<<" "<<XVU_Ch_[chNum][4][iseg]<<" "<<XVU_Ch_[chNum][5][iseg]
       //	   <<" ipl "<< ipl_[0] <<" "<< ipl_[1] <<" "<< ipl_[2] <<" "<< ipl_[3] <<" "<< ipl_[4] <<" "<< ipl_[5] <<endl;
     
@@ -1225,20 +1211,20 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
       for (Int_t i10 = min_i[ipl_[0]]; i10 <= max_i[ipl_[0]] ; i10++){ 
 	//-?	if ( ipl_[0] == 6 ) continue;
 	if ( h[ipl_[0]] == 1){
-	  XVU_[ipl_[0]] = XVU_Ch_[chNum][ipl_[0]][iseg] + dw_half_*i10 ;
+	  XVU_[chNum][ipl_[0]] = XVU_Ch_[chNum][ipl_[0]][iseg] + dw_half_*i10 ;
 	  sigm2[ipl_[0]] = sigma2 ;
 	  if ( i10 == -1 || i10 == 1 )  sigm2[ipl_[0]] = 0.5*sigma2 ;
 	}
 	for (Int_t i2 = min_i[ipl_[1]]; i2 <= max_i[ipl_[1]] ; i2++){ 
 	  //-?	 if ( ipl_[1] == 6 ) continue;
-	  //-?	 XVU_[ipl_[1]] = XVU_Ch_[chNum][ipl_[1]][iseg];
+	  //-?	 XVU_[chNum][ipl_[1]] = XVU_Ch_[chNum][ipl_[1]][iseg];
 	 if ( h[ipl_[1]] == 1){
-	    XVU_[ipl_[1]] = XVU_Ch_[chNum][ipl_[1]][iseg] + dw_half_*i2 ;
+	    XVU_[chNum][ipl_[1]] = XVU_Ch_[chNum][ipl_[1]][iseg] + dw_half_*i2 ;
 	    if ( ( (ipl_[0] < 3 && ipl_[1] > 2) || (ipl_[0] > 2 && ipl_[1] < 3) ) &&  abs(ipl_[0] - ipl_[1]) == 3 ){//conjugated coord
 	      if ( ipl_[0] + ipl_[1] >3   ) {
 		//			::out1<<" ipl_[0] "<<ipl_[0]<<" ipl_[1] "<<ipl_[1]<<endl;
-		if ( fabs(XVU_[ipl_[0]] - XVU_[ipl_[1]]) > 3*dw_half_ ) continue;
-		//			::out1<<"     i2 "<<i2<<" XVU_-i2 "<<XVU_[ipl_[1]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[0]]<<endl;
+		if ( fabs(XVU_[chNum][ipl_[0]] - XVU_[chNum][ipl_[1]]) > 3*dw_half_ ) continue;
+		//			::out1<<"     i2 "<<i2<<" XVU_-i2 "<<XVU_[chNum][ipl_[1]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[0]]<<endl;
 	      }
 	    }//conjugated coord
 	    sigm2[ipl_[1]] = sigma2 ;
@@ -1246,16 +1232,16 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 	 }
 	  for (Int_t i3 = min_i[ipl_[2]]; i3 <= max_i[ipl_[2]] ; i3++){ 
 	    //-?	    if ( ipl_[2] == 6 ) continue;
-	    //-?	    XVU_[ipl_[2]] = XVU_Ch_[chNum][ipl_[2]][iseg];
+	    //-?	    XVU_[chNum][ipl_[2]] = XVU_Ch_[chNum][ipl_[2]][iseg];
 	    if ( h[ipl_[2]] == 1){
-	      XVU_[ipl_[2]] = XVU_Ch_[chNum][ipl_[2]][iseg] + dw_half_*i3 ;
+	      XVU_[chNum][ipl_[2]] = XVU_Ch_[chNum][ipl_[2]][iseg] + dw_half_*i3 ;
 	      Bool_t conj_bad = 0;//conjugated coord
 	      for (Int_t ic=0; ic<2 ; ic++){
 		if ( ( (ipl_[ic] < 3 && ipl_[2] > 2) || (ipl_[ic] > 2 && ipl_[2] < 3) ) &&  abs(ipl_[ic] - ipl_[2]) == 3 ){
 		  if ( ipl_[ic] + ipl_[2] >3  ) {
 		    //		      ::out1<<" ipl_[ic] "<<ipl_[ic]<<" ipl_[2] "<<ipl_[2]<<endl;
-		    if ( fabs(XVU_[ipl_[ic]] - XVU_[ipl_[2]]) > 3*dw_half_ ) { conj_bad = 1; break;
-		      //		        ::out1<<"     i3 "<<i3<<" XVU_-i3 "<<XVU_[ipl_[2]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
+		    if ( fabs(XVU_[chNum][ipl_[ic]] - XVU_[chNum][ipl_[2]]) > 3*dw_half_ ) { conj_bad = 1; break;
+		      //		        ::out1<<"     i3 "<<i3<<" XVU_-i3 "<<XVU_[chNum][ipl_[2]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
 		    }
 		  }
 		 
@@ -1267,16 +1253,16 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 	    }
 	    for (Int_t i4 = min_i[ipl_[3]]; i4 <= max_i[ipl_[3]] ; i4++){ 
 	      //-?	      if ( ipl_[3] == 6 ) continue;
-	      //-?	      XVU_[ipl_[3]] = XVU_Ch_[chNum][ipl_[3]][iseg];
+	      //-?	      XVU_[chNum][ipl_[3]] = XVU_Ch_[chNum][ipl_[3]][iseg];
 	      if ( h[ipl_[3]] == 1){
-		XVU_[ipl_[3]] = XVU_Ch_[chNum][ipl_[3]][iseg] + dw_half_*i4 ;
+		XVU_[chNum][ipl_[3]] = XVU_Ch_[chNum][ipl_[3]][iseg] + dw_half_*i4 ;
 		Bool_t conj_bad = 0;//conjugated coord
 		for (Int_t ic=0; ic < 3 ; ic++){
 		  if ( ( (ipl_[ic] < 3 && ipl_[3] > 2) || (ipl_[ic] > 2 && ipl_[3] < 3) ) &&  abs(ipl_[ic] - ipl_[3]) == 3 ){
 		    if ( ipl_[ic] + ipl_[3] >3  ) {
 		      //		         ::out1<<" ipl_[ic] "<<ipl_[ic]<<" ipl_[3] "<<ipl_[3]<<endl;
-		      if ( fabs(XVU_[ipl_[ic]] - XVU_[ipl_[3]]) > 3*dw_half_ )  { conj_bad = 1; break;
-			//			  ::out1<<"     i4 "<<i4<<" XVU_-i4 "<<XVU_[ipl_[3]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
+		      if ( fabs(XVU_[chNum][ipl_[ic]] - XVU_[chNum][ipl_[3]]) > 3*dw_half_ )  { conj_bad = 1; break;
+			//			  ::out1<<"     i4 "<<i4<<" XVU_-i4 "<<XVU_[chNum][ipl_[3]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
 		      }
 		    }
 		    
@@ -1288,16 +1274,16 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 	      }
 	      for (Int_t i5 = min_i[ipl_[4]]; i5 <= max_i[ipl_[4]] ; i5++){ 
 		//-?		if ( ipl_[4] == 6 ) continue;
-		//-?		XVU_[ipl_[4]] = XVU_Ch_[chNum][ipl_[4]][iseg];
+		//-?		XVU_[chNum][ipl_[4]] = XVU_Ch_[chNum][ipl_[4]][iseg];
 		if ( h[ipl_[4]] == 1){
-		  XVU_[ipl_[4]] = XVU_Ch_[chNum][ipl_[4]][iseg] + dw_half_*i5 ;
+		  XVU_[chNum][ipl_[4]] = XVU_Ch_[chNum][ipl_[4]][iseg] + dw_half_*i5 ;
 		  Bool_t conj_bad = 0;//conjugated coord
 		  for (Int_t ic=0; ic < 4 ; ic++){
 		    if ( ( (ipl_[ic] < 3 && ipl_[4] > 2) || (ipl_[ic] > 2 && ipl_[4] < 3) ) &&  abs(ipl_[ic] - ipl_[4]) == 3 ){
 		      if ( ipl_[ic] + ipl_[4] >3  ) {
 			//				::out1<<" ipl_[ic] "<<ipl_[ic]<<" ipl_[4] "<<ipl_[4]<<endl;
-			if ( fabs(XVU_[ipl_[ic]] - XVU_[ipl_[4]]) > 3*dw_half_ )  { conj_bad = 1; break;
-			  //			  	  ::out1<<"     i5 "<<i5<<" XVU_-i5 "<<XVU_[ipl_[4]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
+			if ( fabs(XVU_[chNum][ipl_[ic]] - XVU_[chNum][ipl_[4]]) > 3*dw_half_ )  { conj_bad = 1; break;
+			  //			  	  ::out1<<"     i5 "<<i5<<" XVU_-i5 "<<XVU_[chNum][ipl_[4]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
 			}
 		      }
 		     
@@ -1310,17 +1296,17 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 		//??	Double_t Chi2_i6 = 999;
 		for (Int_t i6 = min_i[ipl_[5]]; i6 <= max_i[ipl_[5]] ; i6++){ 
 		  //-?		  if ( ipl_[5] == 6 ) continue;
-		  //-?		  XVU_[ipl_[5]] = XVU_Ch_[chNum][ipl_[5]][iseg];
+		  //-?		  XVU_[chNum][ipl_[5]] = XVU_Ch_[chNum][ipl_[5]][iseg];
 		  if ( h[ipl_[5]] == 1){
-		    XVU_[ipl_[5]] = XVU_Ch_[chNum][ipl_[5]][iseg] + dw_half_*i6 ;
+		    XVU_[chNum][ipl_[5]] = XVU_Ch_[chNum][ipl_[5]][iseg] + dw_half_*i6 ;
 		    Bool_t conj_bad = 0;//conjugated coord
 		    Float_t conj =0;
 		    for (Int_t ic=0; ic < 5 ; ic++){
 		      if ( ( (ipl_[ic] < 3 && ipl_[5] > 2) || (ipl_[ic] > 2 && ipl_[5] < 3) ) &&  abs(ipl_[ic] - ipl_[5]) == 3 ){
 			if ( ipl_[ic] + ipl_[5] >3  ) {
 			  //			  	  ::out1<<" ipl_[ic] "<<ipl_[ic]<<" ipl_[5] "<<ipl_[5]<<endl;
-			  if ( fabs(XVU_[ipl_[ic]] - XVU_[ipl_[5]]) > 3*dw_half_ ) { conj=(XVU_[ipl_[ic]] - XVU_[ipl_[5]]); conj_bad = 1; break;
-			    //			    	     ::out1<<"     i6 "<<i6<<" XVU_-i6 "<<XVU_[ipl_[5]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
+			  if ( fabs(XVU_[chNum][ipl_[ic]] - XVU_[chNum][ipl_[5]]) > 3*dw_half_ ) { conj=(XVU_[chNum][ipl_[ic]] - XVU_[chNum][ipl_[5]]); conj_bad = 1; break;
+			    //			    	     ::out1<<"     i6 "<<i6<<" XVU_-i6 "<<XVU_[chNum][ipl_[5]]<<" XVU_-conj "<<XVU_Ch_[chNum][ipl_[ic]]<<endl;
 			  }
 			}
 		
@@ -1331,20 +1317,20 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 		    if ( i6 == -1 || i6 == 1 )  sigm2[ipl_[5]] = 0.5*sigma2 ;
 		  }
 		
-		  //		   ::out1<<" XVU_ "<<XVU_[0]<< " "<<XVU_[1]<<" "<<XVU_[2]<<" "<<XVU_[3]<<" "<<XVU_[4]<<" "<<XVU_[5]<<" sigm2 "<<sigm2[0]<<" "<<sigm2[1]<<" "<<sigm2[2]<<" "<<sigm2[3]<<" "<<sigm2[4]<<" "<<sigm2[5]<<" ii "<<i10<<i2<<i3<<i4<<i5<<i6<<endl;
+		  //		   ::out1<<" XVU_ "<<XVU_[chNum][0]<< " "<<XVU_[chNum][1]<<" "<<XVU_[chNum][2]<<" "<<XVU_[chNum][3]<<" "<<XVU_[chNum][4]<<" "<<XVU_[chNum][5]<<" sigm2 "<<sigm2[0]<<" "<<sigm2[1]<<" "<<sigm2[2]<<" "<<sigm2[3]<<" "<<sigm2[4]<<" "<<sigm2[5]<<" ii "<<i10<<i2<<i3<<i4<<i5<<i6<<endl;
 
 		  Float_t xx = 0;
 		  Int_t ii = 0;
-		  if ( h[0] == 1 ){ ii = ii +1; xx = xx + XVU_[0]; }
-		  if ( h[3] == 1 ){ ii = ii +1; xx = xx + XVU_[3]; xx = xx / ii; }
+		  if ( h[0] == 1 ){ ii = ii +1; xx = xx + XVU_[chNum][0]; }
+		  if ( h[3] == 1 ){ ii = ii +1; xx = xx + XVU_[chNum][3]; xx = xx / ii; }
 		  Float_t uu = 0;
 		  ii = 0;
-		  if ( h[2] == 1 ){ ii = ii +1; uu = uu + XVU_[2]; }
-		  if ( h[5] == 1 ){ ii = ii +1; uu = uu + XVU_[5]; uu = uu / ii; }
+		  if ( h[2] == 1 ){ ii = ii +1; uu = uu + XVU_[chNum][2]; }
+		  if ( h[5] == 1 ){ ii = ii +1; uu = uu + XVU_[chNum][5]; uu = uu / ii; }
 		  Float_t vv = 0;
 		  ii = 0;
-		  if ( h[1] == 1 ){ ii = ii +1; vv = vv + XVU_[1]; }
-		  if ( h[4] == 1 ){ ii = ii +1; vv = vv + XVU_[4]; vv = vv / ii; }
+		  if ( h[1] == 1 ){ ii = ii +1; vv = vv + XVU_[chNum][1]; }
+		  if ( h[4] == 1 ){ ii = ii +1; vv = vv + XVU_[chNum][4]; vv = vv / ii; }
 		 
 		  if ( fabs (xx -uu -vv) > delta ) continue;//??
 		 
@@ -1359,7 +1345,7 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 		  // Double_t A_[4][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};//coef matrix
 		  Double_t F1[4] = {0,0,0,0};//free coef 
 
-		  if (Nhits_Ch_[chNum][iseg] == nPlanes) //case 6-point segment
+		  if (Nhits[chNum][iseg] == nPlanes) //case 6-point segment
 		    FillFitMatrix(chNum, matrA, z_loc, sigm2, h6);// FillFitMatrix(A_, z_loc, sigm2, h6);
 
 		  else
@@ -1408,10 +1394,10 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 		  //Att
 		 
 		  for (Int_t i1 = 0; i1 < nPlanes; i1++) {
-		    if (Wires_Ch[i1][iseg]>-1) {
-		      if (i1 == 0 || i1 == 3) dX_i[i1] = XVU_[i1] - par_ab_curr[0] * z_loc[i1] - par_ab_curr[1];
-		      if (i1 == 2 || i1 == 5) dX_i[i1] = XVU_[i1] - 0.5 * (par_ab_curr[0] + sq3 * par_ab_curr[2]) * z_loc[i1] - 0.5 * (par_ab_curr[1] + sq3 * par_ab_curr[3]);
-		      if (i1 == 1 || i1 == 4) dX_i[i1] = XVU_[i1] - 0.5 * (par_ab_curr[0] - sq3 * par_ab_curr[2]) * z_loc[i1] - 0.5 * (par_ab_curr[1] - sq3 * par_ab_curr[3]);
+		    if (wires_Ch[i1][iseg]>-1) {
+		      if (i1 == 0 || i1 == 3) dX_i[i1] = XVU_[chNum][i1] - par_ab_curr[0] * z_loc[i1] - par_ab_curr[1];
+		      if (i1 == 2 || i1 == 5) dX_i[i1] = XVU_[chNum][i1] - 0.5 * (par_ab_curr[0] + sq3 * par_ab_curr[2]) * z_loc[i1] - 0.5 * (par_ab_curr[1] + sq3 * par_ab_curr[3]);
+		      if (i1 == 1 || i1 == 4) dX_i[i1] = XVU_[chNum][i1] - 0.5 * (par_ab_curr[0] - sq3 * par_ab_curr[2]) * z_loc[i1] - 0.5 * (par_ab_curr[1] - sq3 * par_ab_curr[3]);
 		      Chi2_curr_iseg =  Chi2_curr_iseg + dX_i[i1] * dX_i[i1] / sigm2[i1];//??
 		    } 
 		  }//i1
@@ -1426,7 +1412,7 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 		    Chi2_min_iseg = Chi2_curr_iseg;
 		    for (Int_t i1 = 0; i1 < nPlanes; i1++) {
 		      dX[i1] = dX_i[i1];
-		      XVU_cl_[i1] = XVU_[i1];
+		      XVU_cl_[chNum][i1] = XVU_[chNum][i1];
 		       if (i1 > 3) continue;
 		      par_ab_cl[i1] =  par_ab_curr[i1];
 		    //????
@@ -1440,33 +1426,33 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 	}//i2
       }//i10
 
-      Chi2_ndf_Ch[iseg] = Chi2_min_iseg; 
+      Chi2_ndf[chNum][iseg] = Chi2_min_iseg; 
 
-      // cout<<"1 iseg "<<iseg<<" Chi2_ndf_Ch "<<Chi2_ndf_Ch[iseg]<<endl;
+      // cout<<"1 iseg "<<iseg<<" Chi2_ndf "<<Chi2_ndf[chNum][iseg]<<endl;
 
-      if (Nhits_Ch_[chNum][iseg] > 4)  Chi2_ndf_Ch[iseg] = Chi2_ndf_Ch[iseg] / (Nhits_Ch_[chNum][iseg] - 4);
+      if (Nhits[chNum][iseg] > 4)  Chi2_ndf[chNum][iseg] = Chi2_ndf[chNum][iseg] / (Nhits[chNum][iseg] - 4);
 
-      if (Chi2_ndf_Ch[iseg] > kChi2_Max_) {
-	if (Nhits_Ch_[chNum][iseg] <= Min_hits) { Nhits_Ch_[chNum][iseg] = 0; continue;}
+      if (Chi2_ndf[chNum][iseg] > kChi2_Max_) {
+	if (Nhits[chNum][iseg] <= Min_hits) { Nhits[chNum][iseg] = 0; continue;}
 	else  { //reject most distant point
 	  Float_t Max_dev = 0;
 	  Int_t irej = -1;
 	  for (Int_t i1 = 0; i1 < nPlanes; i1++)
-	    if (Wires_Ch[i1][iseg]>-1)
+	    if (wires_Ch[i1][iseg]>-1)
 	      if (fabs(dX[i1]) > Max_dev) {
 		irej = i1;
 		Max_dev = fabs(dX[i1]);
 	      }
-	  Wires_Ch[irej][iseg] = -1;
-	  Nhits_Ch_[chNum][iseg]--;// reject most distant point
+	  wires_Ch[irej][iseg] = -1;
+	  Nhits[chNum][iseg]--;// reject most distant point
 	  continue;}
       }
       else {
-	//	cout<<"2 Ch= "<<chNum<<" iseg "<<iseg<<" Nhits(aft.i10) "<<Nhits_Ch_[chNum][iseg]<<" Chi2/n "<<Chi2_ndf_Ch[iseg]<<" XVU_Ch_[chNum] "<<XVU_Ch_[chNum][0][iseg]<<" "<<XVU_Ch_[chNum][1][iseg]<<" "<<XVU_Ch_[chNum][2][iseg]<<" "<<XVU_Ch_[chNum][3][iseg]<<" "<<XVU_Ch_[chNum][4][iseg]<<" "<<XVU_Ch_[chNum][5][iseg]<<endl;
+	//	cout<<"2 Ch= "<<chNum<<" iseg "<<iseg<<" Nhits(aft.i10) "<<Nhits[chNum][iseg]<<" Chi2/n "<<Chi2_ndf[chNum][iseg]<<" XVU_Ch_[chNum] "<<XVU_Ch_[chNum][0][iseg]<<" "<<XVU_Ch_[chNum][1][iseg]<<" "<<XVU_Ch_[chNum][2][iseg]<<" "<<XVU_Ch_[chNum][3][iseg]<<" "<<XVU_Ch_[chNum][4][iseg]<<" "<<XVU_Ch_[chNum][5][iseg]<<endl;
 	for (Int_t i1 = 0; i1 < nPlanes; i1++) {
-	  XVU_Ch_[chNum][i1][iseg] = XVU_cl_[i1];
+	  XVU_Ch_[chNum][i1][iseg] = XVU_cl_[chNum][i1];
 	  if (i1 > 3) continue;
-	  par_ab_Ch[i1][iseg] =  par_ab_cl[i1];
+	  par_ab[chNum][i1][iseg] =  par_ab_cl[i1];
 	}
       }
    
@@ -1474,114 +1460,114 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 
     if (!ifNhitm) continue;
 
-    if (Nbest_Ch == 0) {
+    if (Nbest[chNum] == 0) {
 
       Double_t Chi2_best = 9999;
       Int_t iseg_best = -1;
       for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;
-	if (Chi2_ndf_Ch[iseg] >= Chi2_best) continue;
-	Chi2_best = Chi2_ndf_Ch[iseg];
+	if (Nhits[chNum][iseg] != Nhitm) continue;
+	if (Chi2_ndf[chNum][iseg] >= Chi2_best) continue;
+	Chi2_best = Chi2_ndf[chNum][iseg];
 	iseg_best = iseg;
       } // iseg
 
       if (iseg_best == -1) continue;
      
       //  cout<<"3 Ch= "<< chNum <<" iseg_best1 "<< iseg_best <<" Chi2_best "<< Chi2_best<<endl;
-	//  <<" Wires_Ch "<< Wires_Ch[0][iseg_best]<<" "<< Wires_Ch[1][iseg_best]<<" "<< Wires_Ch[2][iseg_best]<<" "<< Wires_Ch[3][iseg_best]<<" "<< Wires_Ch[4][iseg_best]<<" "<< Wires_Ch[5][iseg_best]
+	//  <<" wires_Ch "<< wires_Ch[0][iseg_best]<<" "<< wires_Ch[1][iseg_best]<<" "<< wires_Ch[2][iseg_best]<<" "<< wires_Ch[3][iseg_best]<<" "<< wires_Ch[4][iseg_best]<<" "<< wires_Ch[5][iseg_best]
 	//   <<" XVU_Ch_[chNum] "<<XVU_Ch_[chNum][0][iseg_best]<<" "<<XVU_Ch_[chNum][1][iseg_best]<<" "<<XVU_Ch_[chNum][2][iseg_best]<<" "<<XVU_Ch_[chNum][3][iseg_best]<<" "<<XVU_Ch_[chNum][4][iseg_best]<<" "<<XVU_Ch_[chNum][5][iseg_best]<<endl;
       
 
-      ind_best_Ch[0] = iseg_best;
-      Chi2_ndf_best_Ch[0] = Chi2_best;
-      Nbest_Ch = 1;
+      ind_best[chNum][0] = iseg_best;
+      Chi2_ndf_best[chNum][0] = Chi2_best;
+      Nbest[chNum] = 1;
    
 
-      //  cout<<"4 ind_best_Ch "<<ind_best_Ch[0]<< " Chi2_ndf_best_Ch "<<Chi2_ndf_best_Ch[0]<<" Nbest_Ch "<<Nbest_Ch<<endl;
+      //  cout<<"4 ind_best[chNum] "<<ind_best[chNum][0]<< " Chi2_ndf_best "<<Chi2_ndf_best[chNum][0]<<" Nbest[chNum] "<<Nbest[chNum]<<endl;
       
       // if ( chNum == 1) {
 	Min_hits6 = Min_hits ;//??
 	//	if ( Chi2_best < 0.6) Min_hits6 = Min_hits +1 ;// //	if ( Chi2_best < 0.6) Min_hits6 = Nhitm;// 
 	// }
 
-	//	cout<<" Ch= "<<chNum<<" Nhits (bef.rej) "; for (int iseg=0; iseg< Nseg[chNum]; iseg++){  cout<<Nhits_Ch_[chNum][iseg]<<" "; } cout<<endl;
+	//	cout<<" Ch= "<<chNum<<" Nhits (bef.rej) "; for (int iseg=0; iseg< Nseg[chNum]; iseg++){  cout<<Nhits[chNum][iseg]<<" "; } cout<<endl;
 
       //reject(common points)
       for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
 	if (iseg == iseg_best)continue;
 
 	for (Int_t i1 = 0; i1 < nPlanes; i1++) {
-	  if (Wires_Ch[i1][iseg]>-1) {
+	  if (wires_Ch[i1][iseg]>-1) {
 	   
 	    if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best]) < 3*dw_half_ ) 
-	      Nhits_Ch_[chNum][iseg] = 0; // if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best]) < 3*dw_half_ ) Nhits_Ch_[chNum][iseg] = 0;
+	      Nhits[chNum][iseg] = 0; // if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best]) < 3*dw_half_ ) Nhits[chNum][iseg] = 0;
 	  }
 	}
       }// iseg
 
-    }// Nbest_Ch == 0
+    }// Nbest[chNum] == 0
 
 
-    // cout<<" Ch= "<<chNum<<" Nhits_(One best) ";  cout<<" Nseg "<<Nseg[chNum]<<endl; for (int iseg=0; iseg< Nseg[chNum]; iseg++){  cout<<Nhits_Ch_[chNum][iseg]<<" ";  cout<<Chi2_ndf_best_Ch[iseg]<<" "; } cout<<endl;
+    // cout<<" Ch= "<<chNum<<" Nhits_(One best) ";  cout<<" Nseg "<<Nseg[chNum]<<endl; for (int iseg=0; iseg< Nseg[chNum]; iseg++){  cout<<Nhits[chNum][iseg]<<" ";  cout<<Chi2_ndf_best[chNum][iseg]<<" "; } cout<<endl;
 	
-    if (Nbest_Ch == 1) {//if (Nbest_Ch == 1) {
+    if (Nbest[chNum] == 1) {//if (Nbest[chNum] == 1) {
       Double_t Chi2_best = 9999;
       Int_t iseg_best2 = -1;
 
-      //	cout<<"  if (Nbest_Ch == 1) ind_best_Ch "<<ind_best_Ch[Nbest_Ch]<< " Chi2_ndf_best_Ch "<<Chi2_ndf_best_Ch[ind_best_Ch[Nbest_Ch]]<<" Nbest_Ch "<<Nbest_Ch<<endl;
+      //	cout<<"  if (Nbest[chNum] == 1) ind_best[chNum] "<<ind_best[chNum][Nbest[chNum]]<< " Chi2_ndf_best "<<Chi2_ndf_best[chNum][ind_best[chNum][Nbest[chNum]]]<<" Nbest[chNum] "<<Nbest[chNum]<<endl;
 	
       for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	//	if (Nhits_Ch_[chNum][iseg] == 0) continue;	//	if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;//??
-	//	cout<<" Nhitm "<<Nhitm<<" Nhits_Ch_[chNum] "<<Nhits_Ch_[chNum][iseg]<<" Chi2_ndf_Ch "<<Chi2_ndf_Ch[iseg]<<endl;
-	if (iseg == ind_best_Ch[0])continue;
-	if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;//
-	if (Chi2_ndf_Ch[iseg] > Chi2_best) continue;
-	Chi2_best = Chi2_ndf_Ch[iseg];
+	//	if (Nhits[chNum][iseg] == 0) continue;	//	if (Nhits[chNum][iseg] != Nhitm) continue;//??
+	//	cout<<" Nhitm "<<Nhitm<<" Nhits[chNum] "<<Nhits[chNum][iseg]<<" Chi2_ndf "<<Chi2_ndf[chNum][iseg]<<endl;
+	if (iseg == ind_best[chNum][0])continue;
+	if (Nhits[chNum][iseg] != Nhitm) continue;//
+	if (Chi2_ndf[chNum][iseg] > Chi2_best) continue;
+	Chi2_best = Chi2_ndf[chNum][iseg];
 	iseg_best2 = iseg;
       } // iseg
 
       if (iseg_best2>-1) {
-	//	cout<<" if (iseg_best2>-1) ind_best_Ch "<<ind_best_Ch[Nbest_Ch]<< " Chi2_ndf_best_Ch "<<Chi2_ndf_best_Ch[ind_best_Ch[Nbest_Ch]]<<" Nbest_Ch "<<Nbest_Ch<<endl;
+	//	cout<<" if (iseg_best2>-1) ind_best[chNum] "<<ind_best[chNum][Nbest[chNum]]<< " Chi2_ndf_best "<<Chi2_ndf_best[chNum][ind_best[chNum][Nbest[chNum]]]<<" Nbest[chNum] "<<Nbest[chNum]<<endl;
 
-	ind_best_Ch[Nbest_Ch] = iseg_best2;
-	Chi2_ndf_best_Ch[Nbest_Ch] = Chi2_best;
-	Nbest_Ch++;
+	ind_best[chNum][Nbest[chNum]] = iseg_best2;
+	Chi2_ndf_best[chNum][Nbest[chNum]] = Chi2_best;
+	Nbest[chNum]++;
 
-	//	cout<<" Ch= "<< chNum <<" iseg_best2 "<< iseg_best2 <<" Chi2_best "<< Chi2_best<<" Wires_Ch "<< Wires_Ch[0][iseg_best2]<<" "
-	//   <<Wires_Ch[1][iseg_best2]<<" "<<Wires_Ch[2][iseg_best2]<<" "<<Wires_Ch[3][iseg_best2]<<" "<<Wires_Ch[4][iseg_best2]<<" "<<Wires_Ch[5][iseg_best2]<<endl;
+	//	cout<<" Ch= "<< chNum <<" iseg_best2 "<< iseg_best2 <<" Chi2_best "<< Chi2_best<<" wires_Ch "<< wires_Ch[0][iseg_best2]<<" "
+	//   <<wires_Ch[1][iseg_best2]<<" "<<wires_Ch[2][iseg_best2]<<" "<<wires_Ch[3][iseg_best2]<<" "<<wires_Ch[4][iseg_best2]<<" "<<wires_Ch[5][iseg_best2]<<endl;
 		
 	
       }
 
-    }//Nbest_Ch == 1
+    }//Nbest[chNum] == 1
 
-    // cout<<" ind_best_Ch "<<ind_best_Ch[Nbest_Ch]<< " Chi2_ndf_best_Ch "<<Chi2_ndf_best_Ch[ind_best_Ch[Nbest_Ch]]<<" Nbest_Ch "<<Nbest_Ch<<endl;
+    // cout<<" ind_best[chNum] "<<ind_best[chNum][Nbest[chNum]]<< " Chi2_ndf_best "<<Chi2_ndf_best[chNum][ind_best[chNum][Nbest[chNum]]]<<" Nbest[chNum] "<<Nbest[chNum]<<endl;
     
     
-    if (Nbest_Ch == 2) {
+    if (Nbest[chNum] == 2) {
 
       Double_t Chi2_best = 20;
       Int_t iseg_best3 = -1;
       for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	if (iseg == ind_best_Ch[0] || iseg == ind_best_Ch[1])continue;
-	if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;
-	if (Chi2_ndf_Ch[iseg] > Chi2_best) continue;
-	Chi2_best = Chi2_ndf_Ch[iseg];
+	if (iseg == ind_best[chNum][0] || iseg == ind_best[chNum][1])continue;
+	if (Nhits[chNum][iseg] != Nhitm) continue;
+	if (Chi2_ndf[chNum][iseg] > Chi2_best) continue;
+	Chi2_best = Chi2_ndf[chNum][iseg];
 	iseg_best3 = iseg;
       } // iseg
 
       if (iseg_best3 >-1) {
 
-	ind_best_Ch[Nbest_Ch] = iseg_best3;
-	Chi2_ndf_best_Ch[Nbest_Ch] = Chi2_best;
-	Nbest_Ch++;
+	ind_best[chNum][Nbest[chNum]] = iseg_best3;
+	Chi2_ndf_best[chNum][Nbest[chNum]] = Chi2_best;
+	Nbest[chNum]++;
 
 	//reject(common points)
 	for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	  if (iseg == ind_best_Ch[0] || iseg == ind_best_Ch[1] || iseg == iseg_best3)continue;
+	  if (iseg == ind_best[chNum][0] || iseg == ind_best[chNum][1] || iseg == iseg_best3)continue;
 	  for (Int_t i1 = 0; i1 < nPlanes; i1++) {
-	    if (Wires_Ch[i1][iseg]>-1) {
-	      if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best3]) < 3*dw_half ) Nhits_Ch_[chNum][iseg] = 0;
+	    if (wires_Ch[i1][iseg]>-1) {
+	      if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best3]) < 3*dw_half ) Nhits[chNum][iseg] = 0;
 	    }
 	  }
 	}
@@ -1590,30 +1576,30 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
     }
    	
 
-    if (Nbest_Ch == 3) {
+    if (Nbest[chNum] == 3) {
 
       Double_t Chi2_best = 20;
       Int_t iseg_best3 = -1;
       for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	if (iseg == ind_best_Ch[0] || iseg == ind_best_Ch[1] || iseg == ind_best_Ch[2])continue;
-	if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;
-	if (Chi2_ndf_Ch[iseg] > Chi2_best) continue;
-	Chi2_best = Chi2_ndf_Ch[iseg];
+	if (iseg == ind_best[chNum][0] || iseg == ind_best[chNum][1] || iseg == ind_best[chNum][2])continue;
+	if (Nhits[chNum][iseg] != Nhitm) continue;
+	if (Chi2_ndf[chNum][iseg] > Chi2_best) continue;
+	Chi2_best = Chi2_ndf[chNum][iseg];
 	iseg_best3 = iseg;
       } // iseg
 
       if (iseg_best3 >-1) {
 
-	ind_best_Ch[Nbest_Ch] = iseg_best3;
-	Chi2_ndf_best_Ch[Nbest_Ch] = Chi2_best;
-	Nbest_Ch++;
+	ind_best[chNum][Nbest[chNum]] = iseg_best3;
+	Chi2_ndf_best[chNum][Nbest[chNum]] = Chi2_best;
+	Nbest[chNum]++;
 
 	//reject(common points)
 	for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	  if (iseg == ind_best_Ch[0] || iseg == ind_best_Ch[1] || iseg == iseg_best3)continue;
+	  if (iseg == ind_best[chNum][0] || iseg == ind_best[chNum][1] || iseg == iseg_best3)continue;
 	  for (Int_t i1 = 0; i1 < nPlanes; i1++) {
-	    if (Wires_Ch[i1][iseg]>-1) {
-	      if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best3]) < 3*dw_half ) Nhits_Ch_[chNum][iseg] = 0;
+	    if (wires_Ch[i1][iseg]>-1) {
+	      if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best3]) < 3*dw_half ) Nhits[chNum][iseg] = 0;
 	    }
 	  }
 	}
@@ -1621,30 +1607,30 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 
     }
     
-    if (Nbest_Ch == 4) {
+    if (Nbest[chNum] == 4) {
 
       Double_t Chi2_best = 20;
       Int_t iseg_best3 = -1;
       for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	if (iseg == ind_best_Ch[0] || iseg == ind_best_Ch[1] || iseg == ind_best_Ch[2] || iseg == ind_best_Ch[3])continue;
-	if (Nhits_Ch_[chNum][iseg] != Nhitm) continue;
-	if (Chi2_ndf_Ch[iseg] > Chi2_best) continue;
-	Chi2_best = Chi2_ndf_Ch[iseg];
+	if (iseg == ind_best[chNum][0] || iseg == ind_best[chNum][1] || iseg == ind_best[chNum][2] || iseg == ind_best[chNum][3])continue;
+	if (Nhits[chNum][iseg] != Nhitm) continue;
+	if (Chi2_ndf[chNum][iseg] > Chi2_best) continue;
+	Chi2_best = Chi2_ndf[chNum][iseg];
 	iseg_best3 = iseg;
       } // iseg
 
       if (iseg_best3 >-1) {
 
-	ind_best_Ch[Nbest_Ch] = iseg_best3;
-	Chi2_ndf_best_Ch[Nbest_Ch] = Chi2_best;
-	Nbest_Ch++;
+	ind_best[chNum][Nbest[chNum]] = iseg_best3;
+	Chi2_ndf_best[chNum][Nbest[chNum]] = Chi2_best;
+	Nbest[chNum]++;
 
 	//reject(common points)
 	for (Int_t iseg = 0; iseg < Nseg[chNum]; iseg++) {
-	  if (iseg == ind_best_Ch[0] || iseg == ind_best_Ch[1] || iseg == iseg_best3 )continue;
+	  if (iseg == ind_best[chNum][0] || iseg == ind_best[chNum][1] || iseg == iseg_best3 )continue;
 	  for (Int_t i1 = 0; i1 < nPlanes; i1++) {
-	    if (Wires_Ch[i1][iseg]>-1) {
-	      if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best3]) < 3*dw_half ) Nhits_Ch_[chNum][iseg] = 0;
+	    if (wires_Ch[i1][iseg]>-1) {
+	      if( fabs(XVU_Ch_[chNum][i1][iseg] - XVU_Ch_[chNum][i1][iseg_best3]) < 3*dw_half ) Nhits[chNum][iseg] = 0;
 	    }
 	  }
 	}
@@ -1652,18 +1638,18 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 
     }
 
-    //   cout<<"Ch= "<<chNum<<" Nhits_Ch_[chNum](Two-Five bests) ";  
+    //   cout<<"Ch= "<<chNum<<" Nhits[chNum](Two-Five bests) ";  
     //   	for (int iseg=0; iseg< Nseg[chNum]; iseg++){ 
-    //   	  cout<<Nhits_Ch_[chNum][iseg]<<" "; 
+    //   	  cout<<Nhits[chNum][iseg]<<" "; 
     //    	} cout<<endl;
-    //	cout<<"Ch= "<<chNum<<" Nbest_Ch "<<Nbest_Ch<<endl;
+    //	cout<<"Ch= "<<chNum<<" Nbest[chNum] "<<Nbest[chNum]<<endl;
     //	for (int iseg=0; iseg< Nseg[chNum]; iseg++){ 	
-	  // cout<<" Ch= "<<chNum<< " ind "<<ind_best_Ch[iseg]<<" Chi2 "<<Chi2_ndf_best_Ch[ind_best_Ch[iseg]]<<endl;
+	  // cout<<" Ch= "<<chNum<< " ind "<<ind_best[chNum][iseg]<<" Chi2 "<<Chi2_ndf_best[chNum][ind_best[chNum][iseg]]<<endl;
     //	}
 
     
-	//      << Min_hits <<" "<<Nseg[chNum]<< Nhits_Ch_[chNum][1]<<" "<<Wires_Ch[0][0]<<" "<<Nbest_Ch<<" "<<ind_best_Ch[0]<<" "
-	//   <<Chi2_ndf_Ch[0]<<" "<<Chi2_ndf_best_Ch[0]<<" "<<par_ab_Ch[0][0]<<" "<<A_[0][0]<<" "<<b_[0][0]<<" "<<nPlanes<<ipl_[0]<<" "<<XVU_[0]<<" "<<XVU_cl_[0]<<" "<<kChi2_Max_<<" "
+	//      << Min_hits <<" "<<Nseg[chNum]<< Nhits[chNum][1]<<" "<<wires_Ch[0][0]<<" "<<Nbest[chNum]<<" "<<ind_best[chNum][0]<<" "
+	//   <<Chi2_ndf[chNum][0]<<" "<<Chi2_ndf_best[chNum][0]<<" "<<par_ab[chNum][0][0]<<" "<<A_[0][0]<<" "<<b_[0][0]<<" "<<nPlanes<<ipl_[0]<<" "<<XVU_[chNum][0]<<" "<<XVU_cl_[chNum][0]<<" "<<kChi2_Max_<<" "
 	//   <<endl;
 	
     
@@ -1672,21 +1658,21 @@ void BmnMwpcHitFinderSRC::ProcessSegments(Int_t chNum,
 }// ProcessSegments
 
 
-void BmnMwpcHitFinderSRC::SegmentParamAlignment(Int_t & Nbest_Ch, Int_t *ind_best_Ch, Double_t **par_ab_Ch, Float_t *shift ){
+void BmnMwpcHitFinderSRC::SegmentParamAlignment(Int_t & Nbest, Int_t *ind_best, Double_t **par_ab, Float_t *shift ){
  
   //local parameters to Global parameters
 
-  for (Int_t iBest = 0; iBest < Nbest_Ch; iBest++) {
+  for (Int_t iBest = 0; iBest < Nbest; iBest++) {
 
-    // cout<<"before Alignment: iBest "<<iBest<<" Ax "<< par_ab_Ch[0][ind_best_Ch[iBest]]<<" bx "<< par_ab_Ch[1][ind_best_Ch[iBest]]<<" Ay "<< par_ab_Ch[1][ind_best_Ch[iBest]]<<" by "<< par_ab_Ch[3][ind_best_Ch[iBest]]<<endl;
+    // cout<<"before Alignment: iBest "<<iBest<<" Ax "<< par_ab[chNum][0][ind_best[chNum][iBest]]<<" bx "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" Ay "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" by "<< par_ab[chNum][3][ind_best[chNum][iBest]]<<endl;
 
     //                                     ax          alpha                                      ax^2    
-    par_ab_Ch[0][ind_best_Ch[iBest]] += shift[0] +  shift[0]* par_ab_Ch[0][ind_best_Ch[iBest]]* par_ab_Ch[0][ind_best_Ch[iBest]];
-    par_ab_Ch[2][ind_best_Ch[iBest]] += shift[2] +  shift[2]* par_ab_Ch[2][ind_best_Ch[iBest]]* par_ab_Ch[2][ind_best_Ch[iBest]];
-    par_ab_Ch[1][ind_best_Ch[iBest]] += shift[1];
-    par_ab_Ch[3][ind_best_Ch[iBest]] += shift[3];
+    par_ab[chNum][0][ind_best[chNum][iBest]] += shift[0] +  shift[0]* par_ab[chNum][0][ind_best[chNum][iBest]]* par_ab[chNum][0][ind_best[chNum][iBest]];
+    par_ab[chNum][2][ind_best[chNum][iBest]] += shift[2] +  shift[2]* par_ab[chNum][2][ind_best[chNum][iBest]]* par_ab[chNum][2][ind_best[chNum][iBest]];
+    par_ab[chNum][1][ind_best[chNum][iBest]] += shift[1];
+    par_ab[chNum][3][ind_best[chNum][iBest]] += shift[3];
 
-    //cout<<"after Alignment: iBest "<<iBest<<" Ax "<< par_ab_Ch[0][ind_best_Ch[iBest]]<<" bx "<< par_ab_Ch[1][ind_best_Ch[iBest]]<<" Ay "<< par_ab_Ch[1][ind_best_Ch[iBest]]<<" by "<< par_ab_Ch[3][ind_best_Ch[iBest]]<<endl;
+    //cout<<"after Alignment: iBest "<<iBest<<" Ax "<< par_ab[chNum][0][ind_best[chNum][iBest]]<<" bx "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" Ay "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" by "<< par_ab[chNum][3][ind_best[chNum][iBest]]<<endl;
 
   }//iBest 
 }//SegmentParamAlignment

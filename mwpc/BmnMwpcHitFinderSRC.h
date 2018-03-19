@@ -188,14 +188,13 @@ private:
   //Int_t, Short_t , Int_t);
 
   void ProcessSegments(
-   Int_t, Double_t ,Float_t , Float_t *,
-   Int_t ,Int_t & ,Int_t *,
-   Int_t **,Int_t **,Float_t **,Int_t & ,
-		       Int_t *, 
-		       Double_t *, Double_t *, 
-		       Double_t **,		      
-		       Int_t ,Int_t* , Float_t*,  Float_t*,
-   Double_t);
+   Int_t, Double_t ,Float_t , 
+   Float_t **, Int_t , Int_t * ,
+   Int_t **,Int_t ***,Int_t ***,
+   Float_t ***,Int_t * , Int_t **, 
+   Double_t **, Double_t **, 
+   Double_t ***, Int_t ,Int_t* , 
+   Float_t**,  Float_t**, Double_t);
 
   void SegmentParamAlignment(Int_t &, Int_t *, Double_t **, Float_t *);
   void SegmentMatching(Int_t &, Int_t &, Double_t **, Double_t **, Float_t, Float_t, Int_t *, Int_t *,   Int_t *,  Int_t *, Int_t &, Double_t *);
