@@ -103,7 +103,10 @@ private:
     Double_t fPlaneWidth; //in cm
     Double_t fSpaceLeft; //in cm
     Double_t fSpaceRight; //in cm
-    
+ 
+    Double_t fAngleX[4];
+    Double_t fAngleY[4];
+   
     Double_t zPlanePos[4][6];
     Double_t zRight[4];
     Double_t zLeft[4];

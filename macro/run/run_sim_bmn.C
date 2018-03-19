@@ -29,12 +29,13 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     FairRunSim *fRun = new FairRunSim();
 
     // Choose the Geant Navigation System
+    //fRun->SetName("TGeant3");
     fRun->SetName("TGeant3");
     //fRun->SetName("TGeant4");
     //fRun->SetGeoModel("TGeo");
 
     geometry(fRun); // load bmn geometry
-
+/*
     // Use the experiment specific MC Event header instead of the default one
     // This one stores additional information about the reaction plane
     //MpdMCEventHeader* mcHeader = new MpdMCEventHeader();
@@ -227,9 +228,10 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     // Transport nEvents
     // -----------------
     fRun->Run(nEvents);
-
+	*/
+	
     fRun->CreateGeometryFile("geofile_full.root");
-
+	/*
 #ifdef LAQGSM
     TString Pdg_table_name = TString::Format("%s%s%c%s", gSystem->BaseName(dataFile.Data()), ".g", (fRun->GetName())[6], ".pdg_table.dat");
   (TDatabasePDG::Instance())->WritePDGTable(Pdg_table_name.Data());
@@ -241,4 +243,5 @@ void run_sim_bmn(TString inFile = "dC.04gev.mbias.100k.urqmd23.f14", TString out
     cout<<"Macro finished successfully."<<endl;     // marker of successfully execution for CDASH
 
     gApplication->Terminate();
+	*/
 }

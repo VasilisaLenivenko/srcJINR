@@ -37,10 +37,11 @@ public:
 	fElossBC3=eloss;
     }
 
+
     void SetElossBC4(vector<int> eloss){
 	fElossBC4=eloss;
     }
-    
+
     void SetElossX1R(vector<int> eloss){
 	fElossX1R=eloss;
     }

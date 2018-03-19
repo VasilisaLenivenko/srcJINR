@@ -81,7 +81,7 @@ UShort_t BmnTof1Raw2Digit::ToGlobalChannel(UChar_t HptdcId, UChar_t channel) {
 }
 
 //Loads mapping from the DB
-void BmnTof1Raw2Digit::setRun(int nPeriod, int nRun) {
+Bool_t BmnTof1Raw2Digit::setRun(int nPeriod, int nRun) {
 	cout << "Loading the TOF400 Map from DB: Period " << nPeriod << ", Run " << nRun << "..." << endl;
 	PeriodIndex = nPeriod;
 	RunIndex = nRun;
@@ -92,6 +92,7 @@ void BmnTof1Raw2Digit::setRun(int nPeriod, int nRun) {
 	UniDbDetectorParameter* pLoadedPlacement = UniDbDetectorParameter::GetDetectorParameter("TOF1", "placementmap", nPeriod, nRun);
 	if(pLoadedPlacement == 0) {
 		cout << "TOF400 Crucial error: failed to load the placement map" << endl;
+                return kFALSE;
 	} else {
 		//Get the placement map
 		int elem_count = 0;
@@ -198,6 +199,7 @@ void BmnTof1Raw2Digit::setRun(int nPeriod, int nRun) {
 		++it;
 	}
 	cout << "Loading Tof400 mapping from the DB complete." << endl;
+        return kTRUE;
 }
 
 //Load mapping from the file
@@ -363,8 +365,9 @@ void BmnTof1Raw2Digit::saveINLToFile(string INLFile, unsigned int TDCSerial) {
 }
 
 //Main function. "Converts" the TObjArray *data of BmnTDCDigit to the TObjArray *output of BmnTof1Digit
-void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output) {
+void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output, map<UInt_t,Long64_t> *ts) {
 	//0. Initialize: clear all the tempory times in the BmnTof1TDCParameters
+	Long64_t tsync = 0L;
 	Tof1TDCMapIter tdci = TDCMap.begin();
 	while(tdci!=TDCMap.end()) {
 		for(int i = 0; i<TOF1_CHANNEL_NUMBER; i++) {
@@ -373,7 +376,7 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output) {
 		tdci++;
 	}
 
-
+        
 	//1. Filter and sort the TDC Data
 	//TODO: Well.. maybe it's better to do it NOT here?
 	//Maybe both of these should be done in the BmnRawDataDecoder?
@@ -409,8 +412,8 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output) {
 			si++;
 			continue;
 		}
-		
-		//Get the TDC Serial for this crate serial and slot
+                
+                //Get the TDC Serial for this crate serial and slot
 		UInt_t TDC_Serial = parPair -> second;
 		//And look for this TDC Serial in the TDCMap to get the BmnTof1TDCParameters for this TDC
 		Tof1TDCMapIter TDCPair = TDCMap.find(TDC_Serial);
@@ -435,7 +438,9 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output) {
 			cout << std::hex << TDC_Serial << std::dec << rchan << ":" << ((si->GetValue()) % TOF1_BIN_NUMBER) << " - " << par->INL[rchan][(si->GetValue()) % TOF1_BIN_NUMBER] << endl;
 		}
 		*/
-		double timeFromDigit = (si->GetValue() + par->INL[rchan][(si->GetValue()) % TOF1_BIN_NUMBER])* TOF1_MAX_TIME / double(TOF1_BIN_NUMBER);
+		map<UInt_t,Long64_t>::iterator syncIt = ts->find(si->GetSerial());
+       		tsync = syncIt->second;
+		double timeFromDigit = tsync + (si->GetValue() + par->INL[rchan][(si->GetValue()) % TOF1_BIN_NUMBER])* TOF1_MAX_TIME / double(TOF1_BIN_NUMBER);
 		
 		if(si->GetLeading()) {
 			//If this is a leading TDC digit, just fill the temporary time in the BmnTof1TDCParameters.
@@ -473,7 +478,7 @@ void BmnTof1Raw2Digit::FillEvent(TClonesArray *data, TClonesArray *output) {
 					//Trailing time is just the time in current TDC Digit
 					//(See above: this piece of code is executed only if the current BmnTDCDigit is NOT leading)
 					
-					new((*output)[nOut]) BmnTof1Digit(elem->plane,elem->strip,elem->side,par->t[rchan],timeFromDigit - (par->t[rchan]));
+					new((*output)[nOut]) BmnTof1Digit(elem->plane,elem->strip,elem->side,par->t[rchan], timeFromDigit - (par->t[rchan]));
 					nOut++;
 				}
 			}

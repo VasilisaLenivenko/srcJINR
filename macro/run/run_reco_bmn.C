@@ -161,7 +161,7 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                           Check Triggers                       === //
     // ====================================================================== //
-    BmnTriggersCheck* triggs = new BmnTriggersCheck(isExp);
+    //   BmnTriggersCheck* triggs = new BmnTriggersCheck(isExp);
     // fRunAna->AddTask(triggs);  
     // ====================================================================== //
     // ===			     LAND hit finder			  === //
@@ -211,15 +211,15 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                           TOF1 hit finder                      === //
     // ====================================================================== //
-    BmnTof1HitProducer* tof1HP = new BmnTof1HitProducer("TOF1", !isExp, iVerbose, kTRUE);
-    tof1HP->SetPeriod(run_period);
+    // BmnTof1HitProducer* tof1HP = new BmnTof1HitProducer("TOF1", !isExp, iVerbose, kTRUE);
+    //  tof1HP->SetPeriod(run_period);
     //tof1HP->SetOnlyPrimary(kTRUE);
-    fRunAna->AddTask(tof1HP);
+    //  fRunAna->AddTask(tof1HP);
     // ====================================================================== //
     // ===                           TOF2 hit finder                      === //
     // ====================================================================== //
-    BmnTofHitProducer* tof2HP = new BmnTofHitProducer("TOF", "TOF700_geometry_run6.txt", !isExp, iVerbose, kTRUE);
-    fRunAna->AddTask(tof2HP);
+    //  BmnTofHitProducer* tof2HP = new BmnTofHitProducer("TOF", "TOF700_geometry_run6.txt", !isExp, iVerbose, kTRUE);
+    // fRunAna->AddTask(tof2HP);
     // ====================================================================== //
     // ===                           Tracking (MWPC)                      === //
     // ====================================================================== //
@@ -238,9 +238,9 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                           Tracking (DCH)                       === //
     // ====================================================================== //
-    BmnDchTrackFinder* dchTF = new BmnDchTrackFinder(isExp);
-    dchTF->SetTransferFunction("pol_coord00813.txt");
-    fRunAna->AddTask(dchTF);
+    //  BmnDchTrackFinder* dchTF = new BmnDchTrackFinder(isExp);
+    //  dchTF->SetTransferFunction("pol_coord00813.txt");
+    //  fRunAna->AddTask(dchTF);
     // ====================================================================== //
     // ===                          Global Tracking                       === //
     // ====================================================================== //

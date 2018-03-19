@@ -32,7 +32,7 @@ link_directories(${LINK_DIRECTORIES})
 
 # List of source files
 set(SRCS
-BmnLANDGeometry.cxx
+BmnLANDCand.cxx
 BmnLANDHit.cxx
 BmnLANDHitProducer.cxx
 )

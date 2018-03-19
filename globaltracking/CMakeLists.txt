@@ -40,14 +40,12 @@ link_directories(${LINK_DIRECTORIES})
 Set(SRCS
  BmnDetectorSetup.cxx
  BmnGlobalTracking.cxx
- #BmnSRCTriggersCheck.cxx
  BmnTriggersCheck.cxx
 )
 
 Set(HEADERS
  BmnDetectorSetup.h
  BmnGlobalTracking.h
- #BmnSRCTriggersCheck.h - compilation failed
  BmnTriggersCheck.h
  BmnHitFinderRun1.h
 )

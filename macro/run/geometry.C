@@ -22,9 +22,9 @@ void geometry(FairRunSim *fRun)
     fRun->AddModule(magnet);
 
     // -----   Create detectors        -------------------------
-    FairDetector* tof = new BmnTOF("TOF", kTRUE);
-    tof->SetGeometryFileName("tof700_run7.root");
-    fRun->AddModule(tof);
+    //FairDetector* tof = new BmnTOF("TOF", kTRUE);
+    //tof->SetGeometryFileName("tof700_run7.root");
+    //fRun->AddModule(tof);
 
     //CbmPsdv1* psd = new CbmPsdv1("PSD", kTRUE);
     //psd->SetXshift(45.);
@@ -49,9 +49,9 @@ void geometry(FairRunSim *fRun)
     //dch->SetGeometryFileName("DCH_RunWinter2016.root");
     //fRun->AddModule(dch);
 
-    FairDetector* mwpc = new BmnMwpc("MWPC", kTRUE);
-    mwpc->SetGeometryFileName("MWPC_SRC2018.root");
-    fRun->AddModule(mwpc);
+    //FairDetector* mwpc = new BmnMwpc("MWPC", kTRUE);
+    //mwpc->SetGeometryFileName("MWPC_SRC2018.root");
+    //fRun->AddModule(mwpc);
 
     //FairDetector* bd = new BmnBd("BD", kTRUE);
     //bd->SetGeometryFileName("bd_v1_0.geo");
