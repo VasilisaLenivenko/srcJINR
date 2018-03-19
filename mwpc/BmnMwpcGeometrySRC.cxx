@@ -88,12 +88,18 @@ fDebug(kFALSE) {
     c[2].SetXYZ(0.00, 17.198, -205.886);
     d[2].SetXYZ(0.00, -23.867, -206.199);
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 86e0c20569fe380da5d3b99c72367693478ca8c4
     a[3].SetXYZ(-23.781, 0.00, -107.469);
     b[3].SetXYZ(23.576, 0.00, -107.323);
     c[3].SetXYZ(0.00, 17.038, -107.552);
     d[3].SetXYZ(0.00, -24.220, -107.174);
+<<<<<<< HEAD
+=======
 
+>>>>>>> 86e0c20569fe380da5d3b99c72367693478ca8c4
 
     // Defined using rotation constructor a la Geant3.
     // Angles theta(i), phi(i) are the polar and azimuthal angles of the (i) axis of the rotated system
