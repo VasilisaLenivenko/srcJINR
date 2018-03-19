@@ -72,11 +72,15 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   kNWires = fMwpcGeometry->GetNWires();
   TVector3 Ch1Cent = fMwpcGeometry->GetChamberCenter(0);
   TVector3 Ch2Cent = fMwpcGeometry->GetChamberCenter(1);
-
+  TVector3 Ch3Cent = fMwpcGeometry->GetChamberCenter(2);
+  TVector3 Ch4Cent = fMwpcGeometry->GetChamberCenter(3);
+  
   ZCh1 = Ch1Cent.Z();
   ZCh2 = Ch2Cent.Z();
+  Double_t ZCh3 = Ch3Cent.Z();
+  Double_t ZCh4 = Ch4Cent.Z();
   cout<< endl;
-  cout<<" ZCh1 "<<Ch1Cent.Z()<<" ZCh2 "<<Ch2Cent.Z()<<endl;
+  cout<<" ZCh1 "<<Ch1Cent.Z()<<" ZCh2 "<<Ch2Cent.Z()<<", Ch3 = "<<ZCh3<<", Ch4 = "<<ZCh4<<endl;
   cout<<"  dZ(ch1-ch2) = "<< -( Ch1Cent.Z()-Ch2Cent.Z() )<<endl;
       
   kZmid1 = -75.75; // ( Ch1Cent.Z()-Ch2Cent.Z() )*0.5;// -75.75; //ch1 loc   //cm // fMWPCGeometry->GetChamberCenter();

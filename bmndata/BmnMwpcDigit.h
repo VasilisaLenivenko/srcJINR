@@ -48,7 +48,7 @@ private:
     Int_t   fRef;
     Bool_t  fUse;
 
-    ClassDef(BmnMwpcDigit, 2);
+    ClassDef(BmnMwpcDigit, 3);
 
 };
 

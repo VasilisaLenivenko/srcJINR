@@ -109,15 +109,10 @@ private:
     Double_t zPlanePos[4][6];
     Double_t zRight[4];
     Double_t zLeft[4];
-<<<<<<< HEAD
+    //    Int_t fkPl[4][6];
     Double_t fX[4];
     Double_t fY[4];
     
-=======
-
-    //    Int_t fkPl[4][6];
-
->>>>>>> fa48f38ae872c005d8ff9035635903127f79ecbd
     Double_t fChamberWidth;
     //    Double_t fDistanceBetweenMWPC;
     Double_t fGlobalZdiff;
