@@ -27,7 +27,7 @@
 #include  "FairTask.h"
 #include  "BmnMwpcHit.h"
 #include  "BmnMwpcDigit.h"
-#include  "BmnMwpcGeometry.h"
+#include  "BmnMwpcGeometrySRC.h"
 #include  "FairTask.h"
 #include "TList.h"
 #include "BmnTrack.h"
@@ -95,7 +95,7 @@ private:
 
   Bool_t fUseDigitsInTimeBin; // use digits found in a time bin of width = kTimeBin (8 ns).
 
-  BmnMwpcGeometry* fMwpcGeometry;
+  BmnMwpcGeometrySRC* fMwpcGeometrySRC;
 
   TList fList,gList,tList;
 
