@@ -67,7 +67,7 @@ public:
     }
     
     Double_t GetZPlanePos(Int_t chamber, Int_t plane) {
-        return zPlanePos[chamber][plane];
+        return fZPlanePos[chamber][plane];
     }
     
     TVector3 GetChamberCenter(Int_t chamber);
@@ -82,17 +82,17 @@ public:
     }
     
     Double_t GetZRight(Int_t chamber) {
-        return zRight[chamber];
+        return fZright[chamber];
     }
     
     Double_t GetZLeft(Int_t chamber) {
-        return zLeft[chamber];
+        return fZleft[chamber];
     }
 
 private:
 
-    Short_t fNChambers;
-    Short_t fNPlanes;
+    Int_t fNChambers;
+    Int_t fNPlanes;
     Short_t fTimeBin;  // in ns
     Short_t fNWires;   //in one plane
     Double_t fAngleStep;
@@ -103,15 +103,14 @@ private:
     Double_t fSpaceLeft; //in cm
     Double_t fSpaceRight; //in cm
  
-    Double_t fAngleX[4];
-    Double_t fAngleY[4];
+    Double_t *fAngleX;
+    Double_t *fAngleY;
    
-    Double_t zPlanePos[4][6];
-    Double_t zRight[4];
-    Double_t zLeft[4];
-
-    Double_t fX[4];
-    Double_t fY[4];
+    Double_t fZPlanePos[4][6];
+    Double_t *fZright;
+    Double_t *fZleft;
+    Double_t *fX;
+    Double_t *fY;
     
 
     Double_t fChamberWidth;

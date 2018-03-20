@@ -6,7 +6,7 @@
 // BmnMwpcHitFinderSRC                                                        //
 //                                                                            //
 // Implementation of an algorithm developed by                                //
-// Vasilisa Lenivenko  and Vladimir Palichik                                  //
+// Vasilisa Lenivenko  and Vladimir Palchik                                   //
 // to the BmnRoot software                                                    //
 //                                                                            //
 // The algorithm serves for searching for hits                                //
@@ -65,17 +65,17 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   fBmnMwpcTracksArray = new TClonesArray(fOutputBranchName2);
   ioman->Register(fOutputBranchName2.Data(), "MWPC", fBmnMwpcTracksArray, kTRUE);
 
-  fMwpcGeometry = new BmnMwpcGeometry();//fMwpcGeometry = new BmnMwpcGeometry(6);
-  kNChambers = 4;//fMwpcGeometry->GetNChambers(); 
-  kNPlanes = fMwpcGeometry->GetNPlanes(); // 6
-  kNWires = fMwpcGeometry->GetNWires();
+  fMwpcGeometrySRC = new BmnMwpcGeometrySRC(7); // period number 7
+  kNChambers = fMwpcGeometrySRC->GetNChambers(); 
+  kNPlanes = fMwpcGeometrySRC->GetNPlanes(); // 6
+  kNWires = fMwpcGeometrySRC->GetNWires();
 
   cout<<" kNChambers "<<kNChambers<<" kNPlanes "<<kNPlanes<<" kNWires "<<kNWires<<endl;
 
-  TVector3 Ch1Cent = fMwpcGeometry->GetChamberCenter(0);
-  TVector3 Ch2Cent = fMwpcGeometry->GetChamberCenter(1);
-  TVector3 Ch3Cent = fMwpcGeometry->GetChamberCenter(2);
-  TVector3 Ch4Cent = fMwpcGeometry->GetChamberCenter(3);
+  TVector3 Ch1Cent = fMwpcGeometrySRC->GetChamberCenter(0);
+  TVector3 Ch2Cent = fMwpcGeometrySRC->GetChamberCenter(1);
+  TVector3 Ch3Cent = fMwpcGeometrySRC->GetChamberCenter(2);
+  TVector3 Ch4Cent = fMwpcGeometrySRC->GetChamberCenter(3);
 
 
   ZCh =  new Float_t[kNChambers];
@@ -85,7 +85,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   ZCh[2] = Ch3Cent.Z(); 
   ZCh[3] = Ch4Cent.Z();
 
-  for(Int_t i = 0; i < kNChambers; i++){ 
+  for(Int_t i = 0; i < kNChambers; i++){
     cout<<" ZCh["<<i<<"]= "<< ZCh[i]<<endl;
   }
 
@@ -115,7 +115,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   kMinHits = 4;
   kChi2_Max = 20.;
 
-  dw = fMwpcGeometry->GetWireStep();//0.25; // [cm] // wires step
+  dw = fMwpcGeometrySRC->GetWireStep();//0.25; // [cm] // wires step
   dw_half = 0.5*dw;
   sq3 = sqrt(3.);
   sq12 = sqrt(12.);
@@ -681,9 +681,9 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 
         // Z-coordinate of created hit is considered as known Z-position of planes 1 and 4 respecting to the considering chamber (1 or 2) 
       //  CreateMwpcHits(CreateHitsBy3Planes(digits_filtered[iChamber][0], digits_filtered[iChamber][1], digits_filtered[iChamber][2],
-      //          fMwpcGeometry->GetZPlanePos(iChamber, 1)), fBmnMwpcHitArray, iChamber);
+      //          fMwpcGeometrySRC->GetZPlanePos(iChamber, 1)), fBmnMwpcHitArray, iChamber);
      //   CreateMwpcHits(CreateHitsBy3Planes(digits_filtered[iChamber][3], digits_filtered[iChamber][4], digits_filtered[iChamber][5],
-     //	fMwpcGeometry->GetZPlanePos(iChamber, 4)), fBmnMwpcHitArray, iChamber);
+     //	fMwpcGeometrySRC->GetZPlanePos(iChamber, 4)), fBmnMwpcHitArray, iChamber);
 
 
       
@@ -2305,7 +2305,7 @@ void BmnMwpcHitFinderSRC::Finish() {
   // fList.Draw();
 
  
-    delete fMwpcGeometry;
+    delete fMwpcGeometrySRC;
 
     // delete 1d arrays:
 
