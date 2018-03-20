@@ -534,20 +534,22 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 			Wires_Ch,  clust_Ch,   XVU_Ch,  Nbest_Ch,   
 			ind_best_Ch, Chi2_ndf_Ch,  Chi2_ndf_best_Ch, 
 			par_ab_Ch, kNPlanes, ipl,  XVU, XVU_cl,  kChi2_Max);
-     
-      }//if(Nseg_Ch2 > 0)
+
+	for (Int_t iBest = 0; iBest < Nbest_Ch[iChamber]; iBest++) {	  
+	  //	  if (Nhits_Ch2[ind_best_Ch2[iBest]] > 3) { 	 
+	    //  cout<<" iBest "<< iBest<<" Chi2_ndf_best_Ch2 "<<Chi2_ndf_best_Ch2[iBest]<<endl;
+	    for (Int_t i = 0; i < 6; i++){
+	      //    cout<<" Ch= "<<2<<" XVU_Ch "<<XVU_Ch2[i][ind_best_Ch2[iBest]]<<endl; 	
+	    }
+	    //  cout<<endl;	  
+	    // }
+	}
+
+
+
+      }//if(Nseg_Ch > 0)
     }
  /*
-      for (Int_t iBest = 0; iBest < Nbest_Ch2; iBest++) {	  
-	if (Nhits_Ch2[ind_best_Ch2[iBest]] > 3) { 	 
-	//  cout<<" iBest "<< iBest<<" Chi2_ndf_best_Ch2 "<<Chi2_ndf_best_Ch2[iBest]<<endl;
-	  for (Int_t i = 0; i < 6; i++){
-	//    cout<<" Ch= "<<2<<" XVU_Ch "<<XVU_Ch2[i][ind_best_Ch2[iBest]]<<endl; 	
-	  }
-	//  cout<<endl;	  
-	}
-      }
-    }// if(Nseg_Ch2 > 0)
 
 	  	  
     if(Nseg_Ch1 > 0) {ProcessSegments(1,  sigma,   dw_half,  kZ1_loc,  kMinHits,   Nseg_Ch1,  Nhits_Ch1,   Wires_Ch1,  clust_Ch1,   XVU_Ch1,  Nbest_Ch1,   ind_best_Ch1, Chi2_ndf_Ch1,  Chi2_ndf_best_Ch1, par_ab_Ch1,  
