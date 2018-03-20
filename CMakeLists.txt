@@ -197,13 +197,6 @@ add_subdirectory (QA)
 add_subdirectory (KF)
 add_subdirectory (cat)
 add_subdirectory (alignment)
-<<<<<<< HEAD
-add_subdirectory (silicon)
-add_subdirectory (land)
-#add_subdirectory (monitor)
-add_subdirectory (physics/particles)
-add_subdirectory (macro/srcAnalysis/tracking)
-=======
 add_subdirectory (globaltracking)
 add_subdirectory (eventdisplay)
 add_subdirectory (uni_db)
@@ -211,7 +204,7 @@ add_subdirectory (macro)
 #add_subdirectory (monitor)
 add_subdirectory (physics/particles)
 #add_subdirectory (macro/srcAnalysis/tracking)
->>>>>>> 2c1e430765fadbfddf3d85b62692d8ab56919048
+
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/macro/mpd_scheduler/CMakeLists.txt")
  add_subdirectory (macro/mpd_scheduler)

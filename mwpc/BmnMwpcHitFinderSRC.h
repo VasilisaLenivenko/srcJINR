@@ -168,7 +168,7 @@ private:
   Double_t **matrb;
   Double_t **Amatr;
   Double_t **bmatr;
-  
+  Float_t *dX_i;
  
 
   Float_t *z2;
@@ -188,14 +188,13 @@ private:
   //Int_t, Short_t , Int_t);
 
   void ProcessSegments(
-   Int_t, Double_t ,Float_t , Float_t *,
-   Int_t ,Int_t & ,Int_t *,
-   Int_t **,Int_t **,Float_t **,Int_t & ,
-		       Int_t *, 
-		       Double_t *, Double_t *, 
-		       Double_t **,		      
-		       Int_t ,Int_t* , Float_t*,  Float_t*,
-   Double_t);
+   Int_t, Double_t ,Float_t , 
+   Float_t **, Int_t , Int_t * ,
+   Int_t **,Int_t ***,Int_t ***,
+   Float_t ***,Int_t * , Int_t **, 
+   Double_t **, Double_t **, 
+   Double_t ***, Int_t ,Int_t* , 
+   Float_t**,  Float_t**, Double_t);
 
   void SegmentParamAlignment(Int_t &, Int_t *, Double_t **, Float_t *);
   void SegmentMatching(Int_t &, Int_t &, Double_t **, Double_t **, Float_t, Float_t, Int_t *, Int_t *,   Int_t *,  Int_t *, Int_t &, Double_t *);
@@ -208,9 +207,14 @@ private:
 		  // Float_t *, Float_t *, 
 		  Int_t *, Int_t *, Int_t * );
 
-  void FillFitMatrix(Double_t**, Float_t*, Float_t*, Int_t*);// Int_t*);
-  void FillFreeCoefVector(Double_t*, Float_t**, Int_t, Float_t*, Float_t*, Int_t*, Int_t);
-  void FillFreeCoefVectorXUV(Double_t*, Float_t*,  Float_t*, Float_t*, Int_t*);
+  void FillFitMatrix(Int_t, Double_t **, Float_t **, Float_t *, Int_t *);
+
+  void FillFreeCoefVectorXUV(Int_t, Double_t*, Float_t**, 
+			     Float_t**, Float_t*, Int_t*);
+
+  void FillFreeCoefVector(Int_t, Double_t*, Float_t**, Int_t, Float_t*, Float_t*, Int_t*, Int_t);
+
+  
   void InverseMatrix(Double_t**, Double_t**);
   vector<vector<double>> vkFillFitMatrix(Float_t*, Float_t*, Int_t*);
 
