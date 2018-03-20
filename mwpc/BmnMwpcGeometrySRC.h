@@ -89,10 +89,6 @@ public:
         return zLeft[chamber];
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 86e0c20569fe380da5d3b99c72367693478ca8c4
 private:
 
     Short_t fNChambers;
