@@ -223,8 +223,8 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                           Tracking (MWPC)                      === //
     // ====================================================================== //
-    //    BmnMwpcTrackFinder* mwpcTF = new BmnMwpcTrackFinder(isExp);
-    //fRunAna->AddTask(mwpcTF);
+    BmnMwpcTrackFinderSRC* mwpcTF = new BmnMwpcTrackFinderSRC(isExp, run_period);
+	fRunAna->AddTask(mwpcTF);
     // ====================================================================== //
     // ===                           Tracking (GEM)                       === //
     // ====================================================================== //

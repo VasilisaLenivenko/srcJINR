@@ -77,10 +77,18 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   ChCent= new TVector3[kNChambers];
   ZCh =   new Float_t[kNChambers];
   kZmid = new Float_t[kNChambers];
+  shift = new Float_t*[kNChambers];
 
   for(Int_t i = 0; i < kNChambers; i++){
+    shift[i] = new Float_t[4];
+
     ChCent[i] = fMwpcGeometrySRC->GetChamberCenter(i);
-    ZCh[i]= ChCent[i].Z(); 
+    ZCh[i]= ChCent[i].Z();
+    shift[i][0] = fMwpcGeometrySRC->GetTx(i);
+    shift[i][2] = fMwpcGeometrySRC->GetTy(i);
+    shift[i][1] =  ChCent[i].X();
+    shift[i][3] =  ChCent[i].Y();
+    
     cout<<" ZCh["<<i<<"]= "<< ZCh[i]<<endl;
   }
 
@@ -112,7 +120,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   sigma = dw/sq12;
   kMiddlePl = 47.25;
 
-  shift = new Float_t*[kNChambers];
+  
   kZ_loc = new Float_t*[kNChambers];// kZ1_loc = new Float_t[kNPlanes];
   z_gl = new Float_t*[kNChambers];// z_gl1 = new Float_t[kNPlanes];
 
@@ -154,7 +162,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     kPln[ii] = new Int_t[kNPlanes];
     iw[ii] = new Int_t[kNPlanes];
     iw_Ch[ii] = new Int_t[kNPlanes]; 
-    shift[ii] = new Float_t[4];// shift1 = new Float_t[4];
+    
     kZ_loc[ii] = new Float_t[kNPlanes];
     z_gl[ii] = new Float_t[kNPlanes];
     Nhits_Ch[ii] = new Int_t[kBig];
@@ -288,25 +296,25 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     cout<< endl;
 
     //slope and shift  for parametrs    
-    shift[0][0]=   0.;//x1_slope_sh = 0;
-    shift[0][2]= 0.01;//y1_slope_sh = 0.01;
-    shift[0][1]= -.40;//x1_sh = -.40;
-    shift[0][3]= 7.83;//y1_sh = 7.83;
+    //  shift[0][0]=   0.;//x1_slope_sh = 0;
+    //   shift[0][2]= 0.01;//y1_slope_sh = 0.01;
+    //  shift[0][1]= -.40;//x1_sh = -.40;
+    //  shift[0][3]= 7.83;//y1_sh = 7.83;
     
-    shift[1][0]=    0.;//x2_slope_sh = 0;
-    shift[1][2]= -.008;//y2_slope_sh = -.008;   
-    shift[1][1]=   .24;//x2_sh = .24;/
-    shift[1][3]=  6.67;//y2_sh = 6.67;
+    //   shift[1][0]=    0.;//x2_slope_sh = 0;
+    //  shift[1][2]= -.008;//y2_slope_sh = -.008;   
+    //  shift[1][1]=   .24;//x2_sh = .24;/
+    //   shift[1][3]=  6.67;//y2_sh = 6.67;
 
-    shift[2][0]= 0.;//x1_slope_sh = 0;
-    shift[2][2]= 0.;//y1_slope_sh = 0.01;
-    shift[2][1]= 0.;//x1_sh = -.40;
-    shift[2][3]= 0.;//y1_sh = 7.83;
+    //   shift[2][0]= 0.;//x1_slope_sh = 0;
+    //  shift[2][2]= 0.;//y1_slope_sh = 0.01;
+    //  shift[2][1]= 0.;//x1_sh = -.40;
+    //  shift[2][3]= 0.;//y1_sh = 7.83;
     
-    shift[3][0]= 0.;//x2_slope_sh = 0;
-    shift[3][2]= 0.;//y2_slope_sh = -.008;   
-    shift[3][1]= 0.;//x2_sh = .24;/
-    shift[3][3]= 0.;//y2_sh = 6.67;
+    //  shift[3][0]= 0.;//x2_slope_sh = 0;
+    //  shift[3][2]= 0.;//y2_slope_sh = -.008;   
+    //  shift[3][1]= 0.;//x2_sh = .24;/
+    //  shift[3][3]= 0.;//y2_sh = 6.67;
   
 
     //    shift1_2[0]= (shift[2][1] - shift[1][1])/(-( Ch1Cent.Z()-Ch2Cent.Z() ) );
@@ -512,7 +520,14 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 	  pSegParams.SetTx(par_ab_Ch[iChamber][0][ise]);
 	  pSegParams.SetTy(par_ab_Ch[iChamber][2][ise]);
 	  pSeg->SetParamFirst(pSegParams);
-
+	  FairTrackParam pSegParamsForXUV;
+	  pSegParamsForXUV.SetX(XVU_Ch[iChamber][0][ind_best_Ch[iChamber][ise]]);
+	  pSegParamsForXUV.SetY(XVU_Ch[iChamber][1][ind_best_Ch[iChamber][ise]]);
+	  pSegParamsForXUV.SetZ(XVU_Ch[iChamber][2][ind_best_Ch[iChamber][ise]]);
+	  pSegParamsForXUV.SetTx(XVU_Ch[iChamber][3][ind_best_Ch[iChamber][ise]]);
+	  pSegParamsForXUV.SetTy(XVU_Ch[iChamber][4][ind_best_Ch[iChamber][ise]]);
+	  pSegParamsForXUV.SetQp(XVU_Ch[iChamber][5][ind_best_Ch[iChamber][ise]]);
+	  pSeg->SetParamLast(pSegParamsForXUV);
 	}
 
       }//if(Nseg_Ch > 0)
@@ -1596,6 +1611,7 @@ void BmnMwpcHitFinderSRC::SegmentParamAlignment(Int_t chNum, Int_t *Nbest, Int_t
 void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t *Nbest, Double_t ***par_ab, Float_t *Zmid,  Int_t **ind_best,  Int_t *best_Ch1_gl_,  Int_t & Nbest_Ch12_gl_, Double_t *Chi2_match_){
 
 
+
 //(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch2_, Double_t **par_ab_Ch1_,  Double_t **par_ab_Ch2_, Float_t Zmid1, Float_t Zmid2, Int_t *ind_best_Ch1_, Int_t *ind_best_Ch2_, Int_t *best_Ch1_gl_, Int_t *best_Ch2_gl_, Int_t & Nbest_Ch12_gl_, Double_t *Chi2_match_){
 
   //  cout<<" Nbest_Ch1 "<<Nbest_Ch1_<<" Ch2 "<<Nbest_Ch2_<<" par_ab_Ch1 "<<par_ab_Ch1_[0][0]<<" par_ab_Ch2 "<<par_ab_Ch2_[0][0]<<" Zmid1 "<<Zmid1<<" Zmid2 "<<Zmid2<<" ind_best_Ch1 "<<ind_best_Ch1_[0]<<" ind_best_Ch2 "<<ind_best_Ch2_[0]<<" ind best for match ch1 "<<best_Ch1_gl_[0]<<" ch2 "<<best_Ch2_gl_[0]<<" Nbest_Ch12_gl "<<Nbest_Ch12_gl_<< " chi2_match "<<Chi2_match_[0]<<endl;
@@ -2221,9 +2237,6 @@ void BmnMwpcHitFinderSRC::Finish() {
     delete fMwpcGeometrySRC;
 
     // delete 1d arrays:
-
-    
-   
     delete [] shift1_2;   
     delete [] Chi2_ndf_Ch1_2;
     delete [] ind_best_Ch1_2;
@@ -2276,13 +2289,12 @@ void BmnMwpcHitFinderSRC::Finish() {
     
    
     for(Int_t ii=0; ii<4; ii++){
-      // delete [] par_ab_Ch1[ii];
       delete [] par_ab_Ch1_2[ii];
       delete [] matrA[ii];
       delete [] matrb[ii];
     }
 
-    for(Int_t ip = 0; ip < kNChambers; ip++){ 
+    for(Int_t ip = 0; ip < kNumPairs; ip++){ 
       delete [] Chi2_match_pair[ip];
     }
 

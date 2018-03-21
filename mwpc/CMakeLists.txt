@@ -42,6 +42,7 @@ BmnMwpcGeometrySRC.cxx
 BmnMwpcSegment.cxx
 BmnMwpcTrack.cxx
 BmnMwpcTrackFinder.cxx
+BmnMwpcTrackFinderSRC.cxx
 BmnMwpc.cxx
 BmnMwpcContFact.cxx
 BmnMwpcGeo.cxx
