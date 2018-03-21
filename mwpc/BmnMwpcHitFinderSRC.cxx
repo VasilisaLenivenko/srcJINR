@@ -37,6 +37,7 @@ BmnMwpcHitFinderSRC::BmnMwpcHitFinderSRC(Bool_t isExp) :
   nInputDigits = 3;
   nTimeSamples = 3;
   kBig = 100;
+  kNumPairs = 2;
   }
 
 BmnMwpcHitFinderSRC::~BmnMwpcHitFinderSRC() {
@@ -72,36 +73,24 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
 
   cout<<" kNChambers "<<kNChambers<<" kNPlanes "<<kNPlanes<<" kNWires "<<kNWires<<endl;
 
-  TVector3 Ch1Cent = fMwpcGeometrySRC->GetChamberCenter(0);
-  TVector3 Ch2Cent = fMwpcGeometrySRC->GetChamberCenter(1);
-  TVector3 Ch3Cent = fMwpcGeometrySRC->GetChamberCenter(2);
-  TVector3 Ch4Cent = fMwpcGeometrySRC->GetChamberCenter(3);
-
-
-  ZCh =  new Float_t[kNChambers];
-
-  ZCh[0] = Ch1Cent.Z(); 
-  ZCh[1]=  Ch2Cent.Z();
-  ZCh[2] = Ch3Cent.Z(); 
-  ZCh[3] = Ch4Cent.Z();
+  ChCent= new TVector3[kNChambers];
+  ZCh =   new Float_t[kNChambers];
+  kZmid = new Float_t[kNChambers];
 
   for(Int_t i = 0; i < kNChambers; i++){
+    ChCent[i] = fMwpcGeometrySRC->GetChamberCenter(i);
+    ZCh[i]= ChCent[i].Z(); 
     cout<<" ZCh["<<i<<"]= "<< ZCh[i]<<endl;
   }
 
-  kZmid =  new Float_t[kNChambers];
-
-  kZmid[0]= -75.75; // ( Ch1Cent.Z()-Ch2Cent.Z() )*0.5;////cm
-  kZmid[1]=  75.75; // -( Ch1Cent.Z()-Ch2Cent.Z() )*0.5;//
-  kZmid[2]= -50.; //  ( Ch3Cent.Z()-Ch4Cent.Z() )*0.5;
-  kZmid[3]=  50.; //  -( Ch3Cent.Z()-Ch4Cent.Z() )*0.5;
-
-  for(Int_t i = 0; i < kNChambers; i++){ 
+  for(Int_t i = 0; i < kNChambers; i++){
+    if (i== 0 || i== 2) { kZmid[i] = (ZCh[i] - ZCh[i+1])*0.5;}
+    if (i== 1 || i== 3) { kZmid[i] = - (ZCh[i-1] - ZCh[i])*0.5;}
+   
     cout<<" kZmid["<<i<<"]= "<< kZmid[i]<<endl;
   }
 
-
-  cout<<"  dZ(ch1-ch2) = "<< -( Ch1Cent.Z()-Ch2Cent.Z() )<<endl;
+  cout<<"  dZ(ch1-ch2) = "<< -(ZCh[0] -  ZCh[1] )<<endl;
 
   // kZ_to_pole = - (Ch2Cent.Z() + kZmid1);
   // cout<<" kZmid1 = "<<kZmid1<<" kZmid2 = "<<kZmid2 << " kZ_to_pole "<< - (Ch2Cent.Z() + kZmid1)<<endl;   
@@ -130,11 +119,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   ipl = new Int_t[kNPlanes];
   
   
-
- 
   shift1_2 = new Float_t[4];
-
- 
   z2 = new Float_t[kNPlanes];
 
   cout<<" 1 "<<endl;
@@ -151,6 +136,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   Nhits_Ch = new Int_t*[kNChambers];// Nhits_Ch1 = new Int_t[kBig];
   Nseg_Ch = new Int_t[kNChambers];// Nseg_Ch1
   Nbest_Ch = new Int_t[kNChambers];//Nbest_Ch1 = 0;
+  
   ind_best_Ch = new Int_t*[kNChambers];
   best_Ch_gl  = new Int_t*[kNChambers];
   Chi2_ndf_Ch = new Double_t*[kNChambers];
@@ -158,8 +144,8 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   par_ab_Ch = new Double_t**[kNChambers]; // par_ab_Ch1 = new Double_t*[4];
   XVU = new Float_t*[kNChambers];// XVU1 = new Float_t[kNPlanes];
   XVU_cl = new Float_t*[kNChambers];// XVU_cl1 = new Float_t[kNPlanes];
- 
-
+  Chi2_match_pair = new Double_t*[kNumPairs];
+  Nbest_pair = new Int_t[kNumPairs];//Nbest_Ch12_gl 
   cout<<" 2 "<<endl;
 
   for(Int_t ii = 0; ii < kNChambers; ii++){ 
@@ -209,33 +195,22 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
 
   cout<<" 4 "<<endl;
   
-    
-  // par_ab_Ch1 = new Double_t*[4];
-  // par_ab_Ch2 = new Double_t*[4];
   par_ab_Ch1_2 = new Double_t*[4];
   matrA = new Double_t*[4];
   matrb = new Double_t*[4];
   
   
   for(Int_t ii=0; ii<4; ii++){
-    // par_ab_Ch1[ii] = new Double_t[100];
-    //  par_ab_Ch2[ii] = new Double_t[100];
+    
     par_ab_Ch1_2[ii] = new Double_t[5];
     matrA[ii] = new Double_t[4];
     matrb[ii] = new Double_t[4];         
   }
 
-  
-  // ind_best_Ch1 = new Int_t[5];
-  //  ind_best_Ch2 = new Int_t[5];
-  //   best_Ch1_gl  = new Int_t[5];
-  //   best_Ch2_gl  = new Int_t[5];
-    ind_best_Ch1_2 = new Int_t[5];
-    //   Chi2_ndf_Ch1 = new Double_t[kBig];
-    //  Chi2_ndf_Ch2 = new Double_t[kBig];
-    // Chi2_ndf_best_Ch1 = new Double_t[5];
-    //  Chi2_ndf_best_Ch2 = new Double_t[5];
-    Chi2_match = new Double_t[5];
+  for(Int_t ip=0; ip < kNumPairs; ip++){
+    Chi2_match_pair[ip] = new Double_t[5];
+  }
+    ind_best_Ch1_2 = new Int_t[5]; 
     Chi2_ndf_Ch1_2 = new Double_t[5];
     
     //  Ch :                     1                                    2
@@ -288,7 +263,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
 	  kZ_loc[ichh][ii] = -0.5 + ii;
 	  if(ii == 4) { kZ_loc[ichh][ii] = -2.5;}
 	  if(ii == 5) { kZ_loc[ichh][ii] = -1.5;}
-	}//if ( ich == 0 || ich == 1) {
+	}//if ( ich == 0 || ich == 1)
 
 	kZ_loc[2][0] = -1.5;
 	kZ_loc[2][1] = -0.5;
@@ -333,8 +308,8 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     shift[3][3]= 0.;//y2_sh = 6.67;
   
 
-    shift1_2[0]= (shift[2][1] - shift[1][1])/(-( Ch1Cent.Z()-Ch2Cent.Z() ) );
-    shift1_2[2]= (shift[2][3] - shift[1][3])/(-( Ch1Cent.Z()-Ch2Cent.Z() ) );
+    //    shift1_2[0]= (shift[2][1] - shift[1][1])/(-( Ch1Cent.Z()-Ch2Cent.Z() ) );
+    //   shift1_2[2]= (shift[2][3] - shift[1][3])/(-( Ch1Cent.Z()-Ch2Cent.Z() ) );
     shift1_2[1]= 0.5*(shift[2][1] - shift[1][1]);
     shift1_2[3]= 0.5*(shift[2][3] - shift[1][3]);
 
@@ -355,33 +330,23 @@ void BmnMwpcHitFinderSRC::PrepareArraysToProcessEvent(){
    
 // Clean and initialize arrays:
 
-  for(Int_t icha=0; icha < kNChambers; icha++){
-    for(Int_t iPl=0; iPl < kNPlanes; iPl++){
-      iw[icha][iPl] = 0;//  iw_Ch1[iPl] = 0;
-      iw_Ch[icha][iPl] = 0;
-      XVU[icha][iPl] = 0;//XVU1[iPl] = 0;
-      XVU_cl[icha][iPl] = 0;// XVU_cl1[iPl] = 0;
-   
-    }
-  }
+  for(Int_t iCh = 0; iCh < kNChambers;  iCh++){
 
-  for(Int_t iCh = 0; iCh < kNChambers;  iCh++){       
+    Nseg_Ch[iCh] = 0;
+    Nbest_Ch[iCh] = 0;
+
+    for(Int_t iPl=0; iPl < kNPlanes; iPl++){
+      iw[iCh][iPl] = 0;//  iw_Ch1[iPl] = 0;
+      iw_Ch[iCh][iPl] = 0;
+      XVU[iCh][iPl] = 0;//XVU1[iPl] = 0;
+      XVU_cl[iCh][iPl] = 0;// XVU_cl1[iPl] = 0;
+    }
+      
     for(Int_t iWire=0; iWire<kNWires; iWire++){
       for(Int_t iPlane=0; iPlane<kNPlanes; iPlane++){
 	wire_Ch[iCh][iWire][iPlane] = 0;//  wire_Ch1[iWire][iPlane] = 0;
 	xuv_Ch[iCh][iWire][iPlane] = 0.;// xuv_Ch1[iWire][iPlane] = 0;	
       }
-    }
-  }//iCh
-
-  for(Int_t iCh = 0; iCh < kNChambers;  iCh++){ 
-    Nseg_Ch[iCh] = 0;
-    Nbest_Ch[iCh] = 0;
-
-    for(Int_t i=0; i< 5; i++){
-      ind_best_Ch[iCh][i] = 0;//	ind_best_Ch1[i] = 0;
-      best_Ch_gl[iCh][i] = -1;	//	best_Ch1_gl[i] = -1;
-      Chi2_ndf_best_Ch[iCh][i] = -999.;	//	Chi2_ndf_best_Ch1[i] = -999.;
     }
 
     for(Int_t ii=0; ii<4; ii++){
@@ -394,37 +359,32 @@ void BmnMwpcHitFinderSRC::PrepareArraysToProcessEvent(){
       Nhits_Ch[iCh][iBig] = 0;
       Chi2_ndf_Ch[iCh][iBig] = 0;
     }
-  }
+
+    for(Int_t i=0; i< 5; i++){
+      ind_best_Ch[iCh][i] = 0;//	ind_best_Ch1[i] = 0;
+      best_Ch_gl[iCh][i] = -1;	//	best_Ch1_gl[i] = -1;
+      Chi2_ndf_best_Ch[iCh][i] = -999.;	//	Chi2_ndf_best_Ch1[i] = -999.;
+    }
+
+  }//iCh
 
   for(Int_t iPl=0; iPl<kNPlanes; iPl++){     
     sigm2[iPl] = sigma*sigma;  
     ipl[iPl] = 6;
-   
-   
     z2[iPl] = 0;
   }
 
-  
-      Nbest_Ch12_gl = 0;
+  for(Int_t ip=0; ip < kNumPairs; ip++){
+    Nbest_pair[ip] = 0; //Nbest_Ch12_gl = 0;
+    for(Int_t i=0; i < 5; i++){	
+      Chi2_match_pair[ip][i] = 999.;
+    }
+  }
 
-      for(Int_t i=0; i< 5; i++){
-	//	ind_best_Ch1[i] = 0;
-	//	ind_best_Ch2[i] = 0;
-	//	best_Ch1_gl[i] = -1;
-	//	best_Ch2_gl[i] = -1;
-	//	Chi2_ndf_best_Ch1[i] = -999.;
-	//	Chi2_ndf_best_Ch2[i] = -999.;
-	Chi2_match[i] = 999.;
+      for(Int_t i=0; i< 5; i++){	
+	//	Chi2_match[i] = 999.;
 	Chi2_ndf_Ch1_2[i] = 999.;
 	ind_best_Ch1_2[i]= -1;
-	
-      }
-
-      for(Int_t ii=0; ii<4; ii++){
-	for(Int_t jj=0; jj<100; jj++){
-	  //  par_ab_Ch1[ii][jj] = 999.;
-	  //	  par_ab_Ch2[ii][jj] = 999.;
-	}
       }
 
       for(Int_t ii=0; ii<4; ii++){
@@ -451,10 +411,7 @@ void BmnMwpcHitFinderSRC::PrepareArraysToProcessEvent(){
       }
     }
       
-      for(Int_t iBig=0; iBig < kBig; iBig++){
-	//	Chi2_ndf_Ch1[iBig] = 0;
-	//	Chi2_ndf_Ch2[iBig] = 0;
-      }
+      
 }//PrepareArraysToProcessEvent
 
 void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
@@ -506,11 +463,8 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
 	 iw_Ch[st][pn] = iw[st][pn];
 
 	 //	 cout<<" st "<<st<<" pn "<<pn<<" iw[st][pn] "<<iw[st][pn]<<" iw_Ch[st][pn] "<<iw_Ch[st][pn]<<endl;
-	 // cout<<" ---------------"<<endl;
-	 
+	 // cout<<" ---------------"<<endl;	 
     }// iDigit
-
-
     cout<<" after digit "<<endl;       
    
     
@@ -518,120 +472,70 @@ void BmnMwpcHitFinderSRC::Exec(Option_t* opt) {
       for(Int_t iCase= 1; iCase < 9; iCase ++){
 	SegmentFinder(iChamber, Wires_Ch, clust_Ch, XVU_Ch, Nhits_Ch, iw_Ch, Nseg_Ch, wire_Ch, xuv_Ch, kMinHits, iCase, kBig);	
       }
-      
+      if ( Nseg_Ch[iChamber] > 0 ){
+	cout<<"SegmentFinder: Nseg_Ch["<<iChamber<<"]= "<<Nseg_Ch[iChamber]<<endl;
+      }
       //   for (Int_t ise = 0; ise < Nseg_Ch[iChamber]; ise++) {
       //	hNp_best_ch1->Fill(Nhits_Ch[iChamber][ise]);
       //  }
 
     }
-    cout<<"SegmentFinder: Nseg_Ch Ch0= "<<Nseg_Ch[0]<<" Ch1= "<<Nseg_Ch[1]<<" Ch2="<<Nseg_Ch[2]<<" Ch3="<<Nseg_Ch[3]<<endl;
-   
+    
    
     for (Int_t iChamber = 0; iChamber < kNChambers; iChamber++) {	  
       if(Nseg_Ch[iChamber] > 0) {
-	ProcessSegments(iChamber,  sigma,   dw_half,  
-			kZ_loc,  kMinHits,   Nseg_Ch, Nhits_Ch,   
-			Wires_Ch,  clust_Ch,   XVU_Ch,  Nbest_Ch,   
-			ind_best_Ch, Chi2_ndf_Ch,  Chi2_ndf_best_Ch, 
-			par_ab_Ch, kNPlanes, ipl,  XVU, XVU_cl,  kChi2_Max);
+	ProcessSegments(iChamber,  sigma,   dw_half, kZ_loc,  kMinHits,   Nseg_Ch, Nhits_Ch, Wires_Ch,  clust_Ch,   XVU_Ch,  Nbest_Ch, ind_best_Ch, Chi2_ndf_Ch,  Chi2_ndf_best_Ch,  par_ab_Ch, kNPlanes, ipl,  XVU, XVU_cl,  kChi2_Max);
+	if ( Nbest_Ch[iChamber] > 0){
+	  cout<<endl;
+	  cout<<"ProcessSegments: Nbest_Ch["<<iChamber<<"]= "<<Nbest_Ch[iChamber]<<endl;
+	}
 
 	for (Int_t iBest = 0; iBest < Nbest_Ch[iChamber]; iBest++) {	  
-	  //	  if (Nhits_Ch2[ind_best_Ch2[iBest]] > 3) { 	 
-	    //  cout<<" iBest "<< iBest<<" Chi2_ndf_best_Ch2 "<<Chi2_ndf_best_Ch2[iBest]<<endl;
+	  if (Nhits_Ch[iChamber][ ind_best_Ch[iChamber][iBest] ] > 3) { 	 
+	      cout<<" iBest "<< iBest<<" Chi2_ndf_best_Ch "<<Chi2_ndf_best_Ch[iChamber][iBest]<<endl;
 	    for (Int_t i = 0; i < 6; i++){
-	      //    cout<<" Ch= "<<2<<" XVU_Ch "<<XVU_Ch2[i][ind_best_Ch2[iBest]]<<endl; 	
+	      cout<<" Ch= "<<iChamber<<" i "<<i<<" XVU_Ch "<<XVU_Ch[iChamber][i][ind_best_Ch[iChamber][iBest]]<<endl;
 	    }
-	    //  cout<<endl;	  
-	    // }
-	}
-
-
-
-      }//if(Nseg_Ch > 0)
-    }
- /*
-
-	  	  
-    if(Nseg_Ch1 > 0) {ProcessSegments(1,  sigma,   dw_half,  kZ1_loc,  kMinHits,   Nseg_Ch1,  Nhits_Ch1,   Wires_Ch1,  clust_Ch1,   XVU_Ch1,  Nbest_Ch1,   ind_best_Ch1, Chi2_ndf_Ch1,  Chi2_ndf_best_Ch1, par_ab_Ch1,  
-				     //   matrA, matrb, 
-				     kNPlanes, ipl, XVU1, XVU_cl1,  kChi2_Max, dX_i1 );
-      
-     
-      for (Int_t iBest = 0; iBest < Nbest_Ch1; iBest++) {	  
-	if (Nhits_Ch1[ind_best_Ch1[iBest]] > 3) { 
-	//  cout<<" iBest "<< iBest<<" Chi2_ndf_best_Ch1 "<<Chi2_ndf_best_Ch1[iBest]<<endl;
-	  for (Int_t i = 0; i < 6; i++){
-	//    cout<<" Ch= "<<1<<" XVU_Ch "<<XVU_Ch1[i][ind_best_Ch1[iBest]]<<endl; 	
+	      cout<<endl;	  
 	  }
-//	  cout<<endl;
-	}
-      }
-    
+	}// }//if(Nseg_Ch > 0)
 
-    }// if(Nseg_Ch1 > 0)
-   
-    //  cout<<endl;
-    //  cout<<"ProcessSegments: Nbest_Ch1 "<<Nbest_Ch1<<" Nbest_Ch2 "<<Nbest_Ch2<<endl;
-    //   cout<<endl;
-     
-	for (Int_t ise = 0; ise < Nbest_Ch1; ise++) {
-	  //  cout<<" Ch1 ise "<<ise<<" ind "<<ind_best_Ch1[ise]<<" Chi2 "<<Chi2_ndf_best_Ch1[ise]<<" Ax "<<par_ab_Ch1[0][ise]<<" bx "<<par_ab_Ch1[1][ise]<<" Ay "<<par_ab_Ch1[2][ise]<<" by "<<par_ab_Ch1[3][ise]<<endl;//" kZ1 "<<Ch1Cent.Z()<<endl;
+	for (Int_t ise = 0; ise < Nbest_Ch[iChamber]; ise++) {
+	  cout<<" Ch= "<<iChamber<<" ise "<<ise<<" ind "<<ind_best_Ch[iChamber][ise]<<" Chi2 "<<Chi2_ndf_best_Ch[iChamber][ise]<<" Ax "<<par_ab_Ch[iChamber][0][ise]<<" bx "<<par_ab_Ch[iChamber][1][ise]<<" Ay "<<par_ab_Ch[iChamber][2][ise]<<" by "<<par_ab_Ch[iChamber][3][ise]<<endl;
 
 	
 	  BmnTrack *pSeg = new ((*fBmnMwpcSegmentsArray)[fBmnMwpcSegmentsArray->GetEntriesFast()]) BmnTrack();
-	  pSeg->SetChi2(Chi2_ndf_best_Ch1[ise]);
+	  pSeg->SetChi2(Chi2_ndf_best_Ch[iChamber][ise]);
 	  FairTrackParam pSegParams;
-	  pSegParams.SetPosition(TVector3(par_ab_Ch1[1][ise], par_ab_Ch1[3][ise],ZCh1));
-	  pSegParams.SetTx(par_ab_Ch1[0][ise]);
-	  pSegParams.SetTy(par_ab_Ch1[2][ise]);
+	  pSegParams.SetPosition(TVector3(par_ab_Ch[iChamber][1][ise], par_ab_Ch[iChamber][3][ise],ZCh[iChamber]));
+	  pSegParams.SetTx(par_ab_Ch[iChamber][0][ise]);
+	  pSegParams.SetTy(par_ab_Ch[iChamber][2][ise]);
 	  pSeg->SetParamFirst(pSegParams);
+
 	}
 
-	for (Int_t ise = 0; ise < Nbest_Ch2; ise++) {
-	  //	  cout<<" Ch2 ise "<<ise<<" ind "<<ind_best_Ch2[ise]<<" Chi2 "<<Chi2_ndf_best_Ch2[ise]<<" Ax "<<par_ab_Ch2[0][ise]<<" bx "<<par_ab_Ch2[1][ise]<<" Ay "<<par_ab_Ch2[2][ise]<<" by "<<par_ab_Ch2[3][ise]<<endl;
-
-	 
-	  BmnTrack *pSeg1 = new ((*fBmnMwpcSegmentsArray)[fBmnMwpcSegmentsArray->GetEntriesFast()]) BmnTrack();
-	  pSeg1->SetChi2(Chi2_ndf_best_Ch2[ise]);
-	  FairTrackParam pSegParams1;
-	  pSegParams1.SetPosition(TVector3(par_ab_Ch2[1][ise], par_ab_Ch2[3][ise],ZCh2));
-	  pSegParams1.SetTx(par_ab_Ch2[0][ise]);
-	  pSegParams1.SetTy(par_ab_Ch2[2][ise]);
-	  pSeg1->SetParamFirst(pSegParams1);
-	}
-
-	
-
-	//  cout<<endl;
+      }//if(Nseg_Ch > 0)
+    }//[iChamber]
 	  
-      hNbest_Ch1->Fill(Nbest_Ch1);	     
-      hNbest_Ch2->Fill(Nbest_Ch2);
+   //   hNbest_Ch1->Fill(Nbest_Ch1);	     
+   //   hNbest_Ch2->Fill(Nbest_Ch2);
 
-      if (Nbest_Ch1 > 0 && Nbest_Ch2 > 0){
 
-      SegmentParamAlignment(Nbest_Ch1, ind_best_Ch1, par_ab_Ch1, shift1);
-      SegmentParamAlignment(Nbest_Ch2, ind_best_Ch2, par_ab_Ch2, shift2);
+    for (Int_t iChamber = 0; iChamber < kNChambers; iChamber++) {
 
+      if ( Nbest_Ch[iChamber] > 0){
+
+	SegmentParamAlignment(iChamber, Nbest_Ch, ind_best_Ch, par_ab_Ch, shift);
      
-    //  cout<<" After alignment "<<endl;
-      for (Int_t ise = 0; ise < Nbest_Ch1; ise++) {
-//	  cout<<" Ch1 ise "<<ise<<" ind "<<ind_best_Ch1[ise]<<" Chi2 "<<Chi2_ndf_best_Ch1[ise]<<" Ax "<<par_ab_Ch1[0][ind_best_Ch1[ise]]<<" bx "<<par_ab_Ch1[1][ind_best_Ch1[ise]]<<" Ay "<<par_ab_Ch1[2][ind_best_Ch1[ise]]<<" by "<<par_ab_Ch1[3][ind_best_Ch1[ise]]<<endl;
-      }
 
-      for (Int_t ise = 0; ise < Nbest_Ch2; ise++) {
-//	  cout<<" Ch2 ise "<<ise<<" ind "<<ind_best_Ch2[ise]<<" Chi2 "<<Chi2_ndf_best_Ch2[ise]<<" Ax "<<par_ab_Ch2[0][ind_best_Ch2[ise]]<<" bx "<<par_ab_Ch2[1][ind_best_Ch2[ise]]<<" Ay "<<par_ab_Ch2[2][ind_best_Ch2[ise]]<<" by "<<par_ab_Ch2[3][ind_best_Ch2[ise]]<<endl;
-      }
-    //  cout<<endl;
-    
+	if (Nbest_Ch[0] > 0 && Nbest_Ch[1] > 0 ){
+	// SegmentMatching( Nbest_Ch, par_ab_Ch, kZmid, ind_best_Ch, best_Ch_gl, Nbest_pair, Chi2_match);
 
-      SegmentMatching( Nbest_Ch1, Nbest_Ch2, par_ab_Ch1, par_ab_Ch2, kZmid1, kZmid2, ind_best_Ch1, ind_best_Ch2, best_Ch1_gl, best_Ch2_gl, Nbest_Ch12_gl, Chi2_match);
-
-      //  cout<<" SegmentMatching: Nbest_Ch12_gl "<<Nbest_Ch12_gl<<endl;
-
-      }// if (Nbest_Ch1 > 0 && Nbest_Ch2 > 0){
-
-      
-     
+	//  cout<<" SegmentMatching: Nbest_Ch12_gl "<<Nbest_Ch12_gl<<endl;
+	}
+      }// if (Nbest_Ch > 0)
+    }// iChamber
+      /*
 
       // ----spatial track---
 
@@ -1666,29 +1570,37 @@ void BmnMwpcHitFinderSRC::ProcessSegments(
   
 }// ProcessSegments
 
-/*
-void BmnMwpcHitFinderSRC::SegmentParamAlignment(Int_t & Nbest, Int_t *ind_best, Double_t **par_ab, Float_t *shift ){
+
+void BmnMwpcHitFinderSRC::SegmentParamAlignment(Int_t chNum, Int_t *Nbest, Int_t **ind_best, Double_t ***par_ab, Float_t **shiftt ){
  
   //local parameters to Global parameters
 
-  for (Int_t iBest = 0; iBest < Nbest; iBest++) {
+  for (Int_t iBest = 0; iBest < Nbest[chNum]; iBest++) {
 
     // cout<<"before Alignment: iBest "<<iBest<<" Ax "<< par_ab[chNum][0][ind_best[chNum][iBest]]<<" bx "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" Ay "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" by "<< par_ab[chNum][3][ind_best[chNum][iBest]]<<endl;
 
     //                                     ax          alpha                                      ax^2    
-    par_ab[chNum][0][ind_best[chNum][iBest]] += shift[0] +  shift[0]* par_ab[chNum][0][ind_best[chNum][iBest]]* par_ab[chNum][0][ind_best[chNum][iBest]];
-    par_ab[chNum][2][ind_best[chNum][iBest]] += shift[2] +  shift[2]* par_ab[chNum][2][ind_best[chNum][iBest]]* par_ab[chNum][2][ind_best[chNum][iBest]];
-    par_ab[chNum][1][ind_best[chNum][iBest]] += shift[1];
-    par_ab[chNum][3][ind_best[chNum][iBest]] += shift[3];
+    par_ab[chNum][0][ind_best[chNum][iBest]] += shiftt[chNum][0] +  shiftt[chNum][0]* par_ab[chNum][0][ind_best[chNum][iBest]]* par_ab[chNum][0][ind_best[chNum][iBest]];
+    par_ab[chNum][2][ind_best[chNum][iBest]] += shiftt[chNum][2] +  shiftt[chNum][2]* par_ab[chNum][2][ind_best[chNum][iBest]]* par_ab[chNum][2][ind_best[chNum][iBest]];
+    par_ab[chNum][1][ind_best[chNum][iBest]] += shiftt[chNum][1];
+    par_ab[chNum][3][ind_best[chNum][iBest]] += shiftt[chNum][3];
 
     //cout<<"after Alignment: iBest "<<iBest<<" Ax "<< par_ab[chNum][0][ind_best[chNum][iBest]]<<" bx "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" Ay "<< par_ab[chNum][1][ind_best[chNum][iBest]]<<" by "<< par_ab[chNum][3][ind_best[chNum][iBest]]<<endl;
 
   }//iBest 
 }//SegmentParamAlignment
 
-void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch2_, Double_t **par_ab_Ch1_,  Double_t **par_ab_Ch2_, Float_t Zmid1, Float_t Zmid2, Int_t *ind_best_Ch1_, Int_t *ind_best_Ch2_, Int_t *best_Ch1_gl_, Int_t *best_Ch2_gl_, Int_t & Nbest_Ch12_gl_, Double_t *Chi2_match_){
+/*
+
+void BmnMwpcHitFinderSRC::SegmentMatching(  Int_t *Nbest, Double_t ***par_ab, Float_t *Zmid,  Int_t **ind_best,  Int_t *best_Ch1_gl_,  Int_t & Nbest_Ch12_gl_, Double_t *Chi2_match_){
+
+
+//(  Int_t & Nbest_Ch1_, Int_t & Nbest_Ch2_, Double_t **par_ab_Ch1_,  Double_t **par_ab_Ch2_, Float_t Zmid1, Float_t Zmid2, Int_t *ind_best_Ch1_, Int_t *ind_best_Ch2_, Int_t *best_Ch1_gl_, Int_t *best_Ch2_gl_, Int_t & Nbest_Ch12_gl_, Double_t *Chi2_match_){
 
   //  cout<<" Nbest_Ch1 "<<Nbest_Ch1_<<" Ch2 "<<Nbest_Ch2_<<" par_ab_Ch1 "<<par_ab_Ch1_[0][0]<<" par_ab_Ch2 "<<par_ab_Ch2_[0][0]<<" Zmid1 "<<Zmid1<<" Zmid2 "<<Zmid2<<" ind_best_Ch1 "<<ind_best_Ch1_[0]<<" ind_best_Ch2 "<<ind_best_Ch2_[0]<<" ind best for match ch1 "<<best_Ch1_gl_[0]<<" ch2 "<<best_Ch2_gl_[0]<<" Nbest_Ch12_gl "<<Nbest_Ch12_gl_<< " chi2_match "<<Chi2_match_[0]<<endl;
+
+
+
 
     Int_t best = -1;
     Int_t best3 = -1;
@@ -2311,8 +2223,7 @@ void BmnMwpcHitFinderSRC::Finish() {
 
     
    
-    delete [] shift1_2;
-    delete [] Chi2_match;
+    delete [] shift1_2;   
     delete [] Chi2_ndf_Ch1_2;
     delete [] ind_best_Ch1_2;
     delete [] sigm2;
@@ -2359,17 +2270,22 @@ void BmnMwpcHitFinderSRC::Finish() {
       delete [] par_ab_Ch[iCh];
       delete [] XVU[iCh];// delete [] XVU1;
       delete [] XVU_cl[iCh];// delete [] XVU_cl1;
-   
-         
+     
     }
-    // delete 1d arrays
-
+    
+   
     for(Int_t ii=0; ii<4; ii++){
       // delete [] par_ab_Ch1[ii];
       delete [] par_ab_Ch1_2[ii];
       delete [] matrA[ii];
       delete [] matrb[ii];
     }
+
+    for(Int_t ip = 0; ip < kNChambers; ip++){ 
+      delete [] Chi2_match_pair[ip];
+    }
+
+    // delete 1d arrays
 
     delete [] wire_Ch;
     delete [] xuv_Ch;
@@ -2392,9 +2308,9 @@ void BmnMwpcHitFinderSRC::Finish() {
     delete [] par_ab_Ch;
     delete [] XVU;
     delete [] XVU_cl;
+    delete [] Chi2_match_pair;
+    delete [] Nbest_pair;
 
-    
-    
     cout << "Work time of the MWPC hit finder: " << workTime << " s" << endl;
 }
 
