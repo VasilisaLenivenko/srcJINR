@@ -127,10 +127,37 @@ fDebug(kFALSE) {
       fOYprime[iChamber] = d[iChamber] - c[iChamber];
       fOZprime[iChamber] = (a[iChamber] - b[iChamber]).Cross(d[iChamber] - c[iChamber]);
       }
+
+    // planes numbering according to the mapping:
+    //                   x-    v-    u+    x+    v+    u-   // canonical order
+    //    kZ1_loc[6] = {-0.5,  0.5,  1.5,  2.5, -2.5, -1.5}; //cm   run5  
+    //    kZ2_loc[6] = {-0.5,  0.5,  1.5,  2.5, -2.5, -1.5}; //cm   run5, run6
+
+    //for mpd detectors
+    //        3         -1.5, -0.5,  0.5,  1.5,  2.5,  -2.5
+    //        4         -1.5, -2.5,  2.5,  1.5,  0.5,  -0.5   
     
-    for (Int_t iChamber = 0; iChamber < fNChambers; iChamber++)
-        for (Int_t iPlane = 0; iPlane < fNPlanes; iPlane++)
-            fZPlanePos[iChamber][iPlane] = fZleft[iChamber] + fSpaceLeft + iPlane * fPlaneStep;
+    for(Int_t ichh = 0; ichh < 3; ichh++){
+      for(int ii = 0; ii < fNPlanes; ii++){
+
+	if ( ichh < 2){
+	  fZPlanePos[ichh][ii] = -0.5 + ii;
+	  if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
+	  if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
+	}
+	if( ichh == 2){
+	  fZPlanePos[ichh][ii] = -1.5 + ii;
+	  if(ii == 5) { fZPlanePos[ichh][ii] = -2.5;}
+	}
+      }
+    }
+    fZPlanePos[3][0] = -1.5;
+    fZPlanePos[3][1] = -2.5;
+    fZPlanePos[3][2] =  2.5;
+    fZPlanePos[3][3] =  1.5;
+    fZPlanePos[3][4] =  0.5;
+    fZPlanePos[3][5] = -0.5;
+     
     // Check built geometry
     if (fDebug)
         for (Int_t iChamber = 0; iChamber < fNChambers; iChamber++) {
