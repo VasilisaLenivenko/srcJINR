@@ -46,7 +46,7 @@ public:
   BmnMwpcHitFinderSRC() {};
 
   /** Constructor to be used **/
-  BmnMwpcHitFinderSRC(Bool_t);
+  BmnMwpcHitFinderSRC(Bool_t, Int_t);
 
   /** Destructor **/
   virtual ~BmnMwpcHitFinderSRC();
@@ -101,6 +101,7 @@ private:
 
   TH1D  *hNp_best_ch1, *hNp_best_ch2,  *hNbest_Ch1,  *hNbest_Ch2, *hChi2_ch1_2;
 
+  Int_t fRunPeriod;
   Short_t kNChambers;
   Short_t kNPlanes;
   Short_t kNWires;
