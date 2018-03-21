@@ -26,21 +26,21 @@ fDebug(kFALSE) {
   fZright = new Double_t [fNChambers];
   fAngleX = new Double_t [fNChambers];
   fAngleY = new Double_t [fNChambers];
-  /*  fZPlanePos = new Double_t*[fNChambers];
+  fZPlanePos = new Double_t*[fNChambers];
   for(Int_t i=0; i<fNChambers; i++){
     fZPlanePos[i] = new Double_t[fNPlanes];
-    }*/
+  }
   
   fTimeBin = 8;
   fNWires = 96;
   fAngleStep = 60 * DegToRad();
   fWireStep = 0.25;
-  fPlaneStep = 1.0015; // According to schemes given by M. Rumyantsev
+  fPlaneStep = 1.0015; // According to schemes provided by M. Rumyantsev
 
   fPlaneHeight = 43.3;
   fPlaneWidth = fNWires * fWireStep;
   
-  fSpaceLeft = 2.1338; // According to schemes given by M. Rumyantsev
+  fSpaceLeft = 2.1338; // According to schemes provided by M. Rumyantsev
   fSpaceRight = 2.1328; // According to schemes given by M. Rumyantsev
   
   fChamberWidth = fSpaceLeft + fSpaceLeft + (fNPlanes - 1) * fPlaneStep;
@@ -96,9 +96,10 @@ fDebug(kFALSE) {
     //           a _____|_____ b
     //                  |
     //                  |
-    //                  |d 
-    /*    if(periodNum == 7){
-      TVector3 a[4], b[4], c[4], d[4];
+    //                  |d
+    
+    TVector3 a[4], b[4], c[4], d[4];
+    if(periodNum == 7){
       a[0].SetXYZ(-23.431, 6.064, 287.816);
       b[0].SetXYZ(23.961, 5.995, 287.9);
       c[0].SetXYZ(0.285, 26.583, 287.688);
@@ -119,25 +120,17 @@ fDebug(kFALSE) {
       c[3].SetXYZ(0.00, 17.038, -107.552);
       d[3].SetXYZ(0.00, -24.220, -107.174);
     }
-    // Defined using rotation constructor a la Geant3.
-    // Angles theta(i), phi(i) are the polar and azimuthal angles of the (i) axis of the rotated system
-    // with respect to the initial non-rotated system
-    // (no rotation is composed by theta1 = 90, phi1 = 0, theta2 = 90, phi2 = 90, theta3 = 0, phi3 = 0)
 
     // construct oy' using points a and b, construct ox' using points c and d, and construct oz' using (a-b) x (d-c)
-
     for(Int_t iChamber = 0; iChamber < fNChambers; iChamber++){
       fOXprime[iChamber] = b[iChamber] - a[iChamber];
       fOYprime[iChamber] = d[iChamber] - c[iChamber];
       fOZprime[iChamber] = (a[iChamber] - b[iChamber]).Cross(d[iChamber] - c[iChamber]);
-      }*/
+      }
     
     for (Int_t iChamber = 0; iChamber < fNChambers; iChamber++)
         for (Int_t iPlane = 0; iPlane < fNPlanes; iPlane++)
             fZPlanePos[iChamber][iPlane] = fZleft[iChamber] + fSpaceLeft + iPlane * fPlaneStep;
-
-
-    //    cout<<"it was: fZright = "<< -(186.+22.)<<", fZright1 = "<<-(186.+22.)-fChamberWidth-140.5<<endl;
     // Check built geometry
     if (fDebug)
         for (Int_t iChamber = 0; iChamber < fNChambers; iChamber++) {
@@ -157,6 +150,16 @@ TVector3 BmnMwpcGeometrySRC::GetAxisPrime(Int_t chamber, Int_t axis){
   if(axis == 0)  return fOXprime[chamber];
   if(axis == 1)  return fOYprime[chamber];
   if(axis == 2)  return fOZprime[chamber];
+}
+
+Double_t BmnMwpcGeometrySRC::GetTx(Int_t chamber){
+  TVector3 ox(1.,0.,0.);
+  return TMath::Tan(fOXprime[chamber].Angle(ox));
+}
+
+Double_t BmnMwpcGeometrySRC::GetTy(Int_t chamber){
+  TVector3 oy(0.,1.,0.);
+  return TMath::Tan(fOYprime[chamber].Angle(oy));
 }
 
 BmnMwpcGeometrySRC::~BmnMwpcGeometrySRC() {

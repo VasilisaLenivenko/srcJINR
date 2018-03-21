@@ -72,7 +72,9 @@ public:
     
     TVector3 GetChamberCenter(Int_t chamber);
     TVector3 GetAxisPrime(Int_t chamber, Int_t axis);
-
+    Double_t GetTx(Int_t chamber);
+    Double_t GetTy(Int_t chamber);
+    
     Double_t GetAngleX(Int_t chamber){
       return fAngleX[chamber];
     }
@@ -106,7 +108,7 @@ private:
     Double_t *fAngleX;
     Double_t *fAngleY;
    
-    Double_t fZPlanePos[4][6];
+    Double_t **fZPlanePos;//[4][6];
     Double_t *fZright;
     Double_t *fZleft;
     Double_t *fX;

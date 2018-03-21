@@ -25,10 +25,11 @@ static Float_t workTime = 0.0;
 using namespace std;
 using namespace TMath;
 
-BmnMwpcHitFinderSRC::BmnMwpcHitFinderSRC(Bool_t isExp) :
+BmnMwpcHitFinderSRC::BmnMwpcHitFinderSRC(Bool_t isExp, Int_t runPeriod) :
   fEventNo(0),
   fUseDigitsInTimeBin(kTRUE),
   expData(isExp) {
+  fRunPeriod = runPeriod;
   fInputBranchName = "MWPC";
   fOutputBranchName = "BmnMwpcHit";
   fOutputBranchName1 = "BmnMwpcSegment";
@@ -65,7 +66,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   fBmnMwpcTracksArray = new TClonesArray(fOutputBranchName2);
   ioman->Register(fOutputBranchName2.Data(), "MWPC", fBmnMwpcTracksArray, kTRUE);
 
-  fMwpcGeometrySRC = new BmnMwpcGeometrySRC(7); // period number 7
+  fMwpcGeometrySRC = new BmnMwpcGeometrySRC(fRunPeriod); // period number 7
   kNChambers = fMwpcGeometrySRC->GetNChambers(); 
   kNPlanes = fMwpcGeometrySRC->GetNPlanes(); // 6
   kNWires = fMwpcGeometrySRC->GetNWires();

@@ -171,7 +171,7 @@ void run_reco_bmn(TString inputFileName = "$VMCWORKDIR/macro/run/evetest.root",
     // ====================================================================== //
     // ===                           MWPC hit finder                      === //
     // ====================================================================== //
-    BmnMwpcHitFinderSRC* mwpcHM = new BmnMwpcHitFinderSRC(isExp);
+    BmnMwpcHitFinderSRC* mwpcHM = new BmnMwpcHitFinderSRC(isExp, run_period);
     //    mwpcHM->SetUseDigitsInTimeBin(kFALSE);
     fRunAna->AddTask(mwpcHM);
     // ====================================================================== //
