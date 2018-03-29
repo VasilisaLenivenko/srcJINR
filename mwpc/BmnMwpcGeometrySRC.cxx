@@ -15,10 +15,13 @@ BmnMwpcGeometrySRC::BmnMwpcGeometrySRC(Int_t periodNum) :
 fDebug(kFALSE) {
   if(periodNum == 7){
     fNChambers = 4;
+    kCh_min = 0;
   }else if (periodNum == 6){
     fNChambers = 2;
+    kCh_min = 2;
   }
   fNPlanes = 6;
+  kCh_max = 4;
   
   fX = new Double_t [fNChambers];
   fY = new Double_t [fNChambers];
@@ -56,17 +59,8 @@ fDebug(kFALSE) {
     fZleft[0] (fSpaceLeft | | | | | | fSpaceRight) fZright[0]  fZleft[1] (fSpaceLeft | | | | | | fSpaceRight) fZright[1]
                          1 2 3 4 5 6                                              1 2 3 4 5 6
     */
-    if(periodNum == 6){
-      fX[0] = 0.;
-      fY[0] = 0.;
-      fZright[0] = 0.;
-      fZleft[0] = 0.;
-      
-      fX[1] = 0.;
-      fY[1] = 0.;
-      fZright[1] = 0.;
-      fZleft[1] = 0.;
-    }else if(periodNum == 7){
+  for(Int_t ic = kCh_min; ic < kCh_max; ic++){
+    if ( ic == 0 || ic == 1){
       fX[0] = -0.24;
       fY[0] = -3.342;
       fZright[0] = fGlobalZdiff - 206.042;
@@ -76,7 +70,8 @@ fDebug(kFALSE) {
       fY[1] = -3.601;
       fZright[1] = fGlobalZdiff - 107.363;
       fZleft[1] = fZright[1] - fChamberWidth;
-      
+    }
+    else{
       fX[2] = 0.271;
       fY[2] = 6.038;
       fZright[2] = fGlobalZdiff + 287.858;
@@ -87,6 +82,8 @@ fDebug(kFALSE) {
       fZright[3] = fGlobalZdiff + 437.568;
       fZleft[3] = fZright[3] - fChamberWidth;
     }
+  }
+      //   }
     // location of the MWPC body in 3d.
     // Calculate angles based on the precise measurements done by Alexander Kolesnikov.
     // Define space positions of 2 points along x axis (a, b) and 2 points along y axis (c, d) for each chamber:
@@ -137,26 +134,30 @@ fDebug(kFALSE) {
     //        3         -1.5, -0.5,  0.5,  1.5,  2.5,  -2.5
     //        4         -1.5, -2.5,  2.5,  1.5,  0.5,  -0.5   
     
-    for(Int_t ichh = 0; ichh < 3; ichh++){
+    for(Int_t ichh = kCh_min; ichh < kCh_max; ichh++){ // for(Int_t ichh = 0; ichh < 3; ichh++){
       for(int ii = 0; ii < fNPlanes; ii++){
-
-	if ( ichh < 2){
-	  fZPlanePos[ichh][ii] = -0.5 + ii;
-	  if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
-	  if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
+	if (ichh == 0 || ichh == 1){
+	  if ( ichh < 2){
+	    fZPlanePos[ichh][ii] = -0.5 + ii;
+	    if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
+	    if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
+	  }
 	}
-	if( ichh == 2){
-	  fZPlanePos[ichh][ii] = -1.5 + ii;
-	  if(ii == 5) { fZPlanePos[ichh][ii] = -2.5;}
+	if (ichh == 2 || ichh == 3){ 
+	  if( ichh == 2){
+	    fZPlanePos[ichh][ii] = -1.5 + ii;
+	    if(ii == 5) { fZPlanePos[ichh][ii] = -2.5;}
+	  }
+
+	  fZPlanePos[3][0] = -1.5;
+	  fZPlanePos[3][1] = -2.5;
+	  fZPlanePos[3][2] =  2.5;
+	  fZPlanePos[3][3] =  1.5;
+	  fZPlanePos[3][4] =  0.5;
+	  fZPlanePos[3][5] = -0.5;
 	}
       }
     }
-    fZPlanePos[3][0] = -1.5;
-    fZPlanePos[3][1] = -2.5;
-    fZPlanePos[3][2] =  2.5;
-    fZPlanePos[3][3] =  1.5;
-    fZPlanePos[3][4] =  0.5;
-    fZPlanePos[3][5] = -0.5;
      
     // Check built geometry
     if (fDebug)

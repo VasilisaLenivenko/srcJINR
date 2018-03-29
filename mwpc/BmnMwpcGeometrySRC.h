@@ -95,6 +95,8 @@ private:
 
     Int_t fNChambers;
     Int_t fNPlanes;
+    Int_t kCh_min;
+    Int_t kCh_max;
     Short_t fTimeBin;  // in ns
     Short_t fNWires;   //in one plane
     Double_t fAngleStep;
