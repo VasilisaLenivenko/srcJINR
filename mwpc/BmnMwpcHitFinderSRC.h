@@ -107,14 +107,15 @@ private:
   Short_t kNWires;
   Int_t kBig;
   Int_t kNumPairs;
+  Int_t kCh_min;
+  Int_t kCh_max;
   TVector3 *ChCent;
 
-  Float_t *kZmid;// Float_t kZmid1;
-  Float_t *ZCh;// Float_t ZCh1;
-  Float_t **kZ_loc;// Float_t *kZ1_loc;
- 
-  Float_t **z_gl;// Float_t *z_gl1;
-  Float_t **shift; //  Float_t *shift1;
+  Float_t *kZmid;
+  Float_t *ZCh;
+  Float_t **kZ_loc;
+  Float_t **z_gl;
+  Float_t **shift; 
   Float_t *shift1_2;
 
   Float_t kZ_to_pole;
@@ -127,15 +128,13 @@ private:
   Double_t sq12;
   Double_t sigma;
   Short_t kMiddlePl;
-
-  
+ 
   Int_t **kPln;
   Int_t **iw;
   Int_t **iw_Ch;
   Int_t **Nhits_Ch;//  Int_t *Nhits_Ch1; 
   Int_t *Nseg_Ch; // Int_t Nseg_Ch1;
   Int_t *Nbest_Ch;//Int_t Nbest_Ch1;
-  Int_t *Nbest_pair;// Int_t Nbest_Ch12_gl;
 
   Int_t ***wire_Ch;  // Int_t **wire_Ch1;
   Float_t ***xuv_Ch;  //  Float_t **xuv_Ch1;
@@ -147,21 +146,11 @@ private:
   Float_t **XVU;// Float_t *XVU1;
   Float_t **XVU_cl;// Float_t *XVU_cl1;
  
- 
-
   Int_t **ind_best_Ch;// Int_t *ind_best_Ch1;
   Int_t **best_Ch_gl;// Int_t *best_Ch1_gl;
   Double_t **Chi2_ndf_Ch;// Double_t *Chi2_ndf_Ch1;
   Double_t **Chi2_ndf_best_Ch;//Double_t *Chi2_ndf_best_Ch1;
 
-  
-  
-  Int_t *ind_best_Ch1_2;  
-  Double_t **par_ab_Ch1_2;
-  
-  
-  Double_t **Chi2_match_pair;
-  Double_t *Chi2_ndf_Ch1_2;
 
   Float_t *sigm2;
   Int_t *ipl;
@@ -170,49 +159,27 @@ private:
   Double_t **Amatr;
   Double_t **bmatr;
   Float_t *dX_i;
- 
 
   Float_t *z2;
 
   //functions for Vasilisa method:
   void PrepareArraysToProcessEvent();
-  void SegmentFinder(
-   Int_t, Int_t***, Int_t***,  Float_t***, 
-   Int_t**, Int_t** , 
-   Int_t *, Int_t ***, Float_t ***, 
-   Int_t, Short_t , Int_t);
+  void SegmentFinder(Int_t, Int_t***, Int_t***,  Float_t***,  Int_t**, Int_t** , Int_t *, Int_t ***, Float_t ***, Int_t, Short_t , Int_t);
 
 
-  void ProcessSegments(
-   Int_t, Double_t ,Float_t , 
-   Float_t **, Int_t , Int_t * ,
-   Int_t **,Int_t ***,Int_t ***,
-   Float_t ***,Int_t * , Int_t **, 
-   Double_t **, Double_t **, 
-   Double_t ***, Int_t ,Int_t* , 
-   Float_t**,  Float_t**, Double_t);
+  void ProcessSegments(Int_t, Double_t ,Float_t , Float_t **, Int_t , Int_t * , Int_t **,Int_t ***,Int_t ***, Float_t ***,Int_t * , Int_t **, Double_t **, Double_t **, Double_t ***, Int_t ,Int_t* , Float_t**,  Float_t**, Double_t);
 
   void SegmentParamAlignment(Int_t, Int_t *, Int_t **, Double_t ***, Float_t **);
   void SegmentMatching(Int_t &, Int_t &, Double_t **, Double_t **, Float_t, Float_t, Int_t *, Int_t *,   Int_t *,  Int_t *, Int_t &, Double_t *);
-  void SegmentFit(Float_t *, Float_t *,  Float_t*,  Int_t &, Int_t *, Int_t *, Int_t *, Int_t *,  
-		  Double_t **, Double_t *, 
-		  //  Int_t *, Int_t *, 
-		  Int_t **,  Int_t **,
-		  //  Double_t **, Double_t **,
-		  Float_t **,Float_t **, 
-		  // Float_t *, Float_t *, 
-		  Int_t *, Int_t *, Int_t * );
+  void SegmentFit(Float_t *, Float_t *,  Float_t*,  Int_t &, Int_t *, Int_t *, Int_t *, Int_t *,    Double_t **, Double_t *,  Int_t **,  Int_t **, Float_t **,Float_t **,  Int_t *, Int_t *, Int_t * );
 
   void FillFitMatrix(Int_t, Double_t **, Float_t **, Float_t *, Int_t *);
 
-  void FillFreeCoefVectorXUV(Int_t, Double_t*, Float_t**, 
-			     Float_t**, Float_t*, Int_t*);
+  void FillFreeCoefVectorXUV(Int_t, Double_t*, Float_t**,  Float_t**, Float_t*, Int_t*);
 
   void FillFreeCoefVector(Int_t, Double_t*, Float_t**, Int_t, Float_t*, Float_t*, Int_t*, Int_t);
 
-  
   void InverseMatrix(Double_t**, Double_t**);
-  vector<vector<double>> vkFillFitMatrix(Float_t*, Float_t*, Int_t*);
 
   ClassDef(BmnMwpcHitFinderSRC, 1);
 };
