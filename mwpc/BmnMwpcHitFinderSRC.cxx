@@ -84,22 +84,16 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   ChCent= new TVector3[kNChambers];
   ZCh =   new Float_t[kNChambers];
   kZmid = new Float_t[kNChambers];
-  shift = new Float_t*[kNChambers];
 
-  for(Int_t i = kCh_min; i < kCh_max; i++){
-    shift[i] = new Float_t[4];
-
-    ChCent[i] = fMwpcGeometrySRC->GetChamberCenter(i);
-    ZCh[i]= ChCent[i].Z();
-    shift[i][0] = fMwpcGeometrySRC->GetTx(i);
-    shift[i][2] = fMwpcGeometrySRC->GetTy(i);
-    shift[i][1] =  ChCent[i].X();
-    shift[i][3] =  ChCent[i].Y();
-    
+   for(Int_t i = 0; i < kNChambers; i++){//for(Int_t i = kCh_min; i < kCh_max; i++){
+    Int_t i1 =i;
+    if ( fRunPeriod == 6 ) i1 =i+2;
+    ChCent[i] = fMwpcGeometrySRC->GetChamberCenter(i1);
+    ZCh[i]= ChCent[i1].Z();
     cout<<" ZCh["<<i<<"]= "<< ZCh[i]<<endl;
   }
 
-  for(Int_t i =  kCh_min; i < kCh_max; i++){
+ for(Int_t i = 0; i < kNChambers; i++){ // for(Int_t i =  kCh_min; i < kCh_max; i++){
     if (i== 0 || i== 2) { kZmid[i] = (ZCh[i] - ZCh[i+1])*0.5;}
     if (i== 1 || i== 3) { kZmid[i] = - (ZCh[i-1] - ZCh[i])*0.5;}
    
@@ -151,7 +145,7 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   XVU_cl = new Float_t*[kNChambers];// XVU_cl1 = new Float_t[kNPlanes];
   cout<<" 2 "<<endl;
 
-  for(Int_t ii = kCh_min; ii < kCh_max; ii++){ 
+  for(Int_t ii = 0; ii < kNChambers; ii++){// for(Int_t ii = kCh_min; ii < kCh_max; ii++){ 
 
     kPln[ii] = new Int_t[kNPlanes];
     iw[ii] = new Int_t[kNPlanes];
@@ -175,14 +169,14 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
   }
   cout<<" 3 "<<endl;
  
-  for(Int_t ii = kCh_min; ii < kCh_max; ii++){ 
+  for(Int_t ii = 0; ii < kNChambers; ii++){// for(Int_t ii = kCh_min; ii < kCh_max; ii++){ 
     for(Int_t iWire=0; iWire < kNWires; iWire++){
       wire_Ch[ii][iWire] = new Int_t[kNPlanes];
       xuv_Ch[ii][iWire] = new Float_t[kNPlanes];    
     }
   }
 
-  for(Int_t ii = kCh_min; ii < kCh_max; ii++){ 
+  for(Int_t ii = 0; ii < kNChambers; ii++){// for(Int_t ii = kCh_min; ii < kCh_max; ii++){ 
     for(Int_t iPla=0; iPla < kNPlanes; iPla++){
       Wires_Ch[ii][iPla] = new Int_t[kBig];
       clust_Ch[ii][iPla] = new Int_t[kBig];
@@ -252,10 +246,18 @@ InitStatus BmnMwpcHitFinderSRC::Init() {
     //        3         -1.5, -0.5,  0.5,  1.5,  2.5,  -2.5
     //        4         -1.5, -2.5,  2.5,  1.5,  0.5,  -0.5   
     
-    for(Int_t ichh = kCh_min; ichh < kCh_max; ichh++){
+    for(Int_t ichh = 0; ichh < kNChambers; ichh++){// for(Int_t ichh = kCh_min; ichh < kCh_max; ichh++){
       for(int ii = 0; ii < 6; ii++){
-	if (ichh == 0 || ichh == 1){
+	if ( fRunPeriod == 6 ){
 
+	  if ( ichh == 0 || ichh == 1){
+	    kZ_loc[ichh][ii] = -0.5 + ii;
+	    if(ii == 4) { kZ_loc[ichh][ii] = -2.5;}
+	    if(ii == 5) { kZ_loc[ichh][ii] = -1.5;}
+	  }
+
+	}
+	if (ichh == 0 || ichh == 1){
 	  kZ_loc[0][0] = -1.5;
 	  kZ_loc[0][1] = -0.5;
 	  kZ_loc[0][2] =  0.5;
@@ -295,7 +297,7 @@ void BmnMwpcHitFinderSRC::PrepareArraysToProcessEvent(){
    
 // Clean and initialize arrays:
 
-  for(Int_t iCh = kCh_min; iCh < kCh_max;  iCh++){
+   for(Int_t iCh = 0; iCh < kNChambers; iCh++){////for(Int_t iCh = kCh_min; iCh < kCh_max;  iCh++){
 
     Nseg_Ch[iCh] = 0;
     Nbest_Ch[iCh] = 0;
@@ -346,7 +348,7 @@ void BmnMwpcHitFinderSRC::PrepareArraysToProcessEvent(){
       }
     }
     
-    for(Int_t iCh = kCh_min; iCh < kCh_max;  iCh++){    
+    for(Int_t iCh = 0; iCh < kNChambers; iCh++){// for(Int_t iCh = kCh_min; iCh < kCh_max;  iCh++){    
       for(Int_t iPlane=0; iPlane<kNPlanes; iPlane++){
 	for(Int_t iBig=0; iBig<kBig; iBig++){
 	  Wires_Ch[iCh][iPlane][iBig] = -1;// Wires_Ch1[iPlane][iBig] = -1;
@@ -1626,7 +1628,7 @@ void BmnMwpcHitFinderSRC::Finish() {
 
     //  3d-arrays:
   
-    for(Int_t iCh=kCh_min; iCh< kCh_max; iCh++){
+     for(Int_t iCh = 0; iCh < kNChambers; iCh++){//for(Int_t iCh=kCh_min; iCh< kCh_max; iCh++){
       for(Int_t iWire=0; iWire< kNWires; iWire++){
 	delete [] wire_Ch[iCh][iWire];	// delete [] wire_Ch1[iWire];
 	delete [] xuv_Ch[iCh][iWire];//  delete [] wire_Ch2[iWire];	
@@ -1652,7 +1654,6 @@ void BmnMwpcHitFinderSRC::Finish() {
       delete [] clust_Ch[iCh];
       delete [] XVU_Ch[iCh];
       delete [] Nhits_Ch[iCh];
-      delete [] shift[iCh]; //  delete [] shift1;
       delete [] z_gl[iCh];
       delete [] kZ_loc[iCh];// delete [] kZ1_loc;
       delete [] ind_best_Ch[iCh];
@@ -1680,7 +1681,6 @@ void BmnMwpcHitFinderSRC::Finish() {
     delete [] Nhits_Ch;
     delete [] Nseg_Ch;
     delete [] Nbest_Ch;
-    delete [] shift;
     delete [] kZ_loc;
     delete [] z_gl;
     delete [] ZCh;

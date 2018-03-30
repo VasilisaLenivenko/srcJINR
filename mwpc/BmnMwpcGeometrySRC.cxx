@@ -133,32 +133,46 @@ fDebug(kFALSE) {
     //for mpd detectors
     //        3         -1.5, -0.5,  0.5,  1.5,  2.5,  -2.5
     //        4         -1.5, -2.5,  2.5,  1.5,  0.5,  -0.5   
-    
-    for(Int_t ichh = kCh_min; ichh < kCh_max; ichh++){ // for(Int_t ichh = 0; ichh < 3; ichh++){
-      for(int ii = 0; ii < fNPlanes; ii++){
-	if (ichh == 0 || ichh == 1){
+
+    if(periodNum == 7){
+      for(Int_t ichh = 0; ichh < 3; ichh++){
+	for(int ii = 0; ii < fNPlanes; ii++){
+	  
 	  if ( ichh < 2){
 	    fZPlanePos[ichh][ii] = -0.5 + ii;
 	    if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
 	    if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
 	  }
-	}
-	if (ichh == 2 || ichh == 3){ 
 	  if( ichh == 2){
 	    fZPlanePos[ichh][ii] = -1.5 + ii;
 	    if(ii == 5) { fZPlanePos[ichh][ii] = -2.5;}
 	  }
-
-	  fZPlanePos[3][0] = -1.5;
-	  fZPlanePos[3][1] = -2.5;
-	  fZPlanePos[3][2] =  2.5;
-	  fZPlanePos[3][3] =  1.5;
-	  fZPlanePos[3][4] =  0.5;
-	  fZPlanePos[3][5] = -0.5;
 	}
       }
+      fZPlanePos[3][0] = -1.5;
+      fZPlanePos[3][1] = -2.5;
+      fZPlanePos[3][2] =  2.5;
+      fZPlanePos[3][3] =  1.5;
+      fZPlanePos[3][4] =  0.5;
+      fZPlanePos[3][5] = -0.5;
     }
-     
+    if(periodNum == 6){
+      for(Int_t ichh = 0; ichh < 2; ichh++){
+	for(int ii = 0; ii < fNPlanes; ii++){
+	  
+	  if ( ichh < 2){
+	    fZPlanePos[ichh][ii] = -0.5 + ii;
+	    if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
+	    if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
+	  }
+	  if( ichh == 2){
+	    fZPlanePos[ichh][ii] = -1.5 + ii;
+	    if(ii == 5) { fZPlanePos[ichh][ii] = -2.5;}
+	  }
+	}
+      }      
+    }
+
     // Check built geometry
     if (fDebug)
         for (Int_t iChamber = 0; iChamber < fNChambers; iChamber++) {

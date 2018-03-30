@@ -115,8 +115,6 @@ private:
   Float_t *ZCh;
   Float_t **kZ_loc;
   Float_t **z_gl;
-  Float_t **shift; 
-  Float_t *shift1_2;
 
   Float_t kZ_to_pole;
   Int_t kMinHits;
