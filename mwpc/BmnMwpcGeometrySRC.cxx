@@ -16,7 +16,7 @@ fDebug(kFALSE) {
   if(periodNum == 7){
     fNChambers = 4;
   }else if (periodNum == 6){
-    fNChambers = 2;
+    fNChambers = 4; // 4 chambers, active are number 2 and 3
   }
   fNPlanes = 6;
   
@@ -66,6 +66,16 @@ fDebug(kFALSE) {
       fY[1] = 0.;
       fZright[1] = 0.;
       fZleft[1] = 0.;
+      
+      fX[2] = 0.;
+      fY[2] = 0.;
+      fZright[2] = 0.;
+      fZleft[2] = 0.;
+      
+      fX[3] = 0.;
+      fY[3] = 0.;
+      fZright[3] = 0.;
+      fZleft[3] = 0.;
     }else if(periodNum == 7){
       fX[0] = -0.24;
       fY[0] = -3.342;
@@ -160,10 +170,12 @@ fDebug(kFALSE) {
       fZPlanePos[3][5] = -0.5;
     }
     if(periodNum == 6){
-      for(Int_t ichh = 0; ichh < 2; ichh++){
+      for(Int_t ichh = 0; ichh < 4; ichh++){
 	for(int ii = 0; ii < fNPlanes; ii++){
-	  
-	  if ( ichh < 2){
+	  if( ichh < 2){
+	    zPlanePos[ichh][ii] = 0.;
+	  }
+	  if ( ichh > 1){
 	    fZPlanePos[ichh][ii] = -0.5 + ii;
 	    if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
 	    if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
