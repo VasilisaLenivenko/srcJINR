@@ -17,8 +17,7 @@ fDebug(kFALSE) {
     fNChambers = 4;
     kCh_min = 0;
   }else if (periodNum == 6){
-    fNChambers = 2;
-    kCh_min = 2;
+    fNChambers = 4; // 4 chambers, active are number 2 and 3
   }
   fNPlanes = 6;
   kCh_max = 4;
@@ -59,31 +58,50 @@ fDebug(kFALSE) {
     fZleft[0] (fSpaceLeft | | | | | | fSpaceRight) fZright[0]  fZleft[1] (fSpaceLeft | | | | | | fSpaceRight) fZright[1]
                          1 2 3 4 5 6                                              1 2 3 4 5 6
     */
-  for(Int_t ic = kCh_min; ic < kCh_max; ic++){
-    if ( ic == 0 || ic == 1){
-      fX[0] = -0.24;
-      fY[0] = -3.342;
-      fZright[0] = fGlobalZdiff - 206.042;
-      fZleft[0] = fZright[0] - fChamberWidth;
+
+    if (periodNum == 6){
+      fX[0] = 0.;
+      fY[0] = 0.;
+      fZright[0] = 0.;
+      fZleft[0] = 0.;
       
-      fX[1] = -0.109;
-      fY[1] = -3.601;
-      fZright[1] = fGlobalZdiff - 107.363;
-      fZleft[1] = fZright[1] - fChamberWidth;
-    }
-    else{
+      fX[1] = 0.;
+      fY[1] = 0.;
+      fZright[1] = 0.;
+      fZleft[1] = 0.;
+      
       fX[2] = 0.271;
       fY[2] = 6.038;
-      fZright[2] = fGlobalZdiff + 287.858;
+      fZright[2] = fGlobalZdiff + 287.858 -.4;
       fZleft[2] = fZright[2] - fChamberWidth;
       
       fX[3] = 0.234;
       fY[3] = 6.140;
+      fZright[3] = fGlobalZdiff + 437.568 +1.1;
+      fZleft[3] = fZright[3] - fChamberWidth;
+    }else if(periodNum == 7){//shift
+      fX[0] = -0.24  + .7;
+      fY[0] = -3.342 -.66 +.05-.01+.05;
+      fZright[0] = fGlobalZdiff - 206.042;
+      fZleft[0] = fZright[0] - fChamberWidth;
+      
+      fX[1] = -0.109 +.45+.3+.02;
+      fY[1] = -3.601 -.75 +.05+.01-.045 -.08;
+      fZright[1] = fGlobalZdiff - 107.363;
+      fZleft[1] = fZright[1] - fChamberWidth;
+      
+      fX[2] = 0.271 +1.-.07+.08+.1-.02;
+      fY[2] = 6.038 -1.02-.1+.07+.05+.05;
+      fZright[2] = fGlobalZdiff + 287.858;
+      fZleft[2] = fZright[2] - fChamberWidth;
+      
+      fX[3] = 0.234 +0.8-.08+.2+.2-.08;
+      fY[3] = 6.140 -1.13-.01+.1+.07-.06;
       fZright[3] = fGlobalZdiff + 437.568;
       fZleft[3] = fZright[3] - fChamberWidth;
-    }
+      
   }
-      //   }
+//}//
     // location of the MWPC body in 3d.
     // Calculate angles based on the precise measurements done by Alexander Kolesnikov.
     // Define space positions of 2 points along x axis (a, b) and 2 points along y axis (c, d) for each chamber:
@@ -157,10 +175,12 @@ fDebug(kFALSE) {
       fZPlanePos[3][5] = -0.5;
     }
     if(periodNum == 6){
-      for(Int_t ichh = 0; ichh < 2; ichh++){
+      for(Int_t ichh = 0; ichh < 4; ichh++){
 	for(int ii = 0; ii < fNPlanes; ii++){
-	  
-	  if ( ichh < 2){
+	  if( ichh < 2){
+	    fZPlanePos[ichh][ii] = 0.;
+	  }
+	  if ( ichh > 1){
 	    fZPlanePos[ichh][ii] = -0.5 + ii;
 	    if(ii == 4) { fZPlanePos[ichh][ii] = -2.5;}
 	    if(ii == 5) { fZPlanePos[ichh][ii] = -1.5;}
